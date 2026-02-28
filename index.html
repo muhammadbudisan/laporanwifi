@@ -1,148 +1,141 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Logo Musholla Wakaf An-Nur</title>
-<style>
-body{
-  margin:0;
-  background:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  flex-direction:column;
-  font-family:Arial, sans-serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan WiFi Q1 2026 - Modern Rounded</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800;900&family=Archivo+Black&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --theme-blue: #3300FF;      
+            --theme-purple: #8f00ff;    
+            --true-red: #FF0000;         
+            --true-green: #00FF00;       
+            --dark-green: #008000;       
+            --bg-light: #f5f5f5; 
+            --blue-transparent: rgba(51, 0, 255, 0.08);
+        }
 
-/* Bulan & Bintang */
-.moon-star{
-  position:relative;
-  width:60px;
-  height:60px;
-  margin-bottom:-10px;
-}
-.moon{
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  background:#2ecc71;
-  position:absolute;
-}
-.moon::after{
-  content:"";
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:black;
-  position:absolute;
-  left:15px;
-  top:5px;
-}
-.star{
-  position:absolute;
-  right:-5px;
-  top:5px;
-  color:#2ecc71;
-  font-size:22px;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 15px;
+            font-weight: 800;
+            -webkit-font-smoothing: antialiased;
+        }
 
-/* Atap */
-.roof-top{
-  width:140px;
-  height:60px;
-  background:#c68642;
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-}
-.roof-mid{
-  width:260px;
-  height:70px;
-  background:#b87333;
-  margin-top:-5px;
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-}
+        .num-font {
+            font-family: 'Archivo Black', sans-serif;
+            font-weight: 900;
+            letter-spacing: normal;
+            font-variant-numeric: tabular-nums;
+        }
 
-/* Atap hijau */
-.roof-green{
-  width:360px;
-  height:90px;
-  background:#2e8b57;
-  margin-top:-5px;
-  clip-path: polygon(0% 100%, 100% 100%, 85% 0%, 15% 0%);
-}
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
 
-/* Bangunan */
-.building{
-  width:360px;
-  height:140px;
-  background:#3a7f4f;
-  display:flex;
-  justify-content:space-around;
-  align-items:flex-end;
-  padding:20px;
-  box-sizing:border-box;
-}
+        /* HEADER DENGAN LENGKUNGAN */
+        .header-banner {
+            background-color: var(--theme-blue);
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+            margin-bottom: 15px;
+            border-radius: 20px; /* Membuat sudut lengkung */
+        }
 
-/* Pintu */
-.door{
-  width:40px;
-  height:80px;
-  background:black;
-  border:2px solid #1abc9c;
-}
+        .header-banner h2 {
+            font-size: 32px;
+            font-weight: 900;
+            margin: 0;
+            text-transform: uppercase;
+        }
 
-/* Jendela */
-.window{
-  width:90px;
-  height:50px;
-  border:3px solid black;
-  display:flex;
-}
-.window div{
-  flex:1;
-  border-left:3px solid black;
-}
+        /* KARTU SALDO DENGAN LENGKUNGAN */
+        .balance-card {
+            background-color: var(--theme-purple);
+            color: white;
+            text-align: center;
+            padding: 30px 25px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 25px; /* Lengkungan lebih halus */
+            box-shadow: 0 10px 20px rgba(143, 0, 255, 0.2);
+        }
 
-/* Tiang */
-.pillar{
-  width:20px;
-  height:120px;
-  background:#3a7f4f;
-}
+        .wifi-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--true-green);
+        }
 
-/* Teks */
-.text{
-  color:#2ecc71;
-  font-size:26px;
-  margin-top:15px;
-  letter-spacing:2px;
-}
-</style>
-</head>
-<body>
+        .wifi-icon {
+            width: 22px;
+            height: 22px;
+            position: relative;
+        }
 
-<div class="moon-star">
-  <div class="moon"></div>
-  <div class="star">★</div>
-</div>
+        .icon-blink {
+            animation: blink 1s infinite;
+        }
 
-<div class="roof-top"></div>
-<div class="roof-mid"></div>
-<div class="roof-green"></div>
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-<div style="display:flex; align-items:flex-end;">
-  <div class="pillar"></div>
-  <div class="building">
-    <div class="door"></div>
-    <div class="window">
-      <div></div><div></div><div></div>
-    </div>
-    <div class="door"></div>
-  </div>
-  <div class="pillar"></div>
-</div>
+        /* RADAR EFFECT */
+        .wifi-icon::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: currentColor;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: radarDot 1.5s infinite;
+        }
 
-<div class="text">MUSHOLLA WAKAF AN-NUR</div>
+        .wifi-icon::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: radarWave 1.5s infinite;
+        }
 
-</body>
-</html>
+        @keyframes radarWave {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+
+        @keyframes radarDot {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+            100% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+        }
+
+        .balance-amount {
+            font-size: 55px;
+            margin: 5px 0;
+        }
+
+        /* SUMMARY BOXES DENGAN LENGKUNGAN */
+        .summary-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .summary-box {
+            fl
