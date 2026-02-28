@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Logo Musholla Wakaf An-Nur</title>
+<style>
+body{
+  margin:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  flex-direction:column;
+  font-family:Arial, sans-serif;
+}
+
+/* Bulan & Bintang */
+.moon-star{
+  position:relative;
+  width:60px;
+  height:60px;
+  margin-bottom:-10px;
+}
+.moon{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:#2ecc71;
+  position:absolute;
+}
+.moon::after{
+  content:"";
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:black;
+  position:absolute;
+  left:15px;
+  top:5px;
+}
+.star{
+  position:absolute;
+  right:-5px;
+  top:5px;
+  color:#2ecc71;
+  font-size:22px;
+}
+
+/* Atap */
+.roof-top{
+  width:140px;
+  height:60px;
+  background:#c68642;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+.roof-mid{
+  width:260px;
+  height:70px;
+  background:#b87333;
+  margin-top:-5px;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+/* Atap hijau */
+.roof-green{
+  width:360px;
+  height:90px;
+  background:#2e8b57;
+  margin-top:-5px;
+  clip-path: polygon(0% 100%, 100% 100%, 85% 0%, 15% 0%);
+}
+
+/* Bangunan */
+.building{
+  width:360px;
+  height:140px;
+  background:#3a7f4f;
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  padding:20px;
+  box-sizing:border-box;
+}
+
+/* Pintu */
+.door{
+  width:40px;
+  height:80px;
+  background:black;
+  border:2px solid #1abc9c;
+}
+
+/* Jendela */
+.window{
+  width:90px;
+  height:50px;
+  border:3px solid black;
+  display:flex;
+}
+.window div{
+  flex:1;
+  border-left:3px solid black;
+}
+
+/* Tiang */
+.pillar{
+  width:20px;
+  height:120px;
+  background:#3a7f4f;
+}
+
+/* Teks */
+.text{
+  color:#2ecc71;
+  font-size:26px;
+  margin-top:15px;
+  letter-spacing:2px;
+}
+</style>
+</head>
+<body>
+
+<div class="moon-star">
+  <div class="moon"></div>
+  <div class="star">★</div>
+</div>
+
+<div class="roof-top"></div>
+<div class="roof-mid"></div>
+<div class="roof-green"></div>
+
+<div style="display:flex; align-items:flex-end;">
+  <div class="pillar"></div>
+  <div class="building">
+    <div class="door"></div>
+    <div class="window">
+      <div></div><div></div><div></div>
+    </div>
+    <div class="door"></div>
+  </div>
+  <div class="pillar"></div>
+</div>
+
+<div class="text">MUSHOLLA WAKAF AN-NUR</div>
+
+</body>
+</html>
