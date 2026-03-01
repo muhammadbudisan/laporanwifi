@@ -138,4 +138,167 @@
         }
 
         .summary-box {
-            fl
+            flex: 1;
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 12px solid;
+            border-radius: 20px; /* Membuat kotak summary melengkung */
+        }
+
+        .summary-value {
+            font-size: 32px; 
+        }
+
+        /* TABEL TETAP KOTAK TEGAS */
+        .transaction-container {
+            background: white;
+            overflow-x: auto;
+            border: 4px solid var(--theme-blue);
+            /* Tabel dibiarkan kotak tanpa border-radius agar terlihat profesional */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        thead th {
+            background: var(--theme-blue);
+            color: #fff;
+            padding: 12px 10px;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        tbody tr {
+            background-color: var(--blue-transparent);
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 15px;
+            font-weight: 800;
+            color: #111;
+        }
+
+        .row-month {
+            background-color: #f0edff !important;
+            color: var(--theme-blue);
+        }
+
+        .row-month td {
+            font-size: 16px;
+            font-weight: 900;
+            padding: 12px;
+            border-bottom: 2px solid var(--theme-blue);
+        }
+
+        .row-total {
+            background-color: var(--theme-purple) !important;
+            color: white !important;
+        }
+
+        .row-total td {
+            color: white !important;
+            padding: 14px 12px;
+            font-size: 17px;
+            border-bottom: none;
+        }
+
+        .row-total td:first-child {
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .plus { color: var(--dark-green); }
+        .row-total .plus { color: var(--true-green) !important; }
+
+        .col-center { text-align: center; }
+        .col-right { text-align: right; }
+
+        @media (max-width: 768px) {
+            .balance-amount { font-size: 40px; }
+            .summary-row { flex-direction: column; }
+            .summary-value { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-banner">
+        <h2>Laporan Pembayaran WiFi</h2>
+    </div>
+
+    <div class="balance-card">
+        <div class="wifi-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="wifi-icon icon-blink">
+                <path fill-rule="evenodd" d="M.676 6.941A12.964 12.964 0 0 1 10 3c3.657 0 6.963 1.511 9.324 3.941a.75.75 0 0 1-.008 1.053l-.353.354a.75.75 0 0 1-1.069-.008C15.894 6.28 13.097 5 10 5 6.903 5 4.106 6.28 2.106 8.34a.75.75 0 0 1-1.069.008l-.353-.354a.75.75 0 0 1-.008-1.053Zm2.825 2.833A8.976 8.976 0 0 1 10 7a8.976 8.976 0 0 1 6.499 2.774.75.75 0 0 1-.011 1.049l-.354.354a.75.75 0 0 1-1.072-.012A6.978 6.978 0 0 0 10 9c-1.99 0-3.786.83-5.061 2.165a.75.75 0 0 1-1.073.012l-.354-.354a.75.75 0 0 1-.01-1.05Zm2.82 2.84A4.989 4.989 0 0 1 10 11c1.456 0 2.767.623 3.68 1.614a.75.75 0 0 1-.022 1.039l-.354.354a.75.75 0 0 1-1.085-.026A2.99 2.99 0 0 0 10 13c-.88 0-1.67.377-2.22.981a.75.75 0 0 1-1.084.026l-.354-.354a.75.75 0 0 1-.021-1.039Zm3.179 3.178a.75.75 0 1 1 1.06 1.06.75.75 0 0 1-1.06-1.06Z" clip-rule="evenodd"/>
+            </svg>
+            <span style="font-size: 15px; letter-spacing: 1px;">SYSTEM ONLINE</span>
+        </div>
+        
+        <span style="font-size: 14px; text-transform: uppercase; font-weight: 900; opacity: 0.9;">Saldo Akumulasi Saat Ini</span>
+        <div class="balance-amount num-font">Rp 109.496</div>
+    </div>
+
+    <div class="summary-row">
+        <div class="summary-box" style="border-bottom-color: var(--true-green);">
+            <span style="font-size: 12px; font-weight: 900; opacity: 0.7;">TOTAL BAYAR (Q1)</span>
+            <div class="summary-value num-font" style="color: var(--dark-green);">Rp 660.000</div>
+        </div>
+        <div class="summary-box" style="border-bottom-color: var(--true-red);">
+            <span style="font-size: 12px; font-weight: 900; opacity: 0.7;">TOTAL TAGIHAN (Q1)</span>
+            <div class="summary-value num-font" style="color: var(--true-red);">Rp 629.364</div>
+        </div>
+    </div>
+
+    <div class="transaction-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">BULAN</th>
+                    <th class="col-center">PEMBAYARAN</th>
+                    <th class="col-center">TAGIHAN</th>
+                    <th class="col-center">SALDO</th>
+                    <th class="col-right">AKM. SALDO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row-month"><td colspan="5">JANUARI 2026</td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr class="row-total">
+                    <td>TOTAL</td><td class="col-center num-font">220.000</td><td class="col-center num-font">209.788</td><td class="col-center num-font plus">10.212</td><td class="col-right num-font">89.072</td>
+                </tr>
+
+                <tr class="row-month"><td colspan="5">FEBRUARI 2026</td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr class="row-total">
+                    <td>TOTAL</td><td class="col-center num-font">220.000</td><td class="col-center num-font">209.788</td><td class="col-center num-font plus">10.212</td><td class="col-right num-font">99.284</td>
+                </tr>
+
+                <tr class="row-month"><td colspan="5">MARET 2026</td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr class="row-total">
+                    <td>TOTAL</td><td class="col-center num-font">220.000</td><td class="col-center num-font">209.788</td><td class="col-center num-font plus">10.212</td><td class="col-right num-font">109.496</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
