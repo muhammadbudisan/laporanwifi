@@ -9,6 +9,7 @@
         :root {
             --theme-blue: #3300FF;      
             --theme-purple: #8f00ff;    
+            --theme-purple-trans: rgba(143, 0, 255, 0.12); /* Ungu Transparan */
             --true-red: #FF0000;         
             --true-green: #00FF00;       
             --dark-green: #008000;       
@@ -37,14 +38,14 @@
             margin: auto;
         }
 
-        /* HEADER DENGAN LENGKUNGAN */
+        /* HEADER */
         .header-banner {
             background-color: var(--theme-blue);
             color: white;
             text-align: center;
             padding: 25px 15px;
             margin-bottom: 15px;
-            border-radius: 20px; /* Membuat sudut lengkung */
+            border-radius: 20px;
         }
 
         .header-banner h2 {
@@ -54,7 +55,7 @@
             text-transform: uppercase;
         }
 
-        /* KARTU SALDO DENGAN LENGKUNGAN */
+        /* KARTU SALDO */
         .balance-card {
             background-color: var(--theme-purple);
             color: white;
@@ -64,7 +65,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            border-radius: 25px; /* Lengkungan lebih halus */
+            border-radius: 25px;
             box-shadow: 0 10px 20px rgba(143, 0, 255, 0.2);
         }
 
@@ -88,49 +89,12 @@
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* RADAR EFFECT */
-        .wifi-icon::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 4px;
-            height: 4px;
-            background: currentColor;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: radarDot 1.5s infinite;
-        }
-
-        .wifi-icon::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 6px;
-            height: 6px;
-            border: 2px solid currentColor;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: radarWave 1.5s infinite;
-        }
-
-        @keyframes radarWave {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
-        }
-
-        @keyframes radarDot {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
-            100% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
-        }
-
         .balance-amount {
             font-size: 55px;
             margin: 5px 0;
         }
 
-        /* SUMMARY BOXES DENGAN LENGKUNGAN */
+        /* SUMMARY BOXES */
         .summary-row {
             display: flex;
             gap: 15px;
@@ -143,19 +107,18 @@
             padding: 15px;
             text-align: center;
             border-bottom: 12px solid;
-            border-radius: 20px; /* Membuat kotak summary melengkung */
+            border-radius: 20px;
         }
 
         .summary-value {
             font-size: 32px; 
         }
 
-        /* TABEL TETAP KOTAK TEGAS */
+        /* TABEL */
         .transaction-container {
             background: white;
             overflow-x: auto;
             border: 4px solid var(--theme-blue);
-            /* Tabel dibiarkan kotak tanpa border-radius agar terlihat profesional */
         }
 
         table {
@@ -197,16 +160,17 @@
             border-bottom: 2px solid var(--theme-blue);
         }
 
+        /* PERUBAHAN: BARIS TOTAL UNGU TRANSPARAN */
         .row-total {
-            background-color: var(--theme-purple) !important;
-            color: white !important;
+            background-color: var(--theme-purple-trans) !important;
+            border-top: 2px solid var(--theme-purple);
+            border-bottom: 2px solid var(--theme-purple);
         }
 
         .row-total td {
-            color: white !important;
+            color: var(--theme-purple) !important;
             padding: 14px 12px;
             font-size: 17px;
-            border-bottom: none;
         }
 
         .row-total td:first-child {
@@ -215,7 +179,7 @@
         }
 
         .plus { color: var(--dark-green); }
-        .row-total .plus { color: var(--true-green) !important; }
+        .row-total .plus { color: var(--dark-green) !important; }
 
         .col-center { text-align: center; }
         .col-right { text-align: right; }
