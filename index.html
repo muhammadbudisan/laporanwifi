@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan WiFi Q1 2026 - Modern Rounded</title>
+    <title>Laporan WiFi Q2 2026 - Modern Rounded</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800;900&family=Archivo+Black&display=swap" rel="stylesheet">
     <style>
         :root {
             --theme-blue: #3300FF;      
             --theme-purple: #8f00ff;    
-            --theme-purple-trans: rgba(143, 0, 255, 0.12); /* Ungu Transparan */
             --true-red: #FF0000;         
             --true-green: #00FF00;       
             --dark-green: #008000;       
@@ -38,7 +37,6 @@
             margin: auto;
         }
 
-        /* HEADER */
         .header-banner {
             background-color: var(--theme-blue);
             color: white;
@@ -55,7 +53,6 @@
             text-transform: uppercase;
         }
 
-        /* KARTU SALDO */
         .balance-card {
             background-color: var(--theme-purple);
             color: white;
@@ -89,12 +86,47 @@
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+        .wifi-icon::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: currentColor;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: radarDot 1.5s infinite;
+        }
+
+        .wifi-icon::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: radarWave 1.5s infinite;
+        }
+
+        @keyframes radarWave {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+
+        @keyframes radarDot {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+            100% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+        }
+
         .balance-amount {
             font-size: 55px;
             margin: 5px 0;
         }
 
-        /* SUMMARY BOXES */
         .summary-row {
             display: flex;
             gap: 15px;
@@ -114,7 +146,6 @@
             font-size: 32px; 
         }
 
-        /* TABEL */
         .transaction-container {
             background: white;
             overflow-x: auto;
@@ -160,17 +191,16 @@
             border-bottom: 2px solid var(--theme-blue);
         }
 
-        /* PERUBAHAN: BARIS TOTAL UNGU TRANSPARAN */
         .row-total {
-            background-color: var(--theme-purple-trans) !important;
-            border-top: 2px solid var(--theme-purple);
-            border-bottom: 2px solid var(--theme-purple);
+            background-color: var(--theme-purple) !important;
+            color: white !important;
         }
 
         .row-total td {
-            color: var(--theme-purple) !important;
+            color: white !important;
             padding: 14px 12px;
             font-size: 17px;
+            border-bottom: none;
         }
 
         .row-total td:first-child {
@@ -179,7 +209,7 @@
         }
 
         .plus { color: var(--dark-green); }
-        .row-total .plus { color: var(--dark-green) !important; }
+        .row-total .plus { color: var(--true-green) !important; }
 
         .col-center { text-align: center; }
         .col-right { text-align: right; }
@@ -207,17 +237,17 @@
         </div>
         
         <span style="font-size: 14px; text-transform: uppercase; font-weight: 900; opacity: 0.9;">Saldo Akumulasi Saat Ini</span>
-        <div class="balance-amount num-font">Rp 109.496</div>
+        <div class="balance-amount num-font">Rp 119.708</div>
     </div>
 
     <div class="summary-row">
         <div class="summary-box" style="border-bottom-color: var(--true-green);">
             <span style="font-size: 12px; font-weight: 900; opacity: 0.7;">TOTAL BAYAR</span>
-            <div class="summary-value num-font" style="color: var(--dark-green);">Rp 660.000</div>
+            <div class="summary-value num-font" style="color: var(--dark-green);">Rp 880.000</div>
         </div>
         <div class="summary-box" style="border-bottom-color: var(--true-red);">
             <span style="font-size: 12px; font-weight: 900; opacity: 0.7;">TOTAL TAGIHAN</span>
-            <div class="summary-value num-font" style="color: var(--true-red);">Rp 629.364</div>
+            <div class="summary-value num-font" style="color: var(--true-red);">Rp 839.152</div>
         </div>
     </div>
 
@@ -259,10 +289,20 @@
                 <tr class="row-total">
                     <td>TOTAL</td><td class="col-center num-font">220.000</td><td class="col-center num-font">209.788</td><td class="col-center num-font plus">10.212</td><td class="col-right num-font">109.496</td>
                 </tr>
+
+                <tr class="row-month"><td colspan="5">APRIL 2026</td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td class="col-right num-font"></td></tr>
+                <tr class="row-total">
+                    <td>TOTAL</td><td class="col-center num-font">220.000</td><td class="col-center num-font">209.788</td><td class="col-center num-font plus">10.212</td><td class="col-right num-font">119.708</td>
+                </tr>
             </tbody>
         </table>
     </div>
 </div>
 
 </body>
-</html>
+                            </html>
+                            
