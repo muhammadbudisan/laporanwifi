@@ -27,7 +27,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-light);
             margin: 0;
-            padding: 20px;
+            padding: 20px 12px; /* Dioptimalkan agar tidak terlalu sempit di layar HP */
             font-weight: 900; 
             color: var(--theme-text-dark);
             -webkit-font-smoothing: antialiased;
@@ -48,6 +48,7 @@
         .container {
             max-width: 1000px;
             margin: auto;
+            width: 100%;
         }
 
         .header-banner {
@@ -61,7 +62,7 @@
         }
 
         .header-banner h2 {
-            font-size: 26px;
+            font-size: 24px; /* Sedikit disesuaikan agar pas di layar kecil */
             font-weight: 900;
             margin: 0;
             text-transform: uppercase;
@@ -79,6 +80,7 @@
             align-items: center;
             border-radius: 24px;
             box-shadow: 0 10px 25px rgba(143, 58, 241, 0.2);
+            width: 100%;
         }
 
         .wifi-container {
@@ -105,30 +107,35 @@
         }
 
         .balance-amount {
-            font-size: 55px;
+            font-size: clamp(32px, 8vw, 55px); /* Presisi otomatis: mengecil di HP, membesar di Desktop */
             margin: 5px 0 0 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            width: 100%;
+            word-wrap: break-word;
         }
 
         .summary-row {
             display: flex;
             gap: 15px;
             margin-bottom: 15px;
+            flex-direction: row; /* Default desktop berdampingan */
         }
 
         .summary-box {
             flex: 1;
             background: white;
-            padding: 18px;
+            padding: 18px 10px;
             text-align: center;
             border-bottom: 12px solid;
             border-radius: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
+            min-width: 0; /* Mencegah overflow text di flexbox */
         }
 
         .summary-value {
-            font-size: 32px;
+            font-size: clamp(18px, 4.5vw, 32px); /* Presisi dinamis untuk angka total bayar/tagihan */
             margin-top: 5px;
+            word-wrap: break-word;
         }
 
         .btn-action {
@@ -154,23 +161,25 @@
 
         .transaction-container {
             background: white;
-            overflow-x: auto;
+            overflow-x: auto; /* Memungkinkan tabel di-scroll ke samping secara halus di HP tanpa merusak layout web */
             border-radius: 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--border-color);
+            width: 100%;
+            -webkit-overflow-scrolling: touch; /* Scroll halus di perangkat iOS */
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 800px;
+            min-width: 750px; /* Lebar minimal tabel agar data tetap presisi dan tidak berdempetan */
         }
 
         thead th {
             background: var(--theme-table-header);
             color: #64748B;
-            padding: 10px 10px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -178,9 +187,9 @@
         }
 
         td {
-            padding: 6px 16px; 
+            padding: 10px 12px; 
             border-bottom: 1px solid #F1F5F9;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 900;
             color: #111;
         }
@@ -191,9 +200,9 @@
         }
 
         .row-month td {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 900;
-            padding: 8px 16px; 
+            padding: 10px 16px; 
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -204,8 +213,8 @@
 
         .row-total td {
             color: white !important;
-            padding: 8px 16px; 
-            font-size: 18px; /* Diubah lebih besar agar menonjol */
+            padding: 12px 12px; 
+            font-size: 17px;
             font-weight: 900;
             border-bottom: none;
         }
@@ -236,7 +245,7 @@
             border: none;
             color: #94A3B8;
             cursor: pointer;
-            padding: 2px;
+            padding: 6px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -244,8 +253,8 @@
         }
 
         .btn-delete-icon svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
         }
 
         .btn-delete-icon:hover {
@@ -266,7 +275,7 @@
         }
         .modal-box {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 24px;
             width: 100%;
             max-width: 360px;
@@ -292,6 +301,47 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-top: 20px;
+        }
+
+        /* =========================================================================
+           MEDIA QUERY: ATURAN KHUSUS UNTUK LAYAR MOBILE (HP)
+           ========================================================================= */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px 8px;
+            }
+            .header-banner {
+                padding: 16px 10px;
+                border-radius: 16px;
+            }
+            .header-banner h2 {
+                font-size: 18px;
+            }
+            .balance-card {
+                padding: 22px 15px;
+                border-radius: 20px;
+            }
+            /* Mengubah susunan box total bayar & tagihan menjadi vertikal/tumpuk saat di HP */
+            .summary-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .summary-box {
+                border-bottom-width: 8px;
+                border-radius: 16px;
+                padding: 14px 10px;
+            }
+            thead th {
+                padding: 10px 6px;
+                font-size: 11px;
+            }
+            td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+            .row-total td {
+                font-size: 15px;
+            }
         }
     </style>
 </head>
@@ -336,7 +386,7 @@
                 <th class="col-center">PEMBAYARAN</th>
                 <th class="col-center">TAGIHAN</th>
                 <th class="col-center">SALDO</th>
-                <th class="col-center" style="width:8%;">OPSI</th> <!-- Pindah ke posisi sebelum akm. saldo -->
+                <th class="col-center" style="width:8%;">OPSI</th>
                 <th class="col-right" style="padding-right: 20px;">AKM. SALDO</th>
             </tr>
             </thead>
@@ -477,7 +527,6 @@
                 globalAkmSaldo += (item.bayar - item.tagihan);
 
                 const tr = document.createElement("tr");
-                // Layout kolom dipindah: Opsi disisipkan di antara Saldo dan Akm. Saldo
                 tr.innerHTML = `
                     <td style="padding-left: 20px; color: #CBD5E0;"></td>
                     <td class="col-center num-font" style="color: var(--theme-text-dark);">${formatRupiah(item.bayar)}</td>
@@ -500,7 +549,6 @@
 
             const rowTotalBulan = document.createElement("tr");
             rowTotalBulan.className = "row-total";
-            // Layout total kolom dipindah menyesuaikan urutan atas, serta font dibuat berukuran besar (18px) melalui class row-total td
             rowTotalBulan.innerHTML = `
                 <td style="padding-left: 20px;">TOTAL</td>
                 <td class="col-center num-font">${formatRupiah(subTotalBayar)}</td>
