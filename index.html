@@ -27,7 +27,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-light);
             margin: 0;
-            padding: 20px 12px; /* Dioptimalkan agar tidak terlalu sempit di layar HP */
+            padding: 20px 12px;
             font-weight: 900; 
             color: var(--theme-text-dark);
             -webkit-font-smoothing: antialiased;
@@ -62,7 +62,7 @@
         }
 
         .header-banner h2 {
-            font-size: 24px; /* Sedikit disesuaikan agar pas di layar kecil */
+            font-size: 24px;
             font-weight: 900;
             margin: 0;
             text-transform: uppercase;
@@ -107,7 +107,7 @@
         }
 
         .balance-amount {
-            font-size: clamp(32px, 8vw, 55px); /* Presisi otomatis: mengecil di HP, membesar di Desktop */
+            font-size: clamp(32px, 8vw, 55px);
             margin: 5px 0 0 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             width: 100%;
@@ -118,7 +118,7 @@
             display: flex;
             gap: 15px;
             margin-bottom: 15px;
-            flex-direction: row; /* Default desktop berdampingan */
+            flex-direction: row;
         }
 
         .summary-box {
@@ -129,11 +129,11 @@
             border-bottom: 12px solid;
             border-radius: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
-            min-width: 0; /* Mencegah overflow text di flexbox */
+            min-width: 0;
         }
 
         .summary-value {
-            font-size: clamp(18px, 4.5vw, 32px); /* Presisi dinamis untuk angka total bayar/tagihan */
+            font-size: clamp(18px, 4.5vw, 32px);
             margin-top: 5px;
             word-wrap: break-word;
         }
@@ -161,25 +161,22 @@
 
         .transaction-container {
             background: white;
-            overflow-x: auto; /* Memungkinkan tabel di-scroll ke samping secara halus di HP tanpa merusak layout web */
             border-radius: 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--border-color);
             width: 100%;
-            -webkit-overflow-scrolling: touch; /* Scroll halus di perangkat iOS */
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 750px; /* Lebar minimal tabel agar data tetap presisi dan tidak berdempetan */
         }
 
         thead th {
             background: var(--theme-table-header);
             color: #64748B;
             padding: 12px 10px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -187,9 +184,9 @@
         }
 
         td {
-            padding: 10px 12px; 
+            padding: 10px 16px; 
             border-bottom: 1px solid #F1F5F9;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 900;
             color: #111;
         }
@@ -200,7 +197,7 @@
         }
 
         .row-month td {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 900;
             padding: 10px 16px; 
             border-bottom: 1px solid var(--border-color);
@@ -213,8 +210,8 @@
 
         .row-total td {
             color: white !important;
-            padding: 12px 12px; 
-            font-size: 17px;
+            padding: 12px 16px; 
+            font-size: 18px;
             font-weight: 900;
             border-bottom: none;
         }
@@ -304,7 +301,7 @@
         }
 
         /* =========================================================================
-           MEDIA QUERY: ATURAN KHUSUS UNTUK LAYAR MOBILE (HP)
+           MEDIA QUERY: OPTIMASI PENUH UNTUK LAYAR MOBILE (HP) TANPA GESER
            ========================================================================= */
         @media (max-width: 600px) {
             body {
@@ -321,7 +318,6 @@
                 padding: 22px 15px;
                 border-radius: 20px;
             }
-            /* Mengubah susunan box total bayar & tagihan menjadi vertikal/tumpuk saat di HP */
             .summary-row {
                 flex-direction: column;
                 gap: 10px;
@@ -331,16 +327,81 @@
                 border-radius: 16px;
                 padding: 14px 10px;
             }
-            thead th {
-                padding: 10px 6px;
-                font-size: 11px;
+
+            /* MENGUBAH STRUKTUR TABEL MENJADI BLOK KARTU AGAR TIDAK GESER KE SAMPING */
+            .transaction-container {
+                border: none;
+                box-shadow: none;
+                background: transparent;
+            }
+            table, thead, tbody, th, td, tr { 
+                display: block; 
+                width: 100%;
+            }
+            thead { 
+                display: none; /* Sembunyikan header tabel bawaan desktop */
+            }
+            tr {
+                margin-bottom: 12px;
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 10px 14px;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.01);
+            }
+            .row-month {
+                background: var(--theme-table-header) !important;
+                border-color: var(--border-color);
+                text-align: center;
+                padding: 6px 10px;
+            }
+            .row-month td {
+                padding: 4px 0 !important;
+                font-size: 14px;
+                color: var(--theme-month-bg);
+                border: none;
+            }
+            .row-total {
+                background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 100%) !important;
+                border: none;
+                padding: 12px 14px;
             }
             td {
-                padding: 10px 8px;
-                font-size: 13px;
+                text-align: right;
+                padding: 6px 0;
+                border-bottom: 1px solid #F1F5F9;
+                font-size: 14px;
+                display: flex;
+                justify-content: space-between; /* Membuat nama label di kiri dan nilai angka di kanan */
+                align-items: center;
             }
+            td:last-child, .row-total td:nth-last-child(2) {
+                border-bottom: none;
+            }
+            
+            /* Mengisi label teks otomatis di sisi kiri komponen data khusus HP */
+            td:nth-child(1):before { content: "STATUS"; color: #94A3B8; font-size: 11px; }
+            td:nth-child(2):before { content: "PEMBAYARAN"; color: #94A3B8; font-size: 11px; }
+            td:nth-child(3):before { content: "TAGIHAN"; color: #94A3B8; font-size: 11px; }
+            td:nth-child(4):before { content: "SALDO"; color: #94A3B8; font-size: 11px; }
+            td:nth-child(5):before { content: "AKSI DATA"; color: #94A3B8; font-size: 11px; }
+            td:nth-child(6):before { content: "AKM. SALDO"; color: #94A3B8; font-size: 11px; }
+
+            /* Aturan penyesuaian khusus teks label baris TOTAL bulanan */
+            .row-total td:nth-child(1) { font-size: 15px; }
+            .row-total td:nth-child(1):before { content: "RINGKASAN PERIODE"; color: rgba(255,255,255,0.7); font-size: 11px; }
+            .row-total td:nth-child(2):before { content: "TOTAL BAYAR"; color: rgba(255,255,255,0.7); font-size: 11px; }
+            .row-total td:nth-child(3):before { content: "TOTAL TAGIHAN"; color: rgba(255,255,255,0.7); font-size: 11px; }
+            .row-total td:nth-child(4):before { content: "TOTAL SALDO"; color: rgba(255,255,255,0.7); font-size: 11px; }
+            .row-total td:nth-child(5) { display: none; } /* Sembunyikan kolom spasi opsi pada baris total mobile */
+            .row-total td:nth-child(6):before { content: "AKM. SALDO CLOUD"; color: rgba(255,255,255,0.7); font-size: 11px; }
+            
             .row-total td {
                 font-size: 15px;
+                padding: 7px 0;
+            }
+            td style {
+                padding-left: 0 !important;
             }
         }
     </style>
@@ -404,7 +465,8 @@
         <p style="font-size: 12px; color: #718096; margin-bottom: 20px;">Masukkan PIN Keamanan Akses</p>
         <form onsubmit="prosesVerifikasiPin(event)">
             <div class="form-group">
-                <input type="password" id="input-pin" placeholder="••••" style="text-align: center; font-size: 22px; letter-spacing: 6px;" required autocomplete="off">
+                <!-- Diubah ke type="text", inputmode="numeric" dan pattern agar memicu keyboard murni angka pada perangkat mobile -->
+                <input type="text" id="input-pin" inputmode="numeric" pattern="[0-9]*" placeholder="••••" style="text-align: center; font-size: 22px; letter-spacing: 6px; -webkit-text-security: disc;" required autocomplete="off">
             </div>
             <div class="modal-buttons">
                 <button type="button" onclick="tutupModal('pin-modal')" class="btn-flex btn-cancel">Batal</button>
