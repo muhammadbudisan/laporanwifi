@@ -225,6 +225,10 @@
             color: var(--true-green);
         }
 
+        .minus-val {
+            color: var(--true-red);
+        }
+
         .row-total .plus {
             color: #FFFFFF !important;
         }
@@ -300,8 +304,22 @@
             margin-top: 12px; 
         }
 
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            font-size: 16px;
+            color: var(--sondo-purple-mid);
+        }
+
         /* =========================================================================
-           MEDIA QUERY: OPTIMASI PENUH LAYAR MOBILE DENGAN SPASI SANGAT PENDEK
+           MEDIA QUERY: MOBILE FULL DISPLAY OPTIMIZATION
            ========================================================================= */
         @media (max-width: 600px) {
             body {
@@ -348,11 +366,11 @@
                 display: none; 
             }
             tr {
-                margin-bottom: 2px; 
+                margin-bottom: 6px; 
                 background: white;
                 border: 1px solid var(--border-color);
                 border-radius: 14px;
-                padding: 6px 12px; 
+                padding: 8px 12px; 
                 box-shadow: 0 2px 4px rgba(0,0,0,0.01);
             }
             .row-month {
@@ -360,7 +378,7 @@
                 border-color: var(--border-color);
                 text-align: center;
                 padding: 4px 10px;
-                margin-bottom: 2px; 
+                margin-bottom: 4px; 
             }
             .row-month td {
                 padding: 2px 0 !important;
@@ -372,22 +390,23 @@
                 background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 100%) !important;
                 border: none;
                 padding: 8px 12px;
-                margin-top: 2px; 
+                margin-top: 4px; 
+                margin-bottom: 12px;
             }
             td {
                 text-align: right;
-                padding: 4px 0; 
+                padding: 6px 0; 
                 border-bottom: 1px solid #F1F5F9;
                 font-size: 14px;
                 display: flex;
                 justify-content: space-between; 
                 align-items: center;
             }
-            td:last-child, .row-total td:nth-last-child(2) {
+            td:last-child {
                 border-bottom: none;
             }
             
-            td:nth-child(1):before { content: "STATUS"; color: #94A3B8; font-size: 11px; }
+            td:nth-child(1):before { content: "BULAN"; color: #94A3B8; font-size: 11px; }
             td:nth-child(2):before { content: "PEMBAYARAN"; color: #94A3B8; font-size: 11px; }
             td:nth-child(3):before { content: "TAGIHAN"; color: #94A3B8; font-size: 11px; }
             td:nth-child(4):before { content: "SALDO"; color: #94A3B8; font-size: 11px; }
@@ -395,25 +414,27 @@
             td:nth-child(6):before { content: "AKM. SALDO"; color: #94A3B8; font-size: 11px; }
 
             .row-total td:nth-child(1) { font-size: 15px; }
-            .row-total td:nth-child(1):before { content: "RINGKASAN PERIODE"; color: rgba(255,255,255,0.7); font-size: 11px; }
+            .row-total td:nth-child(1):before { content: "RINGKASAN"; color: rgba(255,255,255,0.7); font-size: 11px; }
             .row-total td:nth-child(2):before { content: "TOTAL BAYAR"; color: rgba(255,255,255,0.7); font-size: 11px; }
             .row-total td:nth-child(3):before { content: "TOTAL TAGIHAN"; color: rgba(255,255,255,0.7); font-size: 11px; }
             .row-total td:nth-child(4):before { content: "TOTAL SALDO"; color: rgba(255,255,255,0.7); font-size: 11px; }
             .row-total td:nth-child(5) { display: none; } 
-            .row-total td:nth-child(6):before { content: "AKM. SALDO CLOUD"; color: rgba(255,255,255,0.7); font-size: 11px; }
+            .row-total td:nth-child(6):before { content: "AKM. PERIODE"; color: rgba(255,255,255,0.7); font-size: 11px; }
             
             .row-total td {
                 font-size: 15px;
                 padding: 5px 0; 
-            }
-            td style {
-                padding-left: 0 !important;
             }
         }
     </style>
 </head>
 
 <body>
+
+<div id="loading-block" class="loading-overlay">
+    <div class="num-font" style="margin-bottom: 10px; font-size: 18px; animation: blink 1s infinite;">MEMUAT DATA CLOUD...</div>
+    <div style="font-size: 12px; color: #64748B;">Sinkronisasi Multi-Device Real-time</div>
+</div>
 
 <div class="container">
 
@@ -526,29 +547,6 @@
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz7p0sF5NUBf3nHNSvFGgyS-xdr6M0MFESDzXGyuFGSVxJY63jCDhBUXnWcGaiLiY0_3g/exec";
 
-    const DEFAULT_DATABASE = [
-        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
-        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
-        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
-        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
-        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MEI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MEI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MEI 2026", bayar: 0, tagihan: 0 },
-        { bulan: "MEI 2026", bayar: 0, tagihan: 0 }
-    ];
-
     let currentDatabase = [];
     let sesiAksi = { tipe: null, indeks: null };
 
@@ -556,7 +554,7 @@
         const selectTahun = document.getElementById("form-tahun");
         if (selectTahun) {
             selectTahun.innerHTML = "";
-            for (let tahun = 2026; tahun <= 3000; tahun++) {
+            for (let tahun = 2026; tahun <= 2030; tahun++) {
                 const opsi = document.createElement("option");
                 opsi.value = tahun;
                 opsi.innerText = tahun;
@@ -565,16 +563,37 @@
         }
     }
 
-    function AmbilDataSistem() {
-        BuatOpsiTahunSistem(); 
-        const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
-        if (dataLokal) {
-            currentDatabase = JSON.parse(dataLokal);
-        } else {
-            currentDatabase = [...DEFAULT_DATABASE];
-            localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
+    // FUNGSI UTAMA AMBIL DATA LANGSUNG DARI CLOUD (ANTI BEDA NOMINAL)
+    async function AmbilDataSistem() {
+        BuatOpsiTahunSistem();
+        document.getElementById("loading-block").classList.remove("hidden");
+        
+        try {
+            // Memanggil Cloud Apps Script untuk mengambil data terupdate
+            const respon = await fetch(`${WEB_APP_URL}?action=bacaData`, {
+                method: "GET",
+                mode: "cors"
+            });
+            const hasil = await respon.json();
+            
+            if (hasil.success && hasil.data) {
+                // Mapping data dari Spreadsheet agar sesuai struktur aplikasi
+                currentDatabase = hasil.data.map(item => ({
+                    bulan: item.bulan,
+                    bayar: parseInt(item.bayar) || 0,
+                    tagihan: parseInt(item.tagihan) || 0
+                }));
+            } else {
+                currentDatabase = [];
+            }
+        } catch (error) {
+            console.error("Gagal memuat Cloud DB, menggunakan fallback lokal:", error);
+            const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
+            if (dataLokal) currentDatabase = JSON.parse(dataLokal);
+        } finally {
+            document.getElementById("loading-block").classList.add("hidden");
+            HitungDanRenderTabel();
         }
-        HitungDanRenderTabel();
     }
 
     function formatRupiah(angka) {
@@ -585,14 +604,16 @@
         return "Rp " + new Intl.NumberFormat('id-ID').format(angka);
     }
 
+    // FUNGSI UTAMA HITUNG & RENDER DENGAN SUSUNAN KOLOM YANG DISYARATKAN
     function HitungDanRenderTabel() {
         const tbody = document.getElementById("table-body");
         tbody.innerHTML = "";
 
-        let globalAkmSaldo = 89072; 
+        let globalAkmSaldo = 89072; // Nilai dasar akumulasi
         let globalTotalBayar = 0;
         let globalTotalTagihan = 0;
 
+        // Ambil list unik periode bulan yang ada di database
         const listGrupPeriode = [];
         currentDatabase.forEach(item => {
             if (!listGrupPeriode.includes(item.bulan)) {
@@ -606,16 +627,16 @@
             const itemBulan = databaseDenganIndeks.filter(d => d.bulan === namaPeriode);
             if (itemBulan.length === 0) return;
 
+            // 1. DATA BULAN (Header Row Periode)
             const rowBulanHeader = document.createElement("tr");
             rowBulanHeader.className = "row-month";
-            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px;">${namaPeriode}</td>`;
+            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px; color: var(--theme-month-bg); font-weight:800;">${namaPeriode}</td>`;
             tbody.appendChild(rowBulanHeader);
 
             let subTotalBayar = 0;
             let subTotalTagihan = 0;
             let subTotalSaldo = 0;
 
-            // Jika ini grup pertama (Januari), pastikan akumulasi dasarnya dimulai sedemikian rupa sehingga nilai TOTAL-nya pas 89072
             if (indeksGrup === 0) {
                 let hitungSaldoGrupPertama = 0;
                 itemBulan.forEach(item => {
@@ -627,18 +648,23 @@
             itemBulan.forEach(item => {
                 subTotalBayar += item.bayar;
                 subTotalTagihan += item.tagihan;
-                subTotalSaldo += (item.bayar - item.tagihan);
+                
+                // DATA SALDO (Pembayaran - Tagihan)
+                const saldoItem = item.bayar - item.tagihan;
+                subTotalSaldo += saldoItem;
 
                 globalTotalBayar += item.bayar;
                 globalTotalTagihan += item.tagihan;
-                globalAkmSaldo += (item.bayar - item.tagihan);
+                
+                // DATA AKUMULASI SALDO
+                globalAkmSaldo += saldoItem;
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td style="padding-left: 20px; color: #CBD5E0;"></td>
+                    <td style="padding-left: 20px; color: #94A3B8; font-size:13px;">• Detail Item</td>
                     <td class="col-center num-font" style="color: var(--theme-text-dark);">${formatRupiah(item.bayar)}</td>
                     <td class="col-center num-font" style="color: var(--true-red);">${formatRupiah(item.tagihan)}</td>
-                    <td class="col-center num-font plus" style="color: var(--true-green);">${formatRupiah(item.bayar - item.tagihan)}</td>
+                    <td class="col-center num-font ${saldoItem >= 0 ? 'plus' : 'minus-val'}">${formatRupiah(saldoItem)}</td>
                     <td class="col-center">
                         <button class="btn-delete-icon" onclick="bukaVerifikasiPin('delete', ${item.idxAsli})" title="Hapus Data">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -654,6 +680,7 @@
                 tbody.appendChild(tr);
             });
 
+            // ROW TOTAL SUB-PERIODE
             const rowTotalBulan = document.createElement("tr");
             rowTotalBulan.className = "row-total";
             rowTotalBulan.innerHTML = `
@@ -667,6 +694,7 @@
             tbody.appendChild(rowTotalBulan);
         });
 
+        // Set Nilai Dashboard Utama
         document.getElementById("dashboard-saldo").innerText = formatRupiahUtuh(globalAkmSaldo);
         document.getElementById("dashboard-bayar").innerText = formatRupiahUtuh(globalTotalBayar);
         document.getElementById("dashboard-tagihan").innerText = formatRupiahUtuh(globalTotalTagihan);
@@ -730,7 +758,6 @@
         e.preventDefault();
         const bulanSelect = document.getElementById("form-bulan").value;
         const tahunSelect = document.getElementById("form-tahun").value;
-        
         const periodeGabungan = bulanSelect + " " + tahunSelect;
         
         const masukVal = parseInt(document.getElementById("form-masuk").value) || 0;
@@ -756,19 +783,11 @@
             const hasil = await respon.json();
 
             if (hasil.success) {
-                currentDatabase.push({ 
-                    bulan: periodeGabungan, 
-                    bayar: masukVal, 
-                    tagihan: keluarVal 
-                });
-                
-                localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
-                
                 tutupModal("input-modal");
-                HitungDanRenderTabel();
+                // Langsung ambil ulang data dari cloud agar kalkulasi di seluruh HP sinkron
+                await AmbilDataSistem();
                 
                 alert(hasil.message);
-                
                 document.getElementById("form-masuk").value = 0;
                 document.getElementById("form-keluar").value = 0;
             } else {
@@ -776,18 +795,41 @@
             }
         } catch (error) {
             console.error(error);
-            alert("⚠️ Gagal mengunggah data baru ke Cloud Spreadsheets WIFI. Periksa kembali koneksi internet.");
+            alert("⚠️ Gagal mengunggah data baru ke Cloud Spreadsheets. Periksa kembali koneksi internet.");
         } finally {
             btnSimpan.disabled = false;
             btnSimpan.innerText = "SIMPAN";
         }
     }
 
-    function eksekusiHapusData(indeks) {
-        if (confirm("Apakah Anda yakin ingin menghapus data transaksi baris ini?")) {
-            currentDatabase.splice(indeks, 1);
-            localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
-            HitungDanRenderTabel();
+    async function eksekusiHapusData(indeks) {
+        if (confirm("Apakah Anda yakin ingin menghapus data transaksi baris ini dari cloud database?")) {
+            document.getElementById("loading-block").classList.remove("hidden");
+            
+            try {
+                const respon = await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({
+                        action: "hapusData",
+                        index: indeks
+                    })
+                });
+                
+                const hasil = await respon.json();
+                if (hasil.success) {
+                    await AmbilDataSistem();
+                    alert("Data berhasil dihapus dari Cloud Spreadsheet.");
+                } else {
+                    alert(hasil.message || "Gagal menghapus data.");
+                }
+            } catch (error) {
+                console.error("Gagal menghapus data cloud:", error);
+                alert("⚠️ Masalah koneksi. Gagal menghapus data di cloud spreadsheet.");
+            } finally {
+                document.getElementById("loading-block").classList.add("hidden");
+            }
         }
     }
 
