@@ -1,30 +1,41 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan WiFi Q2 2026 - Modern Rounded</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800;900&family=Archivo+Black&display=swap" rel="stylesheet">
+    <title>Laporan WiFi Q2 2026 - Modern Gradient Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Archivo+Black&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --theme-blue: #3300FF;
-            --theme-purple: #8f00ff;
-            --true-red: #FF0000;
-            --true-green: #00FF00;
-            --dark-green: #008000;
-            --bg-light: #f5f5f5;
-            --blue-transparent: rgba(51, 0, 255, 0.08);
+            --sondo-blue-start: #3A7BD5;    
+            --sondo-purple-mid: #8F3AF1;    
+            --sondo-magenta-end: #D136F2;   
+            
+            --theme-table-header: #EBF3FF;  
+            --theme-month-bg: #2B76F7;      
+            --theme-text-dark: #1E293B;
+            
+            --true-red: #E53E3E;            
+            --true-green: #00AA44;          
+            --theme-blue-text: #2B76F7;     
+            --bg-light: #F8FAFC;            
+            --border-color: #CBD5E0;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-light);
             margin: 0;
-            padding: 15px;
-            font-weight: 800;
+            padding: 20px;
+            font-weight: 900; 
+            color: var(--theme-text-dark);
             -webkit-font-smoothing: antialiased;
+        }
+
+        * {
+            font-weight: 900 !important;
+            box-sizing: border-box;
         }
 
         .num-font {
@@ -40,40 +51,42 @@
         }
 
         .header-banner {
-            background-color: var(--theme-blue);
+            background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
             color: white;
             text-align: center;
-            padding: 25px 15px;
+            padding: 22px 15px;
             margin-bottom: 15px;
             border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
         .header-banner h2 {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 900;
             margin: 0;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .balance-card {
-            background-color: var(--theme-purple);
+            background: linear-gradient(135deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
             color: white;
             text-align: center;
-            padding: 30px 25px;
+            padding: 32px 25px;
             margin-bottom: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            border-radius: 25px;
-            box-shadow: 0 10px 20px rgba(143, 0, 255, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(143, 58, 241, 0.2);
         }
 
         .wifi-container {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 12px;
-            color: var(--true-green);
+            margin-bottom: 10px;
+            color: #00FFCC;
         }
 
         .wifi-icon {
@@ -83,65 +96,18 @@
         }
 
         .icon-blink {
-            animation: blink 1s infinite;
+            animation: blink 1.2s infinite;
         }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .wifi-icon::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 4px;
-            height: 4px;
-            background: currentColor;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: radarDot 1.5s infinite;
-        }
-
-        .wifi-icon::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 6px;
-            height: 6px;
-            border: 2px solid currentColor;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: radarWave 1.5s infinite;
-        }
-
-        @keyframes radarWave {
-            0% {
-                transform: translate(-50%, -50%) scale(0.5);
-                opacity: 0.8;
-            }
-
-            100% {
-                transform: translate(-50%, -50%) scale(2.5);
-                opacity: 0;
-            }
-        }
-
-        @keyframes radarDot {
-            0% {
-                box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
-            }
-
-            100% {
-                box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
-            }
+            50% { opacity: 0.5; }
         }
 
         .balance-amount {
             font-size: 55px;
-            margin: 5px 0;
+            margin: 5px 0 0 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .summary-row {
@@ -153,21 +119,45 @@
         .summary-box {
             flex: 1;
             background: white;
-            padding: 15px;
+            padding: 18px;
             text-align: center;
             border-bottom: 12px solid;
             border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
         }
 
         .summary-value {
             font-size: 32px;
+            margin-top: 5px;
+        }
+
+        .btn-action {
+            background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: 900;
+            border-radius: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(143, 58, 241, 0.15);
+            transition: transform 0.15s;
+            letter-spacing: 0.5px;
+            width: 100%;
+        }
+
+        .btn-action:active {
+            transform: scale(0.99);
         }
 
         .transaction-container {
             background: white;
             overflow-x: auto;
-            border: 4px solid var(--theme-blue);
             border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
         }
 
         table {
@@ -177,61 +167,60 @@
         }
 
         thead th {
-            background: var(--theme-blue);
-            color: #fff;
-            padding: 12px 10px;
-            font-size: 16px;
+            background: var(--theme-table-header);
+            color: #64748B;
+            padding: 10px 10px;
+            font-size: 14px;
             font-weight: 900;
             text-transform: uppercase;
-        }
-
-        tbody tr {
-            background-color: var(--blue-transparent);
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         td {
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 6px 16px; 
+            border-bottom: 1px solid #F1F5F9;
             font-size: 15px;
-            font-weight: 800;
+            font-weight: 900;
             color: #111;
         }
 
         .row-month {
-            background-color: #f0edff !important;
-            color: var(--theme-blue);
+            background-color: #FAFAFA !important;
+            color: var(--theme-text-dark);
         }
 
         .row-month td {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 900;
-            padding: 12px;
-            border-bottom: 2px solid var(--theme-blue);
+            padding: 8px 16px; 
+            border-bottom: 1px solid var(--border-color);
         }
 
         .row-total {
-            background-color: var(--theme-purple) !important;
+            background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 100%) !important;
             color: white !important;
         }
 
         .row-total td {
             color: white !important;
-            padding: 14px 12px;
-            font-size: 17px;
+            padding: 8px 16px; 
+            font-size: 18px; /* Diubah lebih besar agar menonjol */
+            font-weight: 900;
             border-bottom: none;
         }
 
         .row-total td:first-child {
-            text-align: center;
-            letter-spacing: 2px;
+            text-align: left;
+            letter-spacing: 0.5px;
         }
 
         .plus {
-            color: var(--dark-green);
+            color: var(--true-green);
         }
 
         .row-total .plus {
-            color: var(--true-green) !important;
+            color: #FFFFFF !important;
         }
 
         .col-center {
@@ -242,18 +231,67 @@
             text-align: right;
         }
 
-        @media (max-width: 768px) {
-            .balance-amount {
-                font-size: 40px;
-            }
+        .btn-delete-icon {
+            background: none;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            padding: 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s ease;
+        }
 
-            .summary-row {
-                flex-direction: column;
-            }
+        .btn-delete-icon svg {
+            width: 14px;
+            height: 14px;
+        }
 
-            .summary-value {
-                font-size: 28px;
-            }
+        .btn-delete-icon:hover {
+            color: var(--true-red);
+        }
+
+        /* MODAL STYLING */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(34, 20, 64, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            z-index: 1000;
+        }
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .hidden { display: none !important; }
+        .modal-box h3 { margin-top: 0; color: var(--theme-month-bg); font-size: 18px; text-transform: uppercase; }
+        .form-group { text-align: left; margin-bottom: 16px; }
+        .form-group label { font-size: 11px; color: #718096; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 12px; font-family: inherit; font-weight: 800; color: #2D3748; transition: border-color 0.2s; }
+        .form-group input:focus { border-color: var(--sondo-purple-mid); outline: none; }
+        .modal-buttons { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-flex { flex: 1; padding: 12px; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 13px; }
+        .btn-cancel { background: #EDF2F7; color: #4A5568; }
+        .btn-save { background: var(--sondo-purple-mid); color: white; box-shadow: 0 4px 10px rgba(143, 58, 241, 0.2); }
+        .btn-save:disabled { background: #CBD5E0; cursor: not-allowed; box-shadow: none; }
+
+        .footer-text {
+            text-align: center;
+            font-size: 11px;
+            color: #94A3B8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -267,176 +305,335 @@
     </div>
 
     <div class="balance-card">
-
         <div class="wifi-container">
-
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 20 20"
-                 fill="currentColor"
-                 class="wifi-icon icon-blink">
-
-                <path fill-rule="evenodd"
-                      d="M.676 6.941A12.964 12.964 0 0 1 10 3c3.657 0 6.963 1.511 9.324 3.941a.75.75 0 0 1-.008 1.053l-.353.354a.75.75 0 0 1-1.069-.008C15.894 6.28 13.097 5 10 5 6.903 5 4.106 6.28 2.106 8.34a.75.75 0 0 1-1.069.008l-.353-.354a.75.75 0 0 1-.008-1.053Zm2.825 2.833A8.976 8.976 0 0 1 10 7a8.976 8.976 0 0 1 6.499 2.774.75.75 0 0 1-.011 1.049l-.354.354a.75.75 0 0 1-1.072-.012A6.978 6.978 0 0 0 10 9c-1.99 0-3.786.83-5.061 2.165a.75.75 0 0 1-1.073.012l-.354-.354a.75.75 0 0 1-.01-1.05Zm2.82 2.84A4.989 4.989 0 0 1 10 11c1.456 0 2.767.623 3.68 1.614a.75.75 0 0 1-.022 1.039l-.354.354a.75.75 0 0 1-1.085-.026A2.99 2.99 0 0 0 10 13c-.88 0-1.67.377-2.22.981a.75.75 0 0 1-1.084.026l-.354-.354a.75.75 0 0 1-.021-1.039Zm3.179 3.178a.75.75 0 1 1 1.06 1.06.75.75 0 0 1-1.06-1.06Z"
-                      clip-rule="evenodd"/>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="wifi-icon icon-blink">
+                <path fill-rule="evenodd" d="M.676 6.941A12.964 12.964 0 0 1 10 3c3.657 0 6.963 1.511 9.324 3.941a.75.75 0 0 1-.008 1.053l-.353.354a.75.75 0 0 1-1.069-.008C15.894 6.28 13.097 5 10 5 6.903 5 4.106 6.28 2.106 8.34a.75.75 0 0 1-1.069.008l-.353-.354a.75.75 0 0 1-.008-1.053Zm2.825 2.833A8.976 8.976 0 0 1 10 7a8.976 8.976 0 0 1 6.499 2.774.75.75 0 0 1-.011 1.049l-.354.354a.75.75 0 0 1-1.072-.012A6.978 6.978 0 0 0 10 9c-1.99 0-3.786.83-5.061 2.165a.75.75 0 0 1-1.073.012l-.354-.354a.75.75 0 0 1-.01-1.05Zm2.82 2.84A4.989 4.989 0 0 1 10 11c1.456 0 2.767.623 3.68 1.614a.75.75 0 0 1-.022 1.039l-.354.354a.75.75 0 0 1-1.085-.026A2.99 2.99 0 0 0 10 13c-.88 0-1.67.377-2.22.981a.75.75 0 0 1-1.084.026l-.354-.354a.75.75 0 0 1-.021-1.039Zm3.179 3.178a.75.75 0 1 1 1.06 1.06.75.75 0 0 1-1.06-1.06Z" clip-rule="evenodd"/>
             </svg>
-
-            <span style="font-size:15px; letter-spacing:1px;">
-                SYSTEM ONLINE
-            </span>
-
+            <span style="font-size:15px; letter-spacing:1px; font-weight: 900;">SYSTEM ONLINE</span>
         </div>
-
-        <span style="font-size:14px; text-transform:uppercase; font-weight:900; opacity:0.9;">
-            Saldo Akumulasi Saat Ini
-        </span>
-
-        <div class="balance-amount num-font">
-            Rp 129.920
-        </div>
-
+        <span style="font-size:14px; text-transform:uppercase; font-weight:900; opacity:0.85;">Saldo Akumulasi Saat Ini</span>
+        <div id="dashboard-saldo" class="balance-amount num-font">Rp 0</div>
     </div>
 
     <div class="summary-row">
-
         <div class="summary-box" style="border-bottom-color: var(--true-green);">
-
-            <span style="font-size:12px; font-weight:900; opacity:0.7;">
-                TOTAL BAYAR
-            </span>
-
-            <div class="summary-value num-font" style="color: var(--dark-green);">
-                Rp 1.100.000
-            </div>
-
+            <span style="font-size:12px; font-weight:900; opacity:0.7; color: #718096; letter-spacing: 0.5px;">TOTAL BAYAR</span>
+            <div id="dashboard-bayar" class="summary-value num-font" style="color: var(--true-green);">Rp 0</div>
         </div>
-
         <div class="summary-box" style="border-bottom-color: var(--true-red);">
-
-            <span style="font-size:12px; font-weight:900; opacity:0.7;">
-                TOTAL TAGIHAN
-            </span>
-
-            <div class="summary-value num-font" style="color: var(--true-red);">
-                Rp 1.048.940
-            </div>
-
+            <span style="font-size:12px; font-weight:900; opacity:0.7; color: #718096; letter-spacing: 0.5px;">TOTAL TAGIHAN</span>
+            <div id="dashboard-tagihan" class="summary-value num-font" style="color: var(--true-red);">Rp 0</div>
         </div>
-
     </div>
 
+    <button onclick="bukaVerifikasiPin('add')" class="btn-action">Input Data Baru</button>
+
     <div class="transaction-container">
-
         <table>
-
             <thead>
             <tr>
-                <th style="width:25%;">BULAN</th>
+                <th style="width:25%; text-align: left; padding-left: 20px;">BULAN</th>
                 <th class="col-center">PEMBAYARAN</th>
                 <th class="col-center">TAGIHAN</th>
                 <th class="col-center">SALDO</th>
-                <th class="col-right">AKM. SALDO</th>
+                <th class="col-center" style="width:8%;">OPSI</th> <!-- Pindah ke posisi sebelum akm. saldo -->
+                <th class="col-right" style="padding-right: 20px;">AKM. SALDO</th>
             </tr>
             </thead>
-
-            <tbody>
-
-            <!-- JANUARI -->
-            <tr class="row-month">
-                <td colspan="5">JANUARI 2026</td>
-            </tr>
-
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-
-            <tr class="row-total">
-                <td>TOTAL</td>
-                <td class="col-center num-font">220.000</td>
-                <td class="col-center num-font">209.788</td>
-                <td class="col-center num-font plus">10.212</td>
-                <td class="col-right num-font">89.072</td>
-            </tr>
-
-            <!-- FEBRUARI -->
-            <tr class="row-month">
-                <td colspan="5">FEBRUARI 2026</td>
-            </tr>
-
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-
-            <tr class="row-total">
-                <td>TOTAL</td>
-                <td class="col-center num-font">220.000</td>
-                <td class="col-center num-font">209.788</td>
-                <td class="col-center num-font plus">10.212</td>
-                <td class="col-right num-font">99.284</td>
-            </tr>
-
-            <!-- MARET -->
-            <tr class="row-month">
-                <td colspan="5">MARET 2026</td>
-            </tr>
-
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-
-            <tr class="row-total">
-                <td>TOTAL</td>
-                <td class="col-center num-font">220.000</td>
-                <td class="col-center num-font">209.788</td>
-                <td class="col-center num-font plus">10.212</td>
-                <td class="col-right num-font">109.496</td>
-            </tr>
-
-            <!-- APRIL -->
-            <tr class="row-month">
-                <td colspan="5">APRIL 2026</td>
-            </tr>
-
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-
-            <tr class="row-total">
-                <td>TOTAL</td>
-                <td class="col-center num-font">220.000</td>
-                <td class="col-center num-font">209.788</td>
-                <td class="col-center num-font plus">10.212</td>
-                <td class="col-right num-font">119.708</td>
-            </tr>
-
-            <!-- MEI -->
-            <tr class="row-month">
-                <td colspan="5">MEI 2026</td>
-            </tr>
-
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-            <tr><td></td><td class="col-center num-font">55.000</td><td class="col-center num-font">52.447</td><td class="col-center num-font plus">2.553</td><td></td></tr>
-
-            <tr class="row-total">
-                <td>TOTAL</td>
-                <td class="col-center num-font">220.000</td>
-                <td class="col-center num-font">209.788</td>
-                <td class="col-center num-font plus">10.212</td>
-                <td class="col-right num-font">129.920</td>
-            </tr>
-
+            <tbody id="table-body">
             </tbody>
-
         </table>
-
     </div>
-
+    
+    <div class="footer-text">POWERED BY : MBS ID</div>
 </div>
+
+<div id="pin-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3>PIN Otorisasi</h3>
+        <p style="font-size: 12px; color: #718096; margin-bottom: 20px;">Masukkan PIN Keamanan Akses</p>
+        <form onsubmit="prosesVerifikasiPin(event)">
+            <div class="form-group">
+                <input type="password" id="input-pin" placeholder="••••" style="text-align: center; font-size: 22px; letter-spacing: 6px;" required autocomplete="off">
+            </div>
+            <div class="modal-buttons">
+                <button type="button" onclick="tutupModal('pin-modal')" class="btn-flex btn-cancel">Batal</button>
+                <button type="submit" id="btn-submit-pin" class="btn-flex btn-save">Verifikasi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="input-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3>Input Transaksi Baru</h3>
+        <form onsubmit="simpanDataBaru(event)" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>Bulan Periode</label>
+                <select id="form-bulan" required>
+                    <option value="JANUARI 2026">JANUARI 2026</option>
+                    <option value="FEBRUARI 2026">FEBRUARI 2026</option>
+                    <option value="MARET 2026">MARET 2026</option>
+                    <option value="APRIL 2026">APRIL 2026</option>
+                    <option value="MEI 2026">MEI 2026</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Pembayaran (Rp)</label>
+                <input type="number" id="form-masuk" value="0" min="0" required>
+            </div>
+            <div class="form-group">
+                <label>Tagihan (Rp)</label>
+                <input type="number" id="form-keluar" value="0" min="0" required>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" onclick="tutupModal('input-modal')" class="btn-flex btn-cancel">Batal</button>
+                <button type="submit" id="btn-submit-simpan" class="btn-flex btn-save">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz7p0sF5NUBf3nHNSvFGgyS-xdr6M0MFESDzXGyuFGSVxJY63jCDhBUXnWcGaiLiY0_3g/exec";
+
+    const DEFAULT_DATABASE = [
+        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "JANUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "FEBRUARI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MARET 2026", bayar: 0, tagihan: 0 },
+        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
+        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
+        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
+        { bulan: "APRIL 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MEI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MEI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MEI 2026", bayar: 0, tagihan: 0 },
+        { bulan: "MEI 2026", bayar: 0, tagihan: 0 }
+    ];
+
+    let currentDatabase = [];
+    let sesiAksi = { tipe: null, indeks: null };
+
+    function AmbilDataSistem() {
+        const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
+        if (dataLokal) {
+            currentDatabase = JSON.parse(dataLokal);
+        } else {
+            currentDatabase = [...DEFAULT_DATABASE];
+            localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
+        }
+        HitungDanRenderTabel();
+    }
+
+    function formatRupiah(angka) {
+        return new Intl.NumberFormat('id-ID').format(angka);
+    }
+
+    function formatRupiahUtuh(angka) {
+        return "Rp " + new Intl.NumberFormat('id-ID').format(angka);
+    }
+
+    function HitungDanRenderTabel() {
+        const tbody = document.getElementById("table-body");
+        tbody.innerHTML = "";
+
+        let globalAkmSaldo = 0;
+        let globalTotalBayar = 0;
+        let globalTotalTagihan = 0;
+
+        const listBulan = ["JANUARI 2026", "FEBRUARI 2026", "MARET 2026", "APRIL 2026", "MEI 2026"];
+
+        const databaseDenganIndeks = currentDatabase.map((item, idx) => ({ ...item, idxAsli: idx }));
+
+        listBulan.forEach(namaBulan => {
+            const itemBulan = databaseDenganIndeks.filter(d => d.bulan === namaBulan);
+            if (itemBulan.length === 0) return;
+
+            const rowBulanHeader = document.createElement("tr");
+            rowBulanHeader.className = "row-month";
+            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px;">${namaBulan}</td>`;
+            tbody.appendChild(rowBulanHeader);
+
+            let subTotalBayar = 0;
+            let subTotalTagihan = 0;
+            let subTotalSaldo = 0;
+
+            itemBulan.forEach(item => {
+                subTotalBayar += item.bayar;
+                subTotalTagihan += item.tagihan;
+                subTotalSaldo += (item.bayar - item.tagihan);
+
+                globalTotalBayar += item.bayar;
+                globalTotalTagihan += item.tagihan;
+                globalAkmSaldo += (item.bayar - item.tagihan);
+
+                const tr = document.createElement("tr");
+                // Layout kolom dipindah: Opsi disisipkan di antara Saldo dan Akm. Saldo
+                tr.innerHTML = `
+                    <td style="padding-left: 20px; color: #CBD5E0;"></td>
+                    <td class="col-center num-font" style="color: var(--theme-text-dark);">${formatRupiah(item.bayar)}</td>
+                    <td class="col-center num-font" style="color: var(--true-red);">${formatRupiah(item.tagihan)}</td>
+                    <td class="col-center num-font plus" style="color: var(--true-green);">${formatRupiah(item.bayar - item.tagihan)}</td>
+                    <td class="col-center">
+                        <button class="btn-delete-icon" onclick="bukaVerifikasiPin('delete', ${item.idxAsli})" title="Hapus Data">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </td>
+                    <td class="col-right num-font" style="color: var(--theme-blue-text); padding-right: 20px;">${formatRupiah(globalAkmSaldo)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const rowTotalBulan = document.createElement("tr");
+            rowTotalBulan.className = "row-total";
+            // Layout total kolom dipindah menyesuaikan urutan atas, serta font dibuat berukuran besar (18px) melalui class row-total td
+            rowTotalBulan.innerHTML = `
+                <td style="padding-left: 20px;">TOTAL</td>
+                <td class="col-center num-font">${formatRupiah(subTotalBayar)}</td>
+                <td class="col-center num-font">${formatRupiah(subTotalTagihan)}</td>
+                <td class="col-center num-font plus">${formatRupiah(subTotalSaldo)}</td>
+                <td class="col-center"></td>
+                <td class="col-right num-font" style="padding-right: 20px;">${formatRupiah(globalAkmSaldo)}</td>
+            `;
+            tbody.appendChild(rowTotalBulan);
+        });
+
+        document.getElementById("dashboard-saldo").innerText = formatRupiahUtuh(globalAkmSaldo);
+        document.getElementById("dashboard-bayar").innerText = formatRupiahUtuh(globalTotalBayar);
+        document.getElementById("dashboard-tagihan").innerText = formatRupiahUtuh(globalTotalTagihan);
+    }
+
+    function bukaVerifikasiPin(tipe, indeks = null) {
+        sesiAksi.tipe = tipe;
+        sesiAksi.indeks = indeks;
+        document.getElementById("input-pin").value = "";
+        document.getElementById("pin-modal").classList.remove("hidden");
+        document.getElementById("input-pin").focus();
+    }
+
+    function tutupModal(id) {
+        document.getElementById(id).classList.add("hidden");
+    }
+
+    async function prosesVerifikasiPin(e) {
+        e.preventDefault();
+        const pinTerinput = document.getElementById("input-pin").value;
+        const btnSubmit = document.getElementById("btn-submit-pin");
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = "MEMPROSES...";
+
+        try {
+            const respon = await fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify({
+                    action: "verifikasiPin",
+                    pin: pinTerinput
+                })
+            });
+
+            const hasil = await respon.json();
+
+            if (hasil.success) {
+                tutupModal("pin-modal");
+                if (sesiAksi.tipe === 'add') {
+                    document.getElementById("input-modal").classList.remove("hidden");
+                } else if (sesiAksi.tipe === 'delete') {
+                    eksekusiHapusData(sesiAksi.indeks);
+                }
+            } else {
+                alert(hasil.message);
+                document.getElementById("input-pin").value = "";
+                document.getElementById("input-pin").focus();
+            }
+        } catch (error) {
+            console.error(error);
+            alert("⚠️ Hubungan terputus. Gagal melakukan otorisasi PIN keamanan ke server.");
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "VERIFIKASI";
+        }
+    }
+
+    async function simpanDataBaru(e) {
+        e.preventDefault();
+        const bulan = document.getElementById("form-bulan").value;
+        const masukVal = parseInt(document.getElementById("form-masuk").value) || 0;
+        const keluarVal = parseInt(document.getElementById("form-keluar").value) || 0;
+        const btnSimpan = document.getElementById("btn-submit-simpan");
+
+        btnSimpan.disabled = true;
+        btnSimpan.innerText = "MENYIMPAN KE CLOUD...";
+
+        try {
+            const respon = await fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify({
+                    action: "simpanData",
+                    bulan: bulan,
+                    bayar: masukVal,
+                    tagihan: keluarVal
+                })
+            });
+
+            const hasil = await respon.json();
+
+            if (hasil.success) {
+                currentDatabase.push({ 
+                    bulan: bulan, 
+                    bayar: masukVal, 
+                    tagihan: keluarVal 
+                });
+                
+                localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
+                
+                tutupModal("input-modal");
+                HitungDanRenderTabel();
+                
+                alert(hasil.message);
+                
+                document.getElementById("form-masuk").value = 0;
+                document.getElementById("form-keluar").value = 0;
+            } else {
+                alert(hasil.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("⚠️ Gagal mengunggah data baru ke Cloud Spreadsheets WIFI. Periksa kembali koneksi internet.");
+        } finally {
+            btnSimpan.disabled = false;
+            btnSimpan.innerText = "SIMPAN";
+        }
+    }
+
+    function eksekusiHapusData(indeks) {
+        if (confirm("Apakah Anda yakin ingin menghapus data transaksi baris ini?")) {
+            currentDatabase.splice(indeks, 1);
+            localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
+            HitungDanRenderTabel();
+        }
+    }
+
+    window.onload = AmbilDataSistem;
+</script>
 
 </body>
 </html>
