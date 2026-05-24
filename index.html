@@ -56,7 +56,7 @@
             color: white;
             text-align: center;
             padding: 22px 15px;
-            margin-bottom: 15px;
+            margin-bottom: 9px; /* Dikurangi 6px (dari 15px ke 9px) */
             border-radius: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
@@ -74,7 +74,7 @@
             color: white;
             text-align: center;
             padding: 32px 25px;
-            margin-bottom: 15px;
+            margin-bottom: 9px; /* Dikurangi 6px (dari 15px ke 9px) */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -117,7 +117,7 @@
         .summary-row {
             display: flex;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 9px; /* Dikurangi 6px (dari 15px ke 9px) */
             flex-direction: row;
         }
 
@@ -148,7 +148,7 @@
             border-radius: 15px;
             cursor: pointer;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 9px; /* Dikurangi 6px (dari 15px ke 9px) */
             box-shadow: 0 4px 12px rgba(143, 58, 241, 0.15);
             transition: transform 0.15s;
             letter-spacing: 0.5px;
@@ -310,6 +310,7 @@
             .header-banner {
                 padding: 16px 10px;
                 border-radius: 16px;
+                margin-bottom: 9px;
             }
             .header-banner h2 {
                 font-size: 18px;
@@ -317,18 +318,22 @@
             .balance-card {
                 padding: 22px 15px;
                 border-radius: 20px;
+                margin-bottom: 9px;
             }
             .summary-row {
                 flex-direction: column;
                 gap: 10px;
+                margin-bottom: 9px;
             }
             .summary-box {
                 border-bottom-width: 8px;
                 border-radius: 16px;
                 padding: 14px 10px;
             }
+            .btn-action {
+                margin-bottom: 9px;
+            }
 
-            /* MENGUBAH STRUKTUR TABEL MENJADI BLOK KARTU AGAR TIDAK GESER KE SAMPING */
             .transaction-container {
                 border: none;
                 box-shadow: none;
@@ -339,10 +344,10 @@
                 width: 100%;
             }
             thead { 
-                display: none; /* Sembunyikan header tabel bawaan desktop */
+                display: none; 
             }
             tr {
-                margin-bottom: 12px;
+                margin-bottom: 6px; /* Dikurangi 6px (dari 12px ke 6px) agar tumpukan kartu mutasi mobile lebih padat */
                 background: white;
                 border: 1px solid var(--border-color);
                 border-radius: 16px;
@@ -354,6 +359,7 @@
                 border-color: var(--border-color);
                 text-align: center;
                 padding: 6px 10px;
+                margin-bottom: 6px; /* Ditambahkan penyeimbang jarak spasi bulan */
             }
             .row-month td {
                 padding: 4px 0 !important;
@@ -365,6 +371,7 @@
                 background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 100%) !important;
                 border: none;
                 padding: 12px 14px;
+                margin-top: 6px;
             }
             td {
                 text-align: right;
@@ -372,14 +379,13 @@
                 border-bottom: 1px solid #F1F5F9;
                 font-size: 14px;
                 display: flex;
-                justify-content: space-between; /* Membuat nama label di kiri dan nilai angka di kanan */
+                justify-content: space-between; 
                 align-items: center;
             }
             td:last-child, .row-total td:nth-last-child(2) {
                 border-bottom: none;
             }
             
-            /* Mengisi label teks otomatis di sisi kiri komponen data khusus HP */
             td:nth-child(1):before { content: "STATUS"; color: #94A3B8; font-size: 11px; }
             td:nth-child(2):before { content: "PEMBAYARAN"; color: #94A3B8; font-size: 11px; }
             td:nth-child(3):before { content: "TAGIHAN"; color: #94A3B8; font-size: 11px; }
@@ -387,13 +393,12 @@
             td:nth-child(5):before { content: "AKSI DATA"; color: #94A3B8; font-size: 11px; }
             td:nth-child(6):before { content: "AKM. SALDO"; color: #94A3B8; font-size: 11px; }
 
-            /* Aturan penyesuaian khusus teks label baris TOTAL bulanan */
             .row-total td:nth-child(1) { font-size: 15px; }
             .row-total td:nth-child(1):before { content: "RINGKASAN PERIODE"; color: rgba(255,255,255,0.7); font-size: 11px; }
             .row-total td:nth-child(2):before { content: "TOTAL BAYAR"; color: rgba(255,255,255,0.7); font-size: 11px; }
             .row-total td:nth-child(3):before { content: "TOTAL TAGIHAN"; color: rgba(255,255,255,0.7); font-size: 11px; }
             .row-total td:nth-child(4):before { content: "TOTAL SALDO"; color: rgba(255,255,255,0.7); font-size: 11px; }
-            .row-total td:nth-child(5) { display: none; } /* Sembunyikan kolom spasi opsi pada baris total mobile */
+            .row-total td:nth-child(5) { display: none; } 
             .row-total td:nth-child(6):before { content: "AKM. SALDO CLOUD"; color: rgba(255,255,255,0.7); font-size: 11px; }
             
             .row-total td {
@@ -465,7 +470,6 @@
         <p style="font-size: 12px; color: #718096; margin-bottom: 20px;">Masukkan PIN Keamanan Akses</p>
         <form onsubmit="prosesVerifikasiPin(event)">
             <div class="form-group">
-                <!-- Diubah ke type="text", inputmode="numeric" dan pattern agar memicu keyboard murni angka pada perangkat mobile -->
                 <input type="text" id="input-pin" inputmode="numeric" pattern="[0-9]*" placeholder="••••" style="text-align: center; font-size: 22px; letter-spacing: 6px; -webkit-text-security: disc;" required autocomplete="off">
             </div>
             <div class="modal-buttons">
