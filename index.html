@@ -503,7 +503,6 @@
             </div>
             <div class="form-group">
                 <label>Tahun</label>
-                <!-- Pilihan Tahun diisi otomatis lewat Javascript sampai tahun 3000 -->
                 <select id="form-tahun" required>
                 </select>
             </div>
@@ -552,7 +551,6 @@
     let currentDatabase = [];
     let sesiAksi = { tipe: null, indeks: null };
 
-    // Fungsi otomatis membuat list urutan daftar tahun dari 2026 sampai 3000
     function BuatOpsiTahunSistem() {
         const selectTahun = document.getElementById("form-tahun");
         if (selectTahun) {
@@ -567,7 +565,7 @@
     }
 
     function AmbilDataSistem() {
-        BuatOpsiTahunSistem(); // Memuat opsi pilihan tahun panjang saat inisialisasi aplikasi dibuka
+        BuatOpsiTahunSistem(); 
         const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
         if (dataLokal) {
             currentDatabase = JSON.parse(dataLokal);
@@ -590,7 +588,8 @@
         const tbody = document.getElementById("table-body");
         tbody.innerHTML = "";
 
-        let globalAkmSaldo = 0;
+        // Mengeset nilai saldo akumulasi awal dasar Januari menjadi 89072 sesuai instruksi
+        let globalAkmSaldo = 89072; 
         let globalTotalBayar = 0;
         let globalTotalTagihan = 0;
 
