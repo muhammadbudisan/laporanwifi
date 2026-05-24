@@ -545,11 +545,13 @@
 </div>
 
 <script>
+    // URL WEB APP BARU YANG SUDAH TERINTEGRASI PENUH
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz7p0sF5NUBf3nHNSvFGgyS-xdr6M0MFESDzXGyuFGSVxJY63jCDhBUXnWcGaiLiY0_3g/exec";
 
     let currentDatabase = [];
     let sesiAksi = { tipe: null, indeks: null };
 
+    // Membuat dropdown tahun secara otomatis dari 2026 sampai 2030
     function BuatOpsiTahunSistem() {
         const selectTahun = document.getElementById("form-tahun");
         if (selectTahun) {
@@ -563,13 +565,14 @@
         }
     }
 
-    // FUNGSI UTAMA AMBIL DATA LANGSUNG DARI CLOUD (ANTI BEDA NOMINAL)
+    // 1. FUNGSI UTAMA: MENARIK DATA MENTAH DARI SPREADSHEET BARU SECARA REAL-TIME
     async function AmbilDataSistem() {
         BuatOpsiTahunSistem();
+        // Tampilkan layar loading saat sinkronisasi data sedang berjalan
         document.getElementById("loading-block").classList.remove("hidden");
         
         try {
-            // Memanggil Cloud Apps Script untuk mengambil data terupdate
+            // Mengambil data terupdate via Apps Script menggunakan parameter ?action=bacaData
             const respon = await fetch(`${WEB_APP_URL}?action=bacaData`, {
                 method: "GET",
                 mode: "cors"
@@ -577,7 +580,7 @@
             const hasil = await respon.json();
             
             if (hasil.success && hasil.data) {
-                // Mapping data dari Spreadsheet agar sesuai struktur aplikasi
+                // Mapping data mentah dari Kolom A, B, dan C Spreadsheet WIFI
                 currentDatabase = hasil.data.map(item => ({
                     bulan: item.bulan,
                     bayar: parseInt(item.bayar) || 0,
@@ -587,10 +590,11 @@
                 currentDatabase = [];
             }
         } catch (error) {
-            console.error("Gagal memuat Cloud DB, menggunakan fallback lokal:", error);
+            console.error("Koneksi Cloud Gagal, mengambil cadangan terakhir perangkat:", error);
             const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
             if (dataLokal) currentDatabase = JSON.parse(dataLokal);
         } finally {
+            // Sembunyikan loading dan jalankan fungsi kalkulasi otomatis
             document.getElementById("loading-block").classList.add("hidden");
             HitungDanRenderTabel();
         }
@@ -604,16 +608,16 @@
         return "Rp " + new Intl.NumberFormat('id-ID').format(angka);
     }
 
-    // FUNGSI UTAMA HITUNG & RENDER DENGAN SUSUNAN KOLOM YANG DISYARATKAN
+    // 2. FUNGSI KALKULASI UTAMA (MENGHITUNG BULAN, PEMBAYARAN, TAGIHAN, SALDO, & AKM. SALDO)
     function HitungDanRenderTabel() {
         const tbody = document.getElementById("table-body");
         tbody.innerHTML = "";
 
-        let globalAkmSaldo = 89072; // Nilai dasar akumulasi
+        let globalAkmSaldo = 89072; // Ketetapan saldo akumulasi awal dasar sistem
         let globalTotalBayar = 0;
         let globalTotalTagihan = 0;
 
-        // Ambil list unik periode bulan yang ada di database
+        // Memisahkan nama-nama bulan unik dari cloud untuk dijadikan grup header tabel
         const listGrupPeriode = [];
         currentDatabase.forEach(item => {
             if (!listGrupPeriode.includes(item.bulan)) {
@@ -621,22 +625,24 @@
             }
         });
 
+        // Menyimpan indeks asli dari cloud database agar proses hapus baris presisi
         const databaseDenganIndeks = currentDatabase.map((item, idx) => ({ ...item, idxAsli: idx }));
 
         listGrupPeriode.forEach((namaPeriode, indeksGrup) => {
             const itemBulan = databaseDenganIndeks.filter(d => d.bulan === namaPeriode);
             if (itemBulan.length === 0) return;
 
-            // 1. DATA BULAN (Header Row Periode)
+            // RENDERING BARIS 1: BULAN (Grup Header Periode)
             const rowBulanHeader = document.createElement("tr");
             rowBulanHeader.className = "row-month";
-            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px; color: var(--theme-month-bg); font-weight:800;">${namaPeriode}</td>`;
+            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px; color: var(--theme-month-bg); font-weight:900;">${namaPeriode}</td>`;
             tbody.appendChild(rowBulanHeader);
 
             let subTotalBayar = 0;
             let subTotalTagihan = 0;
             let subTotalSaldo = 0;
 
+            // Menyesuaikan nilai dasar saldo awal sebelum masuk akumulasi looping pertama
             if (indeksGrup === 0) {
                 let hitungSaldoGrupPertama = 0;
                 itemBulan.forEach(item => {
@@ -645,23 +651,25 @@
                 globalAkmSaldo = 89072 - hitungSaldoGrupPertama;
             }
 
+            // Loop untuk mengisi item rincian transaksi di bawah grup bulan
             itemBulan.forEach(item => {
                 subTotalBayar += item.bayar;
                 subTotalTagihan += item.tagihan;
                 
-                // DATA SALDO (Pembayaran - Tagihan)
+                // RENDERING BARIS 2 & 3: PEMBAYARAN & TAGIHAN
+                // KALKULASI BARIS 4: SALDO OTOMATIS (Pembayaran dikurangi Tagihan)
                 const saldoItem = item.bayar - item.tagihan;
                 subTotalSaldo += saldoItem;
 
                 globalTotalBayar += item.bayar;
                 globalTotalTagihan += item.tagihan;
                 
-                // DATA AKUMULASI SALDO
+                // KALKULASI BARIS 6: AKUMULASI SALDO BERUNTUN
                 globalAkmSaldo += saldoItem;
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td style="padding-left: 20px; color: #94A3B8; font-size:13px;">• Detail Item</td>
+                    <td style="padding-left: 20px; color: #94A3B8; font-size:13px;">• Rincian Item</td>
                     <td class="col-center num-font" style="color: var(--theme-text-dark);">${formatRupiah(item.bayar)}</td>
                     <td class="col-center num-font" style="color: var(--true-red);">${formatRupiah(item.tagihan)}</td>
                     <td class="col-center num-font ${saldoItem >= 0 ? 'plus' : 'minus-val'}">${formatRupiah(saldoItem)}</td>
@@ -680,7 +688,7 @@
                 tbody.appendChild(tr);
             });
 
-            // ROW TOTAL SUB-PERIODE
+            // RENDERING BARIS 5: TOTAL (Kalkulasi Otomatis Sub-Total per Periode Bulan)
             const rowTotalBulan = document.createElement("tr");
             rowTotalBulan.className = "row-total";
             rowTotalBulan.innerHTML = `
@@ -694,10 +702,13 @@
             tbody.appendChild(rowTotalBulan);
         });
 
-        // Set Nilai Dashboard Utama
+        // Memperbarui nominal pada komponen Dashboard Card bagian atas layar secara sinkron
         document.getElementById("dashboard-saldo").innerText = formatRupiahUtuh(globalAkmSaldo);
         document.getElementById("dashboard-bayar").innerText = formatRupiahUtuh(globalTotalBayar);
         document.getElementById("dashboard-tagihan").innerText = formatRupiahUtuh(globalTotalTagihan);
+        
+        // Simpan salinan database ke local storage HP sebagai cadangan offline terupdate
+        localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
     }
 
     function bukaVerifikasiPin(tipe, indeks = null) {
@@ -712,6 +723,7 @@
         document.getElementById(id).classList.add("hidden");
     }
 
+    // Memproses otorisasi PIN keamanan langsung memeriksa ke server cloud
     async function prosesVerifikasiPin(e) {
         e.preventDefault();
         const pinTerinput = document.getElementById("input-pin").value;
@@ -747,13 +759,14 @@
             }
         } catch (error) {
             console.error(error);
-            alert("⚠️ Hubungan terputus. Gagal melakukan otorisasi PIN keamanan ke server.");
+            alert("⚠️ Gagal otorisasi keamanan. Periksa sambungan internet perangkat Anda.");
         } finally {
             btnSubmit.disabled = false;
             btnSubmit.innerText = "VERIFIKASI";
         }
     }
 
+    // Mengirim baris transaksi baru (Bulan Periode, Bayar, Tagihan) ke Cloud Spreadsheet
     async function simpanDataBaru(e) {
         e.preventDefault();
         const bulanSelect = document.getElementById("form-bulan").value;
@@ -784,7 +797,9 @@
 
             if (hasil.success) {
                 tutupModal("input-modal");
-                // Langsung ambil ulang data dari cloud agar kalkulasi di seluruh HP sinkron
+                
+                // CRITICAL SINKRONISASI: Paksa sistem mengambil ulang data terupdate dari cloud 
+                // untuk menjamin nominal Akumulasi Saldo dan Total langsung kembar di seluruh HP.
                 await AmbilDataSistem();
                 
                 alert(hasil.message);
@@ -795,15 +810,16 @@
             }
         } catch (error) {
             console.error(error);
-            alert("⚠️ Gagal mengunggah data baru ke Cloud Spreadsheets. Periksa kembali koneksi internet.");
+            alert("⚠️ Hubungan ke cloud terputus. Gagal melakukan sinkronisasi data transaksi.");
         } finally {
             btnSimpan.disabled = false;
             btnSimpan.innerText = "SIMPAN";
         }
     }
 
+    // Melakukan penghapusan baris data tertentu langsung pada Cloud Spreadsheet
     async function eksekusiHapusData(indeks) {
-        if (confirm("Apakah Anda yakin ingin menghapus data transaksi baris ini dari cloud database?")) {
+        if (confirm("Apakah Anda yakin ingin menghapus baris data transaksi ini langsung dari Cloud Spreadsheet?")) {
             document.getElementById("loading-block").classList.remove("hidden");
             
             try {
@@ -819,20 +835,22 @@
                 
                 const hasil = await respon.json();
                 if (hasil.success) {
+                    // Ambil ulang database pasca-penghapusan agar perhitungan baris mundur dengan sinkron
                     await AmbilDataSistem();
-                    alert("Data berhasil dihapus dari Cloud Spreadsheet.");
+                    alert("Baris data berhasil dihapus secara permanen dari Cloud.");
                 } else {
-                    alert(hasil.message || "Gagal menghapus data.");
+                    alert(hasil.message || "Gagal memproses penghapusan data.");
                 }
             } catch (error) {
                 console.error("Gagal menghapus data cloud:", error);
-                alert("⚠️ Masalah koneksi. Gagal menghapus data di cloud spreadsheet.");
+                alert("⚠️ Masalah sinkronisasi server. Gagal menghapus baris transaksi di spreadsheet.");
             } finally {
                 document.getElementById("loading-block").classList.add("hidden");
             }
         }
     }
 
+    // Otomatis memicu load data cloud real-time saat aplikasi web pertama kali dimuat di browser HP
     window.onload = AmbilDataSistem;
 </script>
 
