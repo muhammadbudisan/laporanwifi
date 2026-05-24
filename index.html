@@ -56,7 +56,7 @@
             color: white;
             text-align: center;
             padding: 22px 15px;
-            margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+            margin-bottom: 6px; 
             border-radius: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
@@ -74,7 +74,7 @@
             color: white;
             text-align: center;
             padding: 32px 25px;
-            margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+            margin-bottom: 6px; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -117,7 +117,7 @@
         .summary-row {
             display: flex;
             gap: 15px;
-            margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+            margin-bottom: 6px; 
             flex-direction: row;
         }
 
@@ -148,7 +148,7 @@
             border-radius: 15px;
             cursor: pointer;
             text-transform: uppercase;
-            margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+            margin-bottom: 6px; 
             box-shadow: 0 4px 12px rgba(143, 58, 241, 0.15);
             transition: transform 0.15s;
             letter-spacing: 0.5px;
@@ -310,7 +310,7 @@
             .header-banner {
                 padding: 16px 10px;
                 border-radius: 16px;
-                margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+                margin-bottom: 6px; 
             }
             .header-banner h2 {
                 font-size: 18px;
@@ -318,12 +318,12 @@
             .balance-card {
                 padding: 22px 15px;
                 border-radius: 20px;
-                margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+                margin-bottom: 6px;
             }
             .summary-row {
                 flex-direction: column;
                 gap: 10px;
-                margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+                margin-bottom: 6px; 
             }
             .summary-box {
                 border-bottom-width: 8px;
@@ -331,7 +331,7 @@
                 padding: 14px 10px;
             }
             .btn-action {
-                margin-bottom: 6px; /* Dikurangi 3px (dari 9px ke 6px) */
+                margin-bottom: 6px; 
             }
 
             .transaction-container {
@@ -347,7 +347,7 @@
                 display: none; 
             }
             tr {
-                margin-bottom: 3px; /* Dikurangi 3px (dari 6px ke 3px) agar makin padat presisi */
+                margin-bottom: 3px; 
                 background: white;
                 border: 1px solid var(--border-color);
                 border-radius: 16px;
@@ -359,7 +359,7 @@
                 border-color: var(--border-color);
                 text-align: center;
                 padding: 6px 10px;
-                margin-bottom: 3px; /* Dikurangi 3px (dari 6px ke 3px) */
+                margin-bottom: 3px; 
             }
             .row-month td {
                 padding: 4px 0 !important;
@@ -371,7 +371,7 @@
                 background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 100%) !important;
                 border: none;
                 padding: 12px 14px;
-                margin-top: 3px; /* Dikurangi 3px (dari 6px ke 3px) */
+                margin-top: 3px; 
             }
             td {
                 text-align: right;
@@ -487,11 +487,24 @@
             <div class="form-group">
                 <label>Bulan Periode</label>
                 <select id="form-bulan" required>
-                    <option value="JANUARI 2026">JANUARI 2026</option>
-                    <option value="FEBRUARI 2026">FEBRUARI 2026</option>
-                    <option value="MARET 2026">MARET 2026</option>
-                    <option value="APRIL 2026">APRIL 2026</option>
-                    <option value="MEI 2026">MEI 2026</option>
+                    <option value="JANUARI">JANUARI</option>
+                    <option value="FEBRUARI">FEBRUARI</option>
+                    <option value="MARET">MARET</option>
+                    <option value="APRIL">APRIL</option>
+                    <option value="MEI">MEI</option>
+                    <option value="JUNI">JUNI</option>
+                    <option value="JULI">JULI</option>
+                    <option value="AGUSTUS">AGUSTUS</option>
+                    <option value="SEPTEMBER">SEPTEMBER</option>
+                    <option value="OKTOBER">OKTOBER</option>
+                    <option value="NOVEMBER">NOVEMBER</option>
+                    <option value="DESEMBER">DESEMBER</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tahun</label>
+                <!-- Pilihan Tahun diisi otomatis lewat Javascript sampai tahun 3000 -->
+                <select id="form-tahun" required>
                 </select>
             </div>
             <div class="form-group">
@@ -539,7 +552,22 @@
     let currentDatabase = [];
     let sesiAksi = { tipe: null, indeks: null };
 
+    // Fungsi otomatis membuat list urutan daftar tahun dari 2026 sampai 3000
+    function BuatOpsiTahunSistem() {
+        const selectTahun = document.getElementById("form-tahun");
+        if (selectTahun) {
+            selectTahun.innerHTML = "";
+            for (let tahun = 2026; tahun <= 3000; tahun++) {
+                const opsi = document.createElement("option");
+                opsi.value = tahun;
+                opsi.innerText = tahun;
+                selectTahun.appendChild(opsi);
+            }
+        }
+    }
+
     function AmbilDataSistem() {
+        BuatOpsiTahunSistem(); // Memuat opsi pilihan tahun panjang saat inisialisasi aplikasi dibuka
         const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
         if (dataLokal) {
             currentDatabase = JSON.parse(dataLokal);
@@ -566,17 +594,22 @@
         let globalTotalBayar = 0;
         let globalTotalTagihan = 0;
 
-        const listBulan = ["JANUARI 2026", "FEBRUARI 2026", "MARET 2026", "APRIL 2026", "MEI 2026"];
+        const listGrupPeriode = [];
+        currentDatabase.forEach(item => {
+            if (!listGrupPeriode.includes(item.bulan)) {
+                listGrupPeriode.push(item.bulan);
+            }
+        });
 
         const databaseDenganIndeks = currentDatabase.map((item, idx) => ({ ...item, idxAsli: idx }));
 
-        listBulan.forEach(namaBulan => {
-            const itemBulan = databaseDenganIndeks.filter(d => d.bulan === namaBulan);
+        listGrupPeriode.forEach(namaPeriode => {
+            const itemBulan = databaseDenganIndeks.filter(d => d.bulan === namaPeriode);
             if (itemBulan.length === 0) return;
 
             const rowBulanHeader = document.createElement("tr");
             rowBulanHeader.className = "row-month";
-            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px;">${namaBulan}</td>`;
+            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px;">${namaPeriode}</td>`;
             tbody.appendChild(rowBulanHeader);
 
             let subTotalBayar = 0;
@@ -687,7 +720,11 @@
 
     async function simpanDataBaru(e) {
         e.preventDefault();
-        const bulan = document.getElementById("form-bulan").value;
+        const bulanSelect = document.getElementById("form-bulan").value;
+        const tahunSelect = document.getElementById("form-tahun").value;
+        
+        const periodeGabungan = bulanSelect + " " + tahunSelect;
+        
         const masukVal = parseInt(document.getElementById("form-masuk").value) || 0;
         const keluarVal = parseInt(document.getElementById("form-keluar").value) || 0;
         const btnSimpan = document.getElementById("btn-submit-simpan");
@@ -702,7 +739,7 @@
                 headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify({
                     action: "simpanData",
-                    bulan: bulan,
+                    bulan: periodeGabungan,
                     bayar: masukVal,
                     tagihan: keluarVal
                 })
@@ -712,7 +749,7 @@
 
             if (hasil.success) {
                 currentDatabase.push({ 
-                    bulan: bulan, 
+                    bulan: periodeGabungan, 
                     bayar: masukVal, 
                     tagihan: keluarVal 
                 });
