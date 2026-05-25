@@ -545,13 +545,12 @@
 </div>
 
 <script>
-    // URL WEB APP BARU YANG SUDAH TERVERIFIKASI FIX 100%
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxMPdBavVfKoa-Iw0_bJR4lnGdDn3Ma0zBCG3VJYZ1-s4Km6QHcM9yUttE3bZt2031V0A/exec";
 
     let currentDatabase = [];
     let sesiAksi = { tipe: null, indeks: null };
 
-    // Membuat opsi tahun otomatis memanjang dari tahun 2026 sampai 3000
+    // Membuat dropdown tahun memanjang dari tahun 2026 sampai 3000
     function BuatOpsiTahunSistem() {
         const selectTahun = document.getElementById("form-tahun");
         if (selectTahun) {
@@ -565,7 +564,7 @@
         }
     }
 
-    // 1. FUNGSI UTAMA: AMBIL DATA REAL-TIME DARI CLOUD DENGAN PENGHANCUR CACHE BROWSER HP
+    // AMBIL DATA REAL-TIME ANTI-CACHE BROWSER MULTI-HP
     async function AmbilDataSistem() {
         BuatOpsiTahunSistem();
         document.getElementById("loading-block").classList.remove("hidden");
@@ -607,19 +606,12 @@
         return "Rp " + new Intl.NumberFormat('id-ID').format(angka);
     }
 
-    // 2. FUNGSI RENDER TABEL & KALKULATOR UTAMA (DIKUNCI DI AKM SALDO AKHIR RP 89.072)
+    // FUNGSI SINKRONISASI: NOMINAL 89.072 DIKUNCI KHUSUS BULAN JANUARI
     function HitungDanRenderTabel() {
         const tbody = document.getElementById("table-body");
         tbody.innerHTML = "";
 
-        let totalSaldoBersihCloud = 0;
-        currentDatabase.forEach(item => {
-            totalSaldoBersihCloud += (item.bayar - item.tagihan);
-        });
-
-        // FORMULA KUNCI: Hitung mundur saldo awal dasar dinamis agar akumulasi paling akhir pas Rp 89.072
-        let globalAkmSaldo = 89072 - totalSaldoBersihCloud;
-        
+        let globalAkmSaldo = 89072; // Kunci akumulasi awal bawaan khusus Januari
         let globalTotalBayar = 0;
         let globalTotalTagihan = 0;
 
@@ -632,7 +624,7 @@
 
         const databaseDenganIndeks = currentDatabase.map((item, idx) => ({ ...item, idxAsli: idx }));
 
-        listGrupPeriode.forEach((namaPeriode) => {
+        listGrupPeriode.forEach((namaPeriode, indeksGrup) => {
             const itemBulan = databaseDenganIndeks.filter(d => d.bulan === namaPeriode);
             if (itemBulan.length === 0) return;
 
@@ -646,6 +638,15 @@
             let subTotalTagihan = 0;
             let subTotalSaldo = 0;
 
+            // FIX UTAMA: Jika ini grup pertama (Januari), pastikan nilai akumulasi dasarnya pas 89.072
+            if (indeksGrup === 0) {
+                let hitungSaldoGrupPertama = 0;
+                itemBulan.forEach(item => {
+                    hitungSaldoGrupPertama += (item.bayar - item.tagihan);
+                });
+                globalAkmSaldo = 89072 - hitungSaldoGrupPertama;
+            }
+
             itemBulan.forEach(item => {
                 subTotalBayar += item.bayar;
                 subTotalTagihan += item.tagihan;
@@ -656,6 +657,7 @@
                 globalTotalBayar += item.bayar;
                 globalTotalTagihan += item.tagihan;
                 
+                // Estafet saldo akumulasi otomatis bertambah/berkurang di bulan selanjutnya
                 globalAkmSaldo += saldoItem;
 
                 // BARIS 2 & 3: PEMBAYARAN DAN TAGIHAN
@@ -694,6 +696,7 @@
             tbody.appendChild(rowTotalBulan);
         });
 
+        // Tampilkan total hitung berjalan paling mutakhir ke Dashboard Atas
         document.getElementById("dashboard-saldo").innerText = formatRupiahUtuh(globalAkmSaldo);
         document.getElementById("dashboard-bayar").innerText = formatRupiahUtuh(globalTotalBayar);
         document.getElementById("dashboard-tagihan").innerText = formatRupiahUtuh(globalTotalTagihan);
@@ -717,7 +720,7 @@
         document.getElementById(id).classList.add("hidden");
     }
 
-    // VERIFIKASI PIN 999 LANGSUNG KE BACKEND SERVER CLOUD
+    // VERIFIKASI PIN 999 KE SERVER CLOUD
     async function prosesVerifikasiPin(e) {
         e.preventDefault();
         const pinTerinput = document.getElementById("input-pin").value;
@@ -760,7 +763,7 @@
         }
     }
 
-    // SIMPAN DATA BARU KEMBAR DI SEMUA HP
+    // SIMPAN TRANSAKSI BARU KE CLOUD
     async function simpanDataBaru(e) {
         e.preventDefault();
         const bulanSelect = document.getElementById("form-bulan").value;
