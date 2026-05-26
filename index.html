@@ -1,746 +1,638 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan WiFi Q2 2026 - Modern Gradient Style</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Archivo+Black&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Laporan Pembayaran WiFi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800;900&family=Archivo+Black&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sondo-blue-start: #3A7BD5;    
+      --sondo-purple-mid: #8F3AF1;    
+      --sondo-magenta-end: #D136F2;   
+      
+      --theme-table-header: #EBF3FF;  
+      --theme-month-bg: #2B76F7;      
+      --theme-text-dark: #1E293B;
+      
+      --true-red: #E53E3E;            
+      --true-green: #00AA44;          
+      --theme-blue-text: #2B76F7;     
+      --bg-light: #F8FAFC;            
+      --border-color: #CBD5E0;
+    }
 
-    <style>
-        :root {
-            --sondo-blue-start: #3A7BD5;    
-            --sondo-purple-mid: #8F3AF1;    
-            --sondo-magenta-end: #D136F2;   
-            
-            --theme-table-header: #EBF3FF;  
-            --theme-month-bg: #2B76F7;      
-            --theme-text-dark: #1E293B;
-            
-            --true-red: #E53E3E;            
-            --true-green: #00AA44;          
-            --theme-blue-text: #2B76F7;     
-            --bg-light: #F8FAFC;            
-            --border-color: #CBD5E0;
-        }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900 !important;
+    }
+    
+    body {
+      background-color: var(--bg-light);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden; /* Mencegah geser kanan pada body */
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-light);
-            margin: 0;
-            padding: 8px 12px; 
-            font-weight: 900; 
-            color: var(--theme-text-dark);
-            -webkit-font-smoothing: antialiased;
-        }
+    .container {
+      width: 100%;
+      max-width: 750px;
+      background: #ffffff;
+      padding: 4px;
+    }
 
-        * {
-            font-weight: 900 !important;
-            box-sizing: border-box;
-        }
+    .num-font {
+      font-family: 'Archivo Black', sans-serif;
+      font-weight: 900;
+      letter-spacing: normal;
+      font-variant-numeric: tabular-nums;
+    }
 
-        .num-font {
-            font-family: 'Archivo Black', sans-serif;
-            font-weight: 900;
-            letter-spacing: normal;
-            font-variant-numeric: tabular-nums;
-        }
+    /* Top Banner Laporan Pembayaran Wifi */
+    .banner-title {
+      background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
+      color: white;
+      text-align: center;
+      padding: 14px 10px;
+      font-size: clamp(16px, 4vw, 20px);
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      border-radius: 14px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            width: 100%;
-        }
+    /* Main Balance Box */
+    .main-box {
+      background: linear-gradient(135deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(143, 58, 241, 0.2);
+    }
 
-        .header-banner {
-            background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
-            color: white;
-            text-align: center;
-            padding: 10px 15px; 
-            margin-bottom: 4px; 
-            border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
+    .wifi-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px; 
+      color: #00FFCC;
+    }
 
-        .header-banner h2 {
-            font-size: 24px;
-            font-weight: 900;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    .wifi-icon {
+      width: 22px;
+      height: 22px;
+      position: relative;
+    }
 
-        .balance-card {
-            background: linear-gradient(135deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
-            color: white;
-            text-align: center;
-            padding: 14px 25px 12px 25px; 
-            margin-bottom: 4px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(143, 58, 241, 0.2);
-            width: 100%;
-        }
+    .icon-blink {
+      animation: blink 1.2s infinite;
+    }
 
-        .wifi-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px; 
-            color: #00FFCC;
-        }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
 
-        .wifi-icon {
-            width: 22px;
-            height: 22px;
-            position: relative;
-        }
+    .saldo-title {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+    }
 
-        .icon-blink {
-            animation: blink 1.2s infinite;
-        }
+    .saldo-amount {
+      font-size: clamp(32px, 7vw, 56px);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      white-space: nowrap;
+    }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+    /* Summary Grid */
+    .grid-summary {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
 
-        .balance-amount {
-            font-size: clamp(32px, 8vw, 55px);
-            margin: 2px 0 0 0; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            width: 100%;
-            word-wrap: break-word;
-        }
+    .summary-card {
+      flex: 1;
+      background: white;
+      text-align: center;
+      padding: 14px 6px;
+      border-radius: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
+      border-bottom: 12px solid;
+      min-width: 0; /* Mencegah flex child meluap */
+    }
 
-        .summary-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 4px; 
-            flex-direction: row;
-        }
+    .card-bayar { border-bottom-color: var(--true-green); }
+    .card-tagihan { border-bottom-color: var(--true-red); }
 
-        .summary-box {
-            flex: 1;
-            background: white;
-            padding: 10px 10px; 
-            text-align: center;
-            border-bottom: 12px solid;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
-            min-width: 0;
-        }
+    .card-title {
+      font-size: 11px;
+      font-weight: 900;
+      color: #718096;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      opacity: 0.7;
+      letter-spacing: 0.5px;
+    }
 
-        .summary-value {
-            font-size: clamp(18px, 4.5vw, 32px);
-            margin-top: 2px; 
-            word-wrap: break-word;
-        }
+    .card-amount-bayar {
+      font-size: clamp(16px, 4.2vw, 32px);
+      font-weight: 900;
+      color: var(--true-green);
+      white-space: nowrap;
+    }
 
-        .btn-action {
-            background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
-            color: white;
-            border: none;
-            padding: 12px; 
-            font-size: 15px;
-            font-weight: 900;
-            border-radius: 15px;
-            cursor: pointer;
-            text-transform: uppercase;
-            margin-bottom: 4px; 
-            box-shadow: 0 4px 12px rgba(143, 58, 241, 0.15);
-            transition: transform 0.15s;
-            letter-spacing: 0.5px;
-            width: 100%;
-        }
+    .card-amount-tagihan {
+      font-size: clamp(16px, 4.2vw, 32px);
+      font-weight: 900;
+      color: var(--true-red);
+      white-space: nowrap;
+    }
 
-        .btn-action:active {
-            transform: scale(0.99);
-        }
+    /* Button Input Data Baru */
+    .btn-input {
+      width: 100%;
+      background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%);
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 900;
+      border-radius: 15px;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(143, 58, 241, 0.15);
+    }
 
-        .transaction-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-            border: 1px solid var(--border-color);
-            width: 100%;
-        }
+    /* Table System Styling */
+    .table-container {
+      width: 100%;
+      overflow-x: hidden; /* Dikunci agar tidak bisa digeser kanan kiri */
+      background: white;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 13px;
+      table-layout: fixed; /* Mengunci lebar kolom agar presisi di semua device */
+    }
 
-        thead th {
-            background: var(--theme-table-header);
-            color: #64748B;
-            padding: 8px 10px; 
-            font-size: 14px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border-color);
-        }
+    th {
+      background: var(--theme-table-header);
+      color: #64748B;
+      font-weight: 900;
+      padding: 12px 4px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: clamp(10px, 2.5vw, 12px);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
 
-        td {
-            padding: 6px 16px; 
-            border-bottom: 1px solid #F1F5F9;
-            font-size: 15px;
-            font-weight: 900;
-            color: #111;
-        }
+    td {
+      padding: 2px 4px;
+      color: #111111;
+      font-weight: 900;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: clamp(11px, 3vw, 15px);
+      word-break: break-all;
+    }
 
-        .row-month {
-            background-color: #FAFAFA !important;
-            color: var(--theme-text-dark);
-        }
+    /* Row Header Bulan */
+    .row-month-header {
+      background-color: #FAFAFA !important;
+      text-align: left;
+      font-weight: 900;
+      color: var(--theme-month-bg);
+      padding: 12px 12px;
+      font-size: clamp(12px, 3.2vw, 15px);
+      border-bottom: 1px solid var(--border-color);
+    }
 
-        .row-month td {
-            font-size: 15px;
-            font-weight: 900;
-            padding: 6px 16px; 
-            border-bottom: 1px solid var(--border-color);
-        }
+    /* Label Rincian Item */
+    .txt-rincian {
+      color: #94A3B8;
+      font-weight: 900;
+      text-align: left;
+      font-size: clamp(10px, 2.5vw, 13px);
+      padding-left: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-        .row-total {
-            background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 100%) !important;
-            color: white !important;
-        }
+    /* Row Total - Gradien utuh tanpa sekat */
+    .row-total-baris {
+      background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%) !important;
+    }
 
-        .row-total td {
-            color: white !important;
-            padding: 8px 16px; 
-            font-size: 18px;
-            font-weight: 900;
-            border-bottom: none;
-        }
+    .row-total-baris td {
+      background: transparent !important;
+      color: white !important;
+      font-weight: 900;
+      padding: 12px 4px;
+      font-size: clamp(11px, 3vw, 16px);
+      border: none !important;
+    }
+    
+    .row-total-baris td:first-child {
+      text-align: left;
+      padding-left: 8px;
+      letter-spacing: 0.5px;
+    }
 
-        .row-total td:first-child {
-            text-align: left;
-            letter-spacing: 0.5px;
-        }
+    /* Kolom Angka Warna Spesifik */
+    .col-tagihan { color: var(--true-red); }
+    .col-saldo { color: var(--true-green); }
+    .col-akm { color: var(--theme-blue-text); }
+    
+    .row-total-baris .col-saldo { color: white !important; }
 
-        .plus {
-            color: var(--true-green);
-        }
+    /* Icon Trash SVG */
+    .btn-hapus {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #94A3B8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease;
+      padding: 4px;
+    }
+    .btn-hapus svg { width: 14px; height: 14px; }
+    .btn-hapus:hover { color: var(--true-red); }
 
-        .minus-val {
-            color: var(--true-red);
-        }
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 900;
+      color: #94A3B8;
+      margin-top: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
 
-        .row-total .plus {
-            color: #FFFFFF !important;
-        }
+    /* MODAL BASE OVERLAY */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(34, 20, 64, 0.4);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 15px;
+    }
 
-        .col-center {
-            text-align: center;
-        }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
 
-        .col-right {
-            text-align: right;
-        }
+    .modal-content h3 { margin-top: 0; color: var(--theme-month-bg); font-size: 18px; text-transform: uppercase; margin-bottom: 10px; }
+    
+    .form-group { text-align: left; margin-bottom: 10px; }
+    .form-group label { font-size: 11px; color: #718096; text-transform: uppercase; display: block; margin-bottom: 4px; letter-spacing: 0.5px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 12px; font-weight: 900; color: #2D3748; transition: border-color 0.2s;
+    }
 
-        .btn-delete-icon {
-            background: none;
-            border: none;
-            color: #94A3B8;
-            cursor: pointer;
-            padding: 4px; 
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.15s ease;
-        }
+    /* STYLE KHUSUS KEYPAD NUMBER PIN */
+    .pin-display {
+      font-size: 32px;
+      letter-spacing: 15px;
+      text-align: center;
+      margin: 15px 0;
+      color: var(--theme-text-dark);
+      min-height: 48px;
+    }
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .key-btn {
+      background: #F1F5F9;
+      color: var(--theme-text-dark);
+      border: none;
+      padding: 15px 0;
+      font-size: 20px;
+      font-weight: 900;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .key-btn:active { background: #CBD5E0; }
+    .key-btn.clear { background: #fee2e2; color: var(--true-red); }
 
-        .btn-delete-icon svg {
-            width: 16px;
-            height: 16px;
-        }
+    /* Pengaturan lebar kolom tabel secara presisi di layar HP/Desktop */
+    th:nth-child(1), td:nth-child(1) { width: 24%; }
+    th:nth-child(2), td:nth-child(2) { width: 21%; }
+    th:nth-child(3), td:nth-child(3) { width: 19%; }
+    th:nth-child(4), td:nth-child(4) { width: 14%; }
+    th:nth-child(5), td:nth-child(5) { width: 8%; }
+    th:nth-child(6), td:nth-child(6) { width: 14%; }
 
-        .btn-delete-icon:hover {
-            color: var(--true-red);
-        }
-
-        /* MODAL STYLING */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(34, 20, 64, 0.4);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            z-index: 1000;
-        }
-        .modal-box {
-            background: white;
-            padding: 20px; 
-            border-radius: 24px;
-            width: 100%;
-            max-width: 360px;
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .hidden { display: none !important; }
-        .modal-box h3 { margin-top: 0; color: var(--theme-month-bg); font-size: 18px; text-transform: uppercase; margin-bottom: 10px; }
-        .form-group { text-align: left; margin-bottom: 10px; } 
-        .form-group label { font-size: 11px; color: #718096; text-transform: uppercase; display: block; margin-bottom: 4px; letter-spacing: 0.5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 12px; font-family: inherit; font-weight: 800; color: #2D3748; transition: border-color 0.2s; }
-        .form-group input:focus { border-color: var(--sondo-purple-mid); outline: none; }
-        .modal-buttons { display: flex; gap: 12px; margin-top: 16px; } 
-        .btn-flex { flex: 1; padding: 10px; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 13px; }
-        .btn-cancel { background: #EDF2F7; color: #4A5568; }
-        .btn-save { background: var(--sondo-purple-mid); color: white; box-shadow: 0 4px 10px rgba(143, 58, 241, 0.2); }
-        .btn-save:disabled { background: #CBD5E0; cursor: not-allowed; box-shadow: none; }
-
-        .footer-text {
-            text-align: center;
-            font-size: 11px;
-            color: #94A3B8;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-top: 12px; 
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            font-size: 16px;
-            color: var(--sondo-purple-mid);
-        }
-
-        /* =========================================================================
-           MEDIA QUERY: MOBILE FULL DISPLAY OPTIMIZATION
-           ========================================================================= */
-        @media (max-width: 600px) {
-            body { padding: 6px 6px; }
-            .header-banner { padding: 10px 10px; border-radius: 16px; margin-bottom: 4px; }
-            .header-banner h2 { font-size: 18px; }
-            .balance-card { padding: 14px 15px 10px 15px; border-radius: 20px; margin-bottom: 4px; }
-            .summary-row { flex-direction: column; gap: 4px; margin-bottom: 4px; }
-            .summary-box { border-bottom-width: 8px; border-radius: 16px; padding: 10px 10px; }
-            .btn-action { margin-bottom: 4px; padding: 10px; }
-            .transaction-container { border: none; box-shadow: none; background: transparent; }
-            table, thead, tbody, th, td, tr { display: block; width: 100%; }
-            thead { display: none; }
-            tr { margin-bottom: 6px; background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 8px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
-            .row-month { background: var(--theme-table-header) !important; border-color: var(--border-color); text-align: center; padding: 4px 10px; margin-bottom: 4px; }
-            .row-month td { padding: 2px 0 !important; font-size: 14px; color: var(--theme-month-bg); border: none; }
-            .row-total { background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 100%) !important; border: none; padding: 8px 12px; margin-top: 4px; margin-bottom: 12px; }
-            td { text-align: right; padding: 6px 0; border-bottom: 1px solid #F1F5F9; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-            td:last-child { border-bottom: none; }
-            
-            td:nth-child(1):before { content: "BULAN"; color: #94A3B8; font-size: 11px; }
-            td:nth-child(2):before { content: "PEMBAYARAN"; color: #94A3B8; font-size: 11px; }
-            td:nth-child(3):before { content: "TAGIHAN"; color: #94A3B8; font-size: 11px; }
-            td:nth-child(4):before { content: "SALDO"; color: #94A3B8; font-size: 11px; }
-            td:nth-child(5):before { content: "AKSI DATA"; color: #94A3B8; font-size: 11px; }
-            td:nth-child(6):before { content: "AKM. SALDO"; color: #94A3B8; font-size: 11px; }
-
-            .row-total td:nth-child(1) { font-size: 15px; }
-            .row-total td:nth-child(1):before { content: "RINGKASAN"; color: rgba(255,255,255,0.7); font-size: 11px; }
-            .row-total td:nth-child(2):before { content: "TOTAL BAYAR"; color: rgba(255,255,255,0.7); font-size: 11px; }
-            .row-total td:nth-child(3):before { content: "TOTAL TAGIHAN"; color: rgba(255,255,255,0.7); font-size: 11px; }
-            .row-total td:nth-child(4):before { content: "TOTAL SALDO"; color: rgba(255,255,255,0.7); font-size: 11px; }
-            .row-total td:nth-child(5) { display: none; } 
-            .row-total td:nth-child(6):before { content: "AKM. PERIODE"; color: rgba(255,255,255,0.7); font-size: 11px; }
-            .row-total td { font-size: 15px; padding: 5px 0; }
-        }
-    </style>
+    /* Mengurangi sedikit spasi huruf di mobile jika nominal angka sangat panjang */
+    @media (max-width: 480px) {
+      .num-font { letter-spacing: -0.3px; }
+      td { padding: 2px 2px; }
+      th { padding: 12px 2px; }
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="loading-block" class="loading-overlay">
-    <div class="num-font" style="margin-bottom: 10px; font-size: 18px; animation: blink 1s infinite;">SINKRONISASI CLOUD...</div>
-    <div style="font-size: 12px; color: #64748B;">Memuat Data Segar Anti-Cache Browser</div>
-</div>
+  <div class="container">
+    <div class="banner-title">Laporan Pembayaran WiFi</div>
 
-<div class="container">
-    <div class="header-banner">
-        <h2>Laporan Pembayaran WiFi</h2>
+    <div class="main-box">
+      <div class="wifi-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="wifi-icon icon-blink">
+          <path fill-rule="evenodd" d="M.676 6.941A12.964 12.964 0 0 1 10 3c3.657 0 6.963 1.511 9.324 3.941a.75.75 0 0 1-.008 1.053l-.353.354a.75.75 0 0 1-1.069-.008C15.894 6.28 13.097 5 10 5 6.903 5 4.106 6.28 2.106 8.34a.75.75 0 0 1-1.069.008l-.353-.354a.75.75 0 0 1-.008-1.053Zm2.825 2.833A8.976 8.976 0 0 1 10 7a8.976 8.976 0 0 1 6.499 2.774.75.75 0 0 1-.011 1.049l-.354.354a.75.75 0 0 1-1.072-.012A6.978 6.978 0 0 0 10 9c-1.99 0-3.786.83-5.061 2.165a.75.75 0 0 1-1.073.012l-.354-.354a.75.75 0 0 1-.01-1.05Zm2.82 2.84A4.989 4.989 0 0 1 10 11c1.456 0 2.767.623 3.68 1.614a.75.75 0 0 1-.022 1.039l-.354.354a.75.75 0 0 1-1.085-.026A2.99 2.99 0 0 0 10 13c-.88 0-1.67.377-2.22.981a.75.75 0 0 1-1.084.026l-.354-.354a.75.75 0 0 1-.021-1.039Zm3.179 3.178a.75.75 0 1 1 1.06 1.06.75.75 0 0 1-1.06-1.06Z" clip-rule="evenodd"/>
+        </svg>
+        <span>SYSTEM ONLINE</span>
+      </div>
+      <div class="saldo-title">Saldo Akumulasi Saat Ini</div>
+      <div class="saldo-amount num-font" id="txt-saldo-akm">Rp 78.860</div>
     </div>
 
-    <div class="balance-card">
-        <div class="wifi-container">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="wifi-icon icon-blink">
-                <path fill-rule="evenodd" d="M.676 6.941A12.964 12.964 0 0 1 10 3c3.657 0 6.963 1.511 9.324 3.941a.75.75 0 0 1-.008 1.053l-.353.354a.75.75 0 0 1-1.069-.008C15.894 6.28 13.097 5 10 5 6.903 5 4.106 6.28 2.106 8.34a.75.75 0 0 1-1.069.008l-.353-.354a.75.75 0 0 1-.008-1.053Zm2.825 2.833A8.976 8.976 0 0 1 10 7a8.976 8.976 0 0 1 6.499 2.774.75.75 0 0 1-.011 1.049l-.354.354a.75.75 0 0 1-1.072-.012A6.978 6.978 0 0 0 10 9c-1.99 0-3.786.83-5.061 2.165a.75.75 0 0 1-1.073.012l-.354-.354a.75.75 0 0 1-.01-1.05Zm2.82 2.84A4.989 4.989 0 0 1 10 11c1.456 0 2.767.623 3.68 1.614a.75.75 0 0 1-.022 1.039l-.354.354a.75.75 0 0 1-1.085-.026A2.99 2.99 0 0 0 10 13c-.88 0-1.67.377-2.22.981a.75.75 0 0 1-1.084.026l-.354-.354a.75.75 0 0 1-.021-1.039Zm3.179 3.178a.75.75 0 1 1 1.06 1.06.75.75 0 0 1-1.06-1.06Z" clip-rule="evenodd"/>
-            </svg>
-            <span style="font-size:15px; letter-spacing:1px; font-weight: 900;">SYSTEM ONLINE</span>
+    <div class="grid-summary">
+      <div class="summary-card card-bayar">
+        <div class="card-title">Total Bayar</div>
+        <div class="card-amount-bayar num-font" id="txt-total-bayar">Rp 0</div>
+      </div>
+      <div class="summary-card card-tagihan">
+        <div class="card-title">Total Tagihan</div>
+        <div class="card-amount-tagihan num-font" id="txt-total-tagihan">Rp 0</div>
+      </div>
+    </div>
+
+    <button class="btn-input" onclick="bukaProsesInput()">Input Data Baru</button>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: left; padding-left: 8px;">BULAN</th>
+            <th class="num-font">PEMBAYARAN</th>
+            <th class="num-font">TAGIHAN</th>
+            <th class="num-font">SALDO</th>
+            <th>OPSI</th>
+            <th class="num-font" style="text-align: right; padding-right: 8px;">AKM. SALDO</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr>
+            <td colspan="6" style="color: #718096; padding: 25px;">Memuat data laporan WiFi...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">POWERED BY : MBS ID</div>
+  </div>
+
+  <div class="modal" id="modal-keypad-pin">
+    <div class="modal-content">
+      <h3>PIN Keamanan</h3>
+      <div class="pin-display" id="pin-dots"></div>
+      <div class="keypad-grid">
+        <button class="key-btn" onclick="tekanAngka('1')">1</button>
+        <button class="key-btn" onclick="tekanAngka('2')">2</button>
+        <button class="key-btn" onclick="tekanAngka('3')">3</button>
+        <button class="key-btn" onclick="tekanAngka('4')">4</button>
+        <button class="key-btn" onclick="tekanAngka('5')">5</button>
+        <button class="key-btn" onclick="tekanAngka('6')">6</button>
+        <button class="key-btn" onclick="tekanAngka('7')">7</button>
+        <button class="key-btn" onclick="tekanAngka('8')">8</button>
+        <button class="key-btn" onclick="tekanAngka('9')">9</button>
+        <button class="key-btn clear" onclick="hapusAngka()">C</button>
+        <button class="key-btn" onclick="tekanAngka('0')">0</button>
+        <button class="key-btn" style="background:#edf2f7;" onclick="tutupModal('modal-keypad-pin')">❌</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-input">
+    <div class="modal-content">
+      <h3>Input Transaksi Baru</h3>
+      <form id="form-wifi" onsubmit="submitForm(event)" style="margin-top: 15px;">
+        <div class="form-group">
+          <label>Bulan Periode</label>
+          <select id="inp-bulan" required>
+            <option value="JANUARI">JANUARI</option>
+            <option value="FEBRUARI">FEBRUARI</option>
+            <option value="MARET">MARET</option>
+            <option value="APRIL">APRIL</option>
+            <option value="MEI">MEI</option>
+            <option value="JUNI">JUNI</option>
+            <option value="JULI">JULI</option>
+            <option value="AGUSTUS">AGUSTUS</option>
+            <option value="SEPTEMBER">SEPTEMBER</option>
+            <option value="OKTOBER">OKTOBER</option>
+            <option value="NOVEMBER">NOVEMBER</option>
+            <option value="DESEMBER">DESEMBER</option>
+          </select>
         </div>
-        <span style="font-size:14px; text-transform:uppercase; font-weight:900; opacity:0.85;">Saldo Akumulasi Saat Ini</span>
-        <div id="dashboard-saldo" class="balance-amount num-font">Rp 0</div>
-    </div>
-
-    <div class="summary-row">
-        <div class="summary-box" style="border-bottom-color: var(--true-green);">
-            <span style="font-size:12px; font-weight:900; opacity:0.7; color: #718096; letter-spacing: 0.5px;">TOTAL BAYAR</span>
-            <div id="dashboard-bayar" class="summary-value num-font" style="color: var(--true-green);">Rp 0</div>
+        <div class="form-group">
+          <label>Tahun</label>
+          <select id="inp-tahun" required></select>
         </div>
-        <div class="summary-box" style="border-bottom-color: var(--true-red);">
-            <span style="font-size:12px; font-weight:900; opacity:0.7; color: #718096; letter-spacing: 0.5px;">TOTAL TAGIHAN</span>
-            <div id="dashboard-tagihan" class="summary-value num-font" style="color: var(--true-red);">Rp 0</div>
+        <div class="form-group">
+          <label>Pembayaran (Rp)</label>
+          <input type="number" id="inp-bayar" value="55000" min="0" required>
         </div>
+        <div class="form-group">
+          <label>Tagihan (Rp)</label>
+          <input type="number" id="inp-tagihan" value="52447" min="0" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="tutupModal('modal-input')">Batal</button>
+          <button type="submit" class="btn-submit" id="btn-submit-simpan">Simpan</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <button onclick="bukaVerifikasiPin('add')" class="btn-action">Input Data Baru</button>
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxsHJuEvV6JrrA7yMpRaRz0x035LVzrEGOGeFQUbtzM8nIjJOmTpBhNJyC10jX3klqM-A/exec";
+    let nilaiPin = "";
 
-    <div class="transaction-container">
-        <table>
-            <thead>
-            <tr>
-                <th style="width:25%; text-align: left; padding-left: 20px;">BULAN</th>
-                <th class="col-center">PEMBAYARAN</th>
-                <th class="col-center">TAGIHAN</th>
-                <th class="col-center">SALDO</th>
-                <th class="col-center" style="width:8%;">OPSI</th>
-                <th class="col-right" style="padding-right: 20px;">AKM. SALDO</th>
-            </tr>
-            </thead>
-            <tbody id="table-body"></tbody>
-        </table>
-    </div>
-    
-    <div class="footer-text">POWERED BY : MBS ID</div>
-</div>
-
-<div id="pin-modal" class="modal-overlay hidden">
-    <div class="modal-box">
-        <h3>PIN Otorisasi</h3>
-        <p style="font-size: 12px; color: #718096; margin-bottom: 20px;">Masukkan PIN Keamanan Akses</p>
-        <form onsubmit="prosesVerifikasiPin(event)">
-            <div class="form-group">
-                <input type="text" id="input-pin" inputmode="numeric" pattern="[0-9]*" placeholder="•••" style="text-align: center; font-size: 22px; letter-spacing: 6px; -webkit-text-security: disc;" required autocomplete="off">
-            </div>
-            <div class="modal-buttons">
-                <button type="button" onclick="tutupModal('pin-modal')" class="btn-flex btn-cancel">Batal</button>
-                <button type="submit" id="btn-submit-pin" class="btn-flex btn-save">Verifikasi</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div id="input-modal" class="modal-overlay hidden">
-    <div class="modal-box">
-        <h3>Input Transaksi Baru</h3>
-        <form onsubmit="simpanDataBaru(event)" style="margin-top: 15px;">
-            <div class="form-group">
-                <label>Bulan Periode</label>
-                <select id="form-bulan" required>
-                    <option value="JANUARI">JANUARI</option>
-                    <option value="FEBRUARI">FEBRUARI</option>
-                    <option value="MARET">MARET</option>
-                    <option value="APRIL">APRIL</option>
-                    <option value="MEI">MEI</option>
-                    <option value="JUNI">JUNI</option>
-                    <option value="JULI">JULI</option>
-                    <option value="AGUSTUS">AGUSTUS</option>
-                    <option value="SEPTEMBER">SEPTEMBER</option>
-                    <option value="OKTOBER">OKTOBER</option>
-                    <option value="NOVEMBER">NOVEMBER</option>
-                    <option value="DESEMBER">DESEMBER</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Tahun</label>
-                <select id="form-tahun" required></select>
-            </div>
-            <div class="form-group">
-                <label>Pembayaran (Rp)</label>
-                <input type="number" id="form-masuk" value="0" min="0" required>
-            </div>
-            <div class="form-group">
-                <label>Tagihan (Rp)</label>
-                <input type="number" id="form-keluar" value="0" min="0" required>
-            </div>
-            <div class="modal-buttons">
-                <button type="button" onclick="tutupModal('input-modal')" class="btn-flex btn-cancel">Batal</button>
-                <button type="submit" id="btn-submit-simpan" class="btn-flex btn-save">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyh6PzNvhx5LliA5R5gbMr4VhlbH-1dPQwi6LevWljhot13kympBHJqOUMlXqiRRxt4ZQ/exec";
-
-    let currentDatabase = [];
-    let sesiAksi = { tipe: null, indeks: null };
+    function formatMataUang(angka) {
+      return window.Intl ? new Intl.NumberFormat('id-ID').format(angka) : Number(angka).toLocaleString('id-ID');
+    }
 
     function BuatOpsiTahunSistem() {
-        const selectTahun = document.getElementById("form-tahun");
-        if (selectTahun) {
-            selectTahun.innerHTML = "";
-            for (let tahun = 2026; tahun <= 3000; tahun++) {
-                const opsi = document.createElement("option");
-                opsi.value = tahun;
-                opsi.innerText = tahun;
-                selectTahun.appendChild(opsi);
-            }
+      const selectTahun = document.getElementById("inp-tahun");
+      if (selectTahun) {
+        selectTahun.innerHTML = "";
+        for (let tahun = 2026; tahun <= 2035; tahun++) {
+          const opsi = document.createElement("option");
+          opsi.value = tahun;
+          opsi.innerText = tahun;
+          if(tahun === 2026) opsi.selected = true;
+          selectTahun.appendChild(opsi);
         }
+      }
     }
 
-    async function AmbilDataSistem() {
-        BuatOpsiTahunSistem();
-        document.getElementById("loading-block").classList.remove("hidden");
-        const hancurkanCache = new Date().getTime();
-        
-        try {
-            const respon = await fetch(`${WEB_APP_URL}?action=bacaData&nocache=${hancurkanCache}`, {
-                method: "GET", mode: "cors", cache: "no-store"
+    function loadDashboardData() {
+      BuatOpsiTahunSistem();
+      fetch(`${WEB_APP_URL}?action=getData`)
+        .then(response => response.json())
+        .then(res => {
+          if(res.error) {
+            alert("Gagal memuat data: " + res.error);
+            return;
+          }
+          
+          document.getElementById('txt-saldo-akm').innerText = "Rp " + formatMataUang(res.saldoAkumulasi);
+          document.getElementById('txt-total-bayar').innerText = "Rp " + formatMataUang(res.totalBayar);
+          document.getElementById('txt-total-tagihan').innerText = "Rp " + formatMataUang(res.totalTagihan);
+          
+          let tbody = document.getElementById('table-body');
+          tbody.innerHTML = "";
+          
+          res.listData.forEach(function(grup) {
+            let trBulan = document.createElement('tr');
+            trBulan.innerHTML = `<td colspan="6" class="row-month-header">${grup.namaBulan}</td>`;
+            tbody.appendChild(trBulan);
+            
+            grup.data.forEach(function(row) {
+              let trData = document.createElement('tr');
+              trData.innerHTML = `
+                <td class="txt-rincian">• Rincian Item</td>
+                <td class="num-font">${formatMataUang(row.bayar)}</td>
+                <td class="col-tagihan num-font">${formatMataUang(row.tagihan)}</td>
+                <td class="col-saldo num-font">${formatMataUang(row.saldo)}</td>
+                <td>
+                  <button class="btn-hapus" onclick="prosesHapusData('${row.id}')" title="Hapus Data">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                </td>
+                <td class="col-akm num-font" style="text-align: right; padding-right: 8px;">${formatMataUang(row.akmSaldo)}</td>
+              `;
+              tbody.appendChild(trData);
             });
-            const hasil = await respon.json();
-            if (hasil.success && hasil.data) {
-                SaringDanSimpanData(hasil.data);
-            } else {
-                MemuatDatabaseCadanganLokal();
-            }
-        } catch (error) {
-            console.error("Error loading cloud, fallback to local:", error);
-            MemuatDatabaseCadanganLokal();
-        } finally {
-            document.getElementById("loading-block").classList.add("hidden");
-            HitungDanRenderTabel();
-        }
-    }
-
-    async function RefreshDataSistemTanpaLoading() {
-        const hancurkanCache = new Date().getTime();
-        try {
-            const respon = await fetch(`${WEB_APP_URL}?action=bacaData&nocache=${hancurkanCache}`, {
-                method: "GET", mode: "cors", cache: "no-store"
-            });
-            const hasil = await respon.json();
-            if (hasil.success && hasil.data) {
-                SaringDanSimpanData(hasil.data);
-            }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            HitungDanRenderTabel();
-        }
-    }
-
-    function SaringDanSimpanData(dataMentah) {
-        const tempData = [];
-        dataMentah.forEach((item, index) => {
-            if (!item.bulan) return;
-            let bulanStr = String(item.bulan).toUpperCase().trim();
-            let bayar = parseInt(item.bayar) || 0;
-            let tagihan = parseInt(item.tagihan) || 0;
-
-            if (bayar > 10000000 || tagihan > 10000000) return;
-            if (bulanStr.includes("T") || bulanStr.includes("Z") || bulanStr.includes("-")) return;
-
-            tempData.push({
-                idxAsli: index,
-                bulan: bulanStr,
-                bayar: bayar,
-                tagihan: tagihan
-            });
-        });
-        currentDatabase = tempData;
-    }
-
-    function MemuatDatabaseCadanganLokal() {
-        const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
-        if (dataLokal) currentDatabase = JSON.parse(dataLokal);
-    }
-
-    function formatRupiah(angka) { return new Intl.NumberFormat('id-ID').format(angka); }
-    function formatRupiahUtuh(angka) { return "Rp " + new Intl.NumberFormat('id-ID').format(angka); }
-
-    function HitungDanRenderTabel() {
-        const tbody = document.getElementById("table-body");
-        tbody.innerHTML = "";
-
-        let globalTotalBayar = 0;
-        let globalTotalTagihan = 0;
-        let runningAkmSaldo = 0; 
-
-        const listGrupPeriode = [];
-        currentDatabase.forEach(item => {
-            if (!listGrupPeriode.includes(item.bulan)) listGrupPeriode.push(item.bulan);
-        });
-
-        listGrupPeriode.forEach((namaPeriode, indeksGrup) => {
-            const itemBulan = currentDatabase.filter(d => d.bulan === namaPeriode);
-            if (itemBulan.length === 0) return;
-
-            const rowBulanHeader = document.createElement("tr");
-            rowBulanHeader.className = "row-month";
-            rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px; color: var(--theme-month-bg); font-weight:900;">${namaPeriode}</td>`;
-            tbody.appendChild(rowBulanHeader);
-
-            let subTotalBayar = 0;
-            let subTotalTagihan = 0;
-            let subTotalSaldo = 0;
-
-            // SISTEM GRUP DINAMIS UNTUK SINKRONISASI TOTAL AKUMULASI GRUP JANUARI
-            if (indeksGrup === 0) {
-                let totalSaldoJanuariCloud = 0;
-                itemBulan.forEach(item => { totalSaldoJanuariCloud += (item.bayar - item.tagihan); });
-                runningAkmSaldo = 89072 - totalSaldoJanuariCloud;
-            }
-
-            itemBulan.forEach(item => {
-                subTotalBayar += item.bayar;
-                subTotalTagihan += item.tagihan;
-                
-                const saldoItem = item.bayar - item.tagihan;
-                subTotalSaldo += saldoItem;
-
-                globalTotalBayar += item.bayar;
-                globalTotalTagihan += item.tagihan;
-                runningAkmSaldo += saldoItem;
-
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td style="padding-left: 20px; color: #94A3B8; font-size:13px;">• Rincian Item</td>
-                    <td class="col-center num-font">${formatRupiah(item.bayar)}</td>
-                    <td class="col-center num-font" style="color: var(--true-red);">${formatRupiah(item.tagihan)}</td>
-                    <td class="col-center num-font ${saldoItem >= 0 ? 'plus' : 'minus-val'}">${formatRupiah(saldoItem)}</td>
-                    <td class="col-center">
-                        <button class="btn-delete-icon" onclick="bukaVerifikasiPin('delete', ${item.idxAsli})" title="Hapus Data">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                        </button>
-                    </td>
-                    <td class="col-right num-font" style="color: var(--theme-blue-text); padding-right: 20px;">${formatRupiah(runningAkmSaldo)}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            const rowTotalBulan = document.createElement("tr");
-            rowTotalBulan.className = "row-total";
-            rowTotalBulan.innerHTML = `
-                <td style="padding-left: 20px;">TOTAL</td>
-                <td class="col-center num-font">${formatRupiah(subTotalBayar)}</td>
-                <td class="col-center num-font">${formatRupiah(subTotalTagihan)}</td>
-                <td class="col-center num-font plus">${formatRupiah(subTotalSaldo)}</td>
-                <td class="col-center"></td>
-                <td class="col-right num-font" style="padding-right: 20px;">${formatRupiah(runningAkmSaldo)}</td>
+            
+            let trTotal = document.createElement('tr');
+            trTotal.className = "row-total-baris";
+            trTotal.innerHTML = `
+              <td>TOTAL</td>
+              <td class="num-font">${formatMataUang(grup.total.bayar)}</td>
+              <td class="num-font">${formatMataUang(grup.total.tagihan)}</td>
+              <td class="num-font col-saldo">${formatMataUang(grup.total.saldo)}</td>
+              <td></td>
+              <td class="num-font" style="text-align: right; padding-right: 8px;">${formatMataUang(grup.total.akmSaldo)}</td>
             `;
-            tbody.appendChild(rowTotalBulan);
+            tbody.appendChild(trTotal);
+          });
+        })
+        .catch(err => {
+          document.getElementById('table-body').innerHTML = `<tr><td colspan="6" style="color: var(--true-red); padding: 25px;">Menghubungkan ke server Google...</td></tr>`;
+          setTimeout(loadDashboardData, 2000); 
         });
-
-        document.getElementById("dashboard-saldo").innerText = formatRupiahUtuh(runningAkmSaldo);
-        document.getElementById("dashboard-bayar").innerText = formatRupiahUtuh(globalTotalBayar);
-        document.getElementById("dashboard-tagihan").innerText = formatRupiahUtuh(globalTotalTagihan);
-        
-        localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
     }
 
-    function bukaVerifikasiPin(tipe, indeks = null) {
-        sesiAksi.tipe = tipe;
-        sesiAksi.indeks = indeks;
-        const inputPin = document.getElementById("input-pin");
-        inputPin.value = "";
-        inputPin.placeholder = "•••"; 
-        inputPin.maxLength = 3;       
-        document.getElementById("pin-modal").classList.remove("hidden");
-        inputPin.focus();
+    window.onload = loadDashboardData;
+
+    function bukaProsesInput() {
+      nilaiPin = "";
+      updatePinDisplay();
+      document.getElementById('modal-keypad-pin').style.display = 'flex';
     }
 
-    function tutupModal(id) { document.getElementById(id).classList.add("hidden"); }
-
-    async function prosesVerifikasiPin(e) {
-        e.preventDefault();
-        const pinTerinput = document.getElementById("input-pin").value;
-        const btnSubmit = document.getElementById("btn-submit-pin");
-        btnSubmit.disabled = true;
-        btnSubmit.innerText = "PROSES...";
-
-        try {
-            const respon = await fetch(`${WEB_APP_URL}?action=verifikasiPin&pin=${pinTerinput}`, {
-                method: "GET", mode: "cors"
-            });
-            const hasil = await respon.json();
-            if (hasil.success || hasil.status === "SUCCESS") {
-                tutupModal("pin-modal");
-                if (sesiAksi.tipe === 'add') {
-                    document.getElementById("input-modal").classList.remove("hidden");
-                } else if (sesiAksi.tipe === 'delete') {
-                    eksekusiHapusData(sesiAksi.indeks);
-                }
-            } else {
-                alert(hasil.message || "⚠️ PIN Otorisasi Salah!");
-                document.getElementById("input-pin").value = "";
-                document.getElementById("input-pin").focus();
-            }
-        } catch (error) {
-            alert("⚠️ Masalah otorisasi jaringan.");
-        } finally {
-            btnSubmit.disabled = false;
-            btnSubmit.innerText = "VERIFIKASI";
-        }
+    function tekanAngka(angka) {
+      if (nilaiPin.length < 3) {
+        nilaiPin += angka;
+        updatePinDisplay();
+      }
+      if (nilaiPin.length === 3) {
+        setTimeout(verifikasiPinOtomatis, 200);
+      }
     }
 
-    async function simpanDataBaru(e) {
-        e.preventDefault();
-        const bulanSelect = document.getElementById("form-bulan").value;
-        const tahunSelect = document.getElementById("form-tahun").value;
-        const periodeGabungan = bulanSelect + " " + tahunSelect;
-        const masukVal = parseInt(document.getElementById("form-masuk").value) || 0;
-        const keluarVal = parseInt(document.getElementById("form-keluar").value) || 0;
-
-        const btnSimpan = document.getElementById("btn-submit-simpan");
-        btnSimpan.disabled = true;
-        btnSimpan.innerText = "KIRIM...";
-
-        try {
-            const respon = await fetch(WEB_APP_URL, {
-                method: "POST", mode: "cors", headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({ action: "simpanData", bulan: periodeGabungan, bayar: masukVal, tagihan: keluarVal })
-            });
-            const hasil = await respon.json();
-            if (hasil.success) {
-                tutupModal("input-modal");
-                localStorage.removeItem("WIFI_LOCAL_DB");
-                await RefreshDataSistemTanpaLoading(); 
-                alert(hasil.message || "Data berhasil disimpan!");
-                document.getElementById("form-masuk").value = 0;
-                document.getElementById("form-keluar").value = 0;
-            } else {
-                alert(hasil.message);
-            }
-        } catch (error) {
-            alert("⚠️ Gagal sinkronisasi data.");
-        } finally {
-            btnSimpan.disabled = false;
-            btnSimpan.innerText = "SIMPAN";
-        }
+    function hapusAngka() {
+      nilaiPin = nilaiPin.slice(0, -1);
+      updatePinDisplay();
     }
 
-    async function eksekusiHapusData(indeksRowAsli) {
-        if (confirm("Apakah Anda yakin ingin menghapus baris data transaksi ini langsung dari Cloud Spreadsheet?")) {
-            try {
-                const respon = await fetch(WEB_APP_URL, {
-                    method: "POST", mode: "cors", headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({ action: "hapusData", index: indeksRowAsli })
-                });
-                const hasil = await respon.json();
-                if (hasil.success) {
-                    localStorage.removeItem("WIFI_LOCAL_DB");
-                    await RefreshDataSistemTanpaLoading();
-                    alert(hasil.message || "Baris data berhasil dihapus.");
-                } else {
-                    alert(hasil.message || "Gagal menghapus.");
-                }
-            } catch (error) {
-                alert("⚠️ Gagal memotong baris transaksi cloud.");
-            }
-        }
+    function updatePinDisplay() {
+      let dots = "";
+      for (let i = 0; i < nilaiPin.length; i++) { dots += "•"; }
+      document.getElementById('pin-dots').innerText = dots || " ";
     }
 
-    window.onload = AmbilDataSistem;
-</script>
+    function verifikasiPinOtomatis() {
+      if (nilaiPin === "999") {
+        tutupModal('modal-keypad-pin');
+        document.getElementById('modal-input').style.display = 'flex';
+      } else {
+        alert("⚠️ PIN Salah! Akses ditolak.");
+        nilaiPin = "";
+        updatePinDisplay();
+      }
+    }
+
+    function tutupModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function submitForm(e) {
+      e.preventDefault();
+      let bulan = document.getElementById('inp-bulan').value;
+      let tahun = document.getElementById('inp-tahun').value;
+      let pembayaran = document.getElementById('inp-bayar').value;
+      let tagihan = document.getElementById('inp-tagihan').value;
+      
+      document.getElementById('table-body').innerHTML = `<tr><td colspan="6" style="color: #718096; padding: 20px;">Menyimpan data baru...</td></tr>`;
+      tutupModal('modal-input');
+
+      let urlKirim = `${WEB_APP_URL}?action=insert&bulan=${encodeURIComponent(bulan)}&tahun=${encodeURIComponent(tahun)}&pembayaran=${pembayaran}&tagihan=${tagihan}`;
+      fetch(urlKirim, { mode: 'no-cors' }).then(() => { setTimeout(loadDashboardData, 1500); });
+    }
+
+    function prosesHapusData(idBaris) {
+      if(confirm("Apakah Anda yakin ingin menghapus data baris ini?")) {
+        document.getElementById('table-body').innerHTML = `<tr><td colspan="6" style="color: #718096; padding: 20px;">Menghapus data...</td></tr>`;
+        let urlHapus = `${WEB_APP_URL}?action=delete&id=${idBaris}`;
+        fetch(urlHapus, { mode: 'no-cors' }).then(() => { setTimeout(loadDashboardData, 1500); });
+      }
+    }
+  </script>
 </body>
 </html>
