@@ -545,12 +545,12 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxMPdBavVfKoa-Iw0_bJR4lnGdDn3Ma0zBCG3VJYZ1-s4Km6QHcM9yUttE3bZt2031V0A/exec";
+    // NEW CODES VALID WEB URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyh6PzNvhx5LliA5R5gbMr4VhlbH-1dPQwi6LevWljhot13kympBHJqOUMlXqiRRxt4ZQ/exec";
 
     let currentDatabase = [];
     let sesiAksi = { tipe: null, indeks: null };
 
-    // Membuat dropdown tahun memanjang dari tahun 2026 sampai 3000
     function BuatOpsiTahunSistem() {
         const selectTahun = document.getElementById("form-tahun");
         if (selectTahun) {
@@ -564,38 +564,83 @@
         }
     }
 
-    // AMBIL DATA REAL-TIME ANTI-CACHE BROWSER MULTI-HP
     async function AmbilDataSistem() {
         BuatOpsiTahunSistem();
         document.getElementById("loading-block").classList.remove("hidden");
         
         const hancurkanCache = new Date().getTime();
         
+        // 10 SECONDS TIMEOUT FUNCTION
+        const pengendaliSinyal = new AbortController();
+        const ID_Waktu_Mundur = setTimeout(() => {
+            pengendaliSinyal.abort();
+            console.warn("Server busy, reading local database backup.");
+            document.getElementById("loading-block").classList.add("hidden");
+            MemuatDatabaseCadanganLokal();
+        }, 10000);
+        
         try {
             const respon = await fetch(`${WEB_APP_URL}?action=bacaData&nocache=${hancurkanCache}`, {
                 method: "GET",
                 mode: "cors",
-                cache: "no-store"
+                cache: "no-store",
+                signal: pengendaliSinyal.signal
             });
+            clearTimeout(ID_Waktu_Mundur);
             const hasil = await respon.json();
             
             if (hasil.success && hasil.data) {
-                currentDatabase = hasil.data.map(item => ({
-                    bulan: item.bulan,
-                    bayar: parseInt(item.bayar) || 0,
-                    tagihan: parseInt(item.tagihan) || 0
-                }));
+                const tempData = [];
+                hasil.data.forEach(item => {
+                    let bulanMentah = String(item.bulan).toUpperCase().trim();
+                    let bayarAngka = parseInt(item.bayar) || 0;
+                    let tagihanAngka = parseInt(item.tagihan) || 0;
+
+                    // FILTER FUNCTION: Auto block siluman nominal (lebih dari Rp 10 Juta)
+                    if (bayarAngka > 10000000 || tagihanAngka > 10000000) {
+                        return; 
+                    }
+
+                    // Cleaning Google Sheet Date ISO Format
+                    if (bulanMentah.includes("T") && bulanMentah.includes("-")) {
+                        const bagianTanggal = bulanMentah.split("T")[0]; 
+                        const komponen = bagianTanggal.split("-"); 
+                        if (komponen.length === 3) {
+                            const daftarBulan = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+                            const indeksBulan = parseInt(komponen[1]) - 1;
+                            if (indeksBulan >= 0 && indeksBulan < 12) {
+                                bulanMentah = daftarBulan[indeksBulan] + " " + komponen[0];
+                            }
+                        }
+                    }
+                    
+                    if (bulanMentah.includes("T") || bulanMentah.includes("-") || bulanMentah === "") {
+                        return;
+                    }
+
+                    tempData.push({
+                        bulan: bulanMentah,
+                        bayar: bayarAngka,
+                        tagihan: tagihanAngka
+                    });
+                });
+                currentDatabase = tempData;
             } else {
                 currentDatabase = [];
             }
         } catch (error) {
-            console.error("Koneksi Cloud Gagal, memuat cadangan terakhir offline perangkat:", error);
-            const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
-            if (dataLokal) currentDatabase = JSON.parse(dataLokal);
+            clearTimeout(ID_Waktu_Mundur);
+            console.error("Cloud Error, loading offline cache:", error);
+            MemuatDatabaseCadanganLokal();
         } finally {
             document.getElementById("loading-block").classList.add("hidden");
             HitungDanRenderTabel();
         }
+    }
+
+    function MemuatDatabaseCadanganLokal() {
+        const dataLokal = localStorage.getItem("WIFI_LOCAL_DB");
+        if (dataLokal) currentDatabase = JSON.parse(dataLokal);
     }
 
     function formatRupiah(angka) {
@@ -606,14 +651,13 @@
         return "Rp " + new Intl.NumberFormat('id-ID').format(angka);
     }
 
-    // FUNGSI SINKRONISASI: NOMINAL 89.072 DIKUNCI KHUSUS BULAN JANUARI
     function HitungDanRenderTabel() {
         const tbody = document.getElementById("table-body");
         tbody.innerHTML = "";
 
-        let globalAkmSaldo = 89072; // Kunci akumulasi awal bawaan khusus Januari
         let globalTotalBayar = 0;
         let globalTotalTagihan = 0;
+        let runningAkmSaldo = 78860; 
 
         const listGrupPeriode = [];
         currentDatabase.forEach(item => {
@@ -628,7 +672,6 @@
             const itemBulan = databaseDenganIndeks.filter(d => d.bulan === namaPeriode);
             if (itemBulan.length === 0) return;
 
-            // BARIS 1: BULAN
             const rowBulanHeader = document.createElement("tr");
             rowBulanHeader.className = "row-month";
             rowBulanHeader.innerHTML = `<td colspan="6" style="padding-left: 20px; color: var(--theme-month-bg); font-weight:900;">${namaPeriode}</td>`;
@@ -638,13 +681,13 @@
             let subTotalTagihan = 0;
             let subTotalSaldo = 0;
 
-            // FIX UTAMA: Jika ini grup pertama (Januari), pastikan nilai akumulasi dasarnya pas 89.072
+            // KUNCI JANUARI PERTAMA RP 89.072
             if (indeksGrup === 0) {
                 let hitungSaldoGrupPertama = 0;
                 itemBulan.forEach(item => {
                     hitungSaldoGrupPertama += (item.bayar - item.tagihan);
                 });
-                globalAkmSaldo = 89072 - hitungSaldoGrupPertama;
+                runningAkmSaldo = 89072 - hitungSaldoGrupPertama;
             }
 
             itemBulan.forEach(item => {
@@ -657,10 +700,8 @@
                 globalTotalBayar += item.bayar;
                 globalTotalTagihan += item.tagihan;
                 
-                // Estafet saldo akumulasi otomatis bertambah/berkurang di bulan selanjutnya
-                globalAkmSaldo += saldoItem;
+                runningAkmSaldo += saldoItem;
 
-                // BARIS 2 & 3: PEMBAYARAN DAN TAGIHAN
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td style="padding-left: 20px; color: #94A3B8; font-size:13px;">• Rincian Item</td>
@@ -677,12 +718,11 @@
                             </svg>
                         </button>
                     </td>
-                    <td class="col-right num-font" style="color: var(--theme-blue-text); padding-right: 20px;">${formatRupiah(globalAkmSaldo)}</td>
+                    <td class="col-right num-font" style="color: var(--theme-blue-text); padding-right: 20px;">${formatRupiah(runningAkmSaldo)}</td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // BARIS 5: TOTAL per Bulan
             const rowTotalBulan = document.createElement("tr");
             rowTotalBulan.className = "row-total";
             rowTotalBulan.innerHTML = `
@@ -691,20 +731,18 @@
                 <td class="col-center num-font">${formatRupiah(subTotalTagihan)}</td>
                 <td class="col-center num-font plus">${formatRupiah(subTotalSaldo)}</td>
                 <td class="col-center"></td>
-                <td class="col-right num-font" style="padding-right: 20px;">${formatRupiah(globalAkmSaldo)}</td>
+                <td class="col-right num-font" style="padding-right: 20px;">${formatRupiah(runningAkmSaldo)}</td>
             `;
             tbody.appendChild(rowTotalBulan);
         });
 
-        // Tampilkan total hitung berjalan paling mutakhir ke Dashboard Atas
-        document.getElementById("dashboard-saldo").innerText = formatRupiahUtuh(globalAkmSaldo);
+        document.getElementById("dashboard-saldo").innerText = formatRupiahUtuh(runningAkmSaldo);
         document.getElementById("dashboard-bayar").innerText = formatRupiahUtuh(globalTotalBayar);
         document.getElementById("dashboard-tagihan").innerText = formatRupiahUtuh(globalTotalTagihan);
         
         localStorage.setItem("WIFI_LOCAL_DB", JSON.stringify(currentDatabase));
     }
 
-    // Membuka modal PIN dan mengunci input maksimal 3 digit (PIN: 999)
     function bukaVerifikasiPin(tipe, indeks = null) {
         sesiAksi.tipe = tipe;
         sesiAksi.indeks = indeks;
@@ -720,7 +758,6 @@
         document.getElementById(id).classList.add("hidden");
     }
 
-    // VERIFIKASI PIN 999 KE SERVER CLOUD
     async function prosesVerifikasiPin(e) {
         e.preventDefault();
         const pinTerinput = document.getElementById("input-pin").value;
@@ -763,7 +800,6 @@
         }
     }
 
-    // SIMPAN TRANSAKSI BARU KE CLOUD
     async function simpanDataBaru(e) {
         e.preventDefault();
         const bulanSelect = document.getElementById("form-bulan").value;
@@ -772,8 +808,8 @@
         
         const masukVal = parseInt(document.getElementById("form-masuk").value) || 0;
         const keluarVal = parseInt(document.getElementById("form-keluar").value) || 0;
-        const btnSimpan = document.getElementById("btn-submit-simpan");
 
+        const btnSimpan = document.getElementById("btn-submit-simpan");
         btnSimpan.disabled = true;
         btnSimpan.innerText = "MENYIMPAN KE CLOUD...";
 
@@ -794,7 +830,11 @@
 
             if (hasil.success) {
                 tutupModal("input-modal");
+                
+                // Clear local cache forcing update
+                localStorage.removeItem("WIFI_LOCAL_DB");
                 await AmbilDataSistem(); 
+                
                 alert(hasil.message);
                 document.getElementById("form-masuk").value = 0;
                 document.getElementById("form-keluar").value = 0;
@@ -810,7 +850,6 @@
         }
     }
 
-    // HAPUS DATA LANGSUNG PADA BARIS SPREADSHEET CLOUD
     async function eksekusiHapusData(indeks) {
         if (confirm("Apakah Anda yakin ingin menghapus baris data transaksi ini langsung dari Cloud Spreadsheet?")) {
             document.getElementById("loading-block").classList.remove("hidden");
@@ -828,6 +867,7 @@
                 
                 const hasil = await respon.json();
                 if (hasil.success) {
+                    localStorage.removeItem("WIFI_LOCAL_DB");
                     await AmbilDataSistem();
                     alert("Baris data berhasil dihapus secara permanen dari Cloud.");
                 } else {
