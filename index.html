@@ -33,7 +33,7 @@
     
     body {
       background-color: var(--bg-light);
-      padding: 8px;
+      padding: 8px 4px; /* Optimasi padding agar mepet rata kanan kiri di mobile */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -45,7 +45,7 @@
       width: 100%;
       max-width: 750px;
       background: #ffffff;
-      padding: 4px;
+      padding: 0; /* Dibuat 0 agar seluruh elemen di dalamnya rata penuh kanan-kiri */
     }
 
     .num-font {
@@ -67,6 +67,7 @@
       border-radius: 14px;
       margin-bottom: 6px;
       text-transform: uppercase;
+      width: 100%;
     }
 
     /* Main Balance Box */
@@ -81,6 +82,7 @@
       flex-direction: column;
       align-items: center;
       box-shadow: 0 10px 25px rgba(143, 58, 241, 0.2);
+      width: 100%;
     }
 
     .wifi-container {
@@ -128,6 +130,7 @@
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
+      width: 100%;
     }
 
     .summary-card {
@@ -296,6 +299,7 @@
       margin-top: 20px;
       letter-spacing: 1px;
       text-transform: uppercase;
+      width: 100%;
     }
 
     /* MODAL BASE OVERLAY */
