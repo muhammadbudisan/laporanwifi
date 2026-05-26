@@ -33,19 +33,20 @@
     
     body {
       background-color: var(--bg-light);
-      padding: 8px 4px; /* Optimasi padding agar mepet rata kanan kiri di mobile */
+      padding: 8px 4px; /* Sisi kanan kiri dibuat mepet */
       display: flex;
       flex-direction: column;
       align-items: center;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden; /* Mencegah geser kanan pada body */
+      width: 100%;
     }
 
     .container {
       width: 100%;
-      max-width: 750px;
+      max-width: 100%; /* Mengubah 750px menjadi 100% agar mode desktop full penuh layar */
       background: #ffffff;
-      padding: 0; /* Dibuat 0 agar seluruh elemen di dalamnya rata penuh kanan-kiri */
+      padding: 0; 
     }
 
     .num-font {
@@ -141,7 +142,7 @@
       border-radius: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
       border-bottom: 12px solid;
-      min-width: 0; /* Mencegah flex child meluap */
+      min-width: 0; 
     }
 
     .card-bayar { border-bottom-color: var(--true-green); }
@@ -191,7 +192,7 @@
     /* Table System Styling */
     .table-container {
       width: 100%;
-      overflow-x: hidden; /* Dikunci agar tidak bisa digeser kanan kiri */
+      overflow-x: hidden; 
       background: white;
       border-radius: 20px;
       border: 1px solid var(--border-color);
@@ -203,7 +204,7 @@
       border-collapse: collapse;
       text-align: center;
       font-size: 13px;
-      table-layout: fixed; /* Mengunci lebar kolom agar presisi di semua device */
+      table-layout: fixed; 
     }
 
     th {
@@ -249,7 +250,7 @@
       text-overflow: ellipsis;
     }
 
-    /* Row Total - Gradien utuh tanpa sekat */
+    /* Row Total */
     .row-total-baris {
       background: linear-gradient(90deg, #2B76F7 0%, #8F3AF1 50%, #B636F2 100%) !important;
     }
@@ -362,7 +363,7 @@
     .key-btn:active { background: #CBD5E0; }
     .key-btn.clear { background: #fee2e2; color: var(--true-red); }
 
-    /* Pengaturan lebar kolom tabel secara presisi di layar HP/Desktop */
+    /* Lebar kolom tabel */
     th:nth-child(1), td:nth-child(1) { width: 24%; }
     th:nth-child(2), td:nth-child(2) { width: 21%; }
     th:nth-child(3), td:nth-child(3) { width: 19%; }
@@ -370,7 +371,6 @@
     th:nth-child(5), td:nth-child(5) { width: 8%; }
     th:nth-child(6), td:nth-child(6) { width: 14%; }
 
-    /* Mengurangi sedikit spasi huruf di mobile jika nominal angka sangat panjang */
     @media (max-width: 480px) {
       .num-font { letter-spacing: -0.3px; }
       td { padding: 2px 2px; }
