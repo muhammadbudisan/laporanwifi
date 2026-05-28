@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- ✅ PENTING: Tampilan penuh & skala terkunci -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LAPORAN PEMBAYARAN WIFI</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -15,30 +14,23 @@
             font-weight: bold;
             white-space: nowrap;
             text-transform: uppercase;
-            /* ✅ Hilangkan celah bawaan browser */
-            margin-block-start: 0;
-            margin-block-end: 0;
-            margin-inline-start: 0;
-            margin-inline-end: 0;
-            padding-inline-start: 0;
-            padding-inline-end: 0;
+            margin: 0;
+            padding: 0;
         }
 
         html, body {
             width: 100%;
             min-height: 100%;
-            /* ✅ TANPA CELAH KANAN KIRI */
             margin: 0 !important;
             padding: 0 !important;
             overflow-x: hidden;
             background-color: #ffffff;
         }
 
-        /* ✅ CONTAINER LEBAR PENUH 100% TANPA BATAS */
         .container {
             width: 100%;
             margin: 0 auto;
-            padding: 8px 0; /* Hanya atas bawah, kanan kiri = 0 */
+            padding: 8px 0;
         }
 
         .header-bar {
@@ -104,14 +96,12 @@
             border-bottom: 3px solid #dc2626; border-radius: 0 0 6px 6px; box-shadow: 0 2px 0 0 #ffffff;
             text-transform: none;
         }
-        /* ✅ TOMBOL PENUH & PASTI KLIKABLE */
         .input-bar {
             background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
             color: white; text-align: center; padding: 10px 0; border-radius: 10px;
             font-size: clamp(12px, 3vw, 16px); margin: 0 8px 8px 8px;
             cursor: pointer; transition: opacity 0.2s;
             width: calc(100% - 16px);
-            /* ✅ PENTING: Pastikan bisa diklik */
             pointer-events: auto !important;
             z-index: 10;
             position: relative;
@@ -277,7 +267,6 @@
             </div>
         </div>
 
-        <!-- ✅ TOMBOL DENGAN ID YANG PASTI DIBACA & BERFUNGSI -->
         <div class="input-bar" id="btnBukaPin">INPUT DATA BARU</div>
 
         <div class="table-container">
@@ -371,8 +360,7 @@
         const modalPin = document.getElementById('modalPin');
         const modalSimpan = document.getElementById('modalSimpan');
         const pinDisplay = document.getElementById('pinDisplay');
-        let inputPin = '';
-        let barisAkanDihapus = null;
+        let inputPin = ''; // ✅ PIN DISIMPAN DI SINI SAAT DIVERIFIKASI
 
         let bulanTerakhir = '05';
         let tahunTerakhir = '2026';
@@ -397,7 +385,6 @@
             document.getElementById('tagihan').value = 52447;
         }
 
-        // ✅ EVENT KLIK DIPERKUAT AGAR PASTI BERHASIL
         document.addEventListener('DOMContentLoaded', function() {
             const tombol = document.getElementById('btnBukaPin');
             if(tombol) {
@@ -413,21 +400,28 @@
             modalSimpan.style.display = 'none';
             inputPin = '';
             perbaruiTampilanPin();
-            barisAkanDihapus = null;
         }
 
         function hapusBaris(elemenBaris) {
-            barisAkanDihapus = elemenBaris;
+            const bulan = elemenBaris.dataset.bulan;
+            const tahun = elemenBaris.dataset.tahun;
+            const bayar = parseInt(elemenBaris.dataset.bayar);
+            const tagih = parseInt(elemenBaris.dataset.tagih);
+            const waktu = parseInt(elemenBaris.dataset.waktu);
+
             modalPin.style.display = 'flex';
             modalSimpan.style.display = 'none';
             inputPin = '';
             perbaruiTampilanPin();
+
+            window._hapusData = { bulan, tahun, bayar, tagih, waktu };
         }
 
         function tutupModal() {
             modalPin.style.display = 'none'; 
-            hapusAngka(); 
-            barisAkanDihapus=null;
+            modalSimpan.style.display = 'none';
+            inputPin = ''; 
+            window._hapusData = null;
         }
 
         function tekanAngka(angka) {
@@ -450,7 +444,7 @@
         }
 
         function cekPin() {
-            const aksi = barisAkanDihapus !== null ? 'hapus' : 'cek';
+            const aksi = window._hapusData ? 'hapus' : 'cek';
 
             axios.get(URL_APP, { params: { action: aksi, pin: inputPin } })
             .then(res => res.data)
@@ -458,28 +452,25 @@
                 if(data.sukses === false) { alert(data.pesan); hapusAngka(); return; }
 
                 modalPin.style.display = 'none';
-                hapusAngka();
 
-                if(barisAkanDihapus !== null) {
-                    const bulan = barisAkanDihapus.dataset.bulan;
-                    const tahun = barisAkanDihapus.dataset.tahun;
-                    const bayar = parseInt(barisAkanDihapus.dataset.bayar);
-                    const tagih = parseInt(barisAkanDihapus.dataset.tagih);
-                    const waktu = parseInt(barisAkanDihapus.dataset.waktu);
-
+                if(window._hapusData) {
+                    const { bulan, tahun, bayar, tagih, waktu } = window._hapusData;
                     axios.get(URL_APP, { params: { action: 'hapus', pin: inputPin, bulan, tahun, bayar, tagih, waktu } })
                     .then(res => res.data)
-                    .then(dataHapus => { if(dataHapus.sukses) ambilDataDariSheet(); else alert("Gagal hapus: " + dataHapus.pesan); });
-                    
-                    barisAkanDihapus = null;
+                    .then(hapusRes => {
+                        if(hapusRes.sukses) ambilDataDariSheet();
+                        else alert("❌ Gagal hapus: " + hapusRes.pesan);
+                    });
+                    window._hapusData = null;
                 } else {
                     modalSimpan.style.display = 'flex';
                     setTanggalTerakhir();
                 }
             })
-            .catch(err => alert("Terjadi kesalahan koneksi: " + err));
+            .catch(err => alert("⚠️ Kesalahan koneksi: " + err));
         }
 
+        // ✅ PERBAIKAN UTAMA: PIN DIKIRIM ULANG SAAT SIMPAN
         function simpanData() {
             const bulanPilih = document.getElementById('bulan').value;
             const tahunPilih = document.getElementById('tahun').value;
@@ -491,7 +482,16 @@
             bulanTerakhir = bulanPilih;
             tahunTerakhir = tahunPilih;
 
-            axios.get(URL_APP, { params: { action: 'simpan', pin: inputPin, bulan: bulanPilih, tahun: tahunPilih, bayar, tagih } })
+            axios.get(URL_APP, { 
+                params: { 
+                    action: 'simpan', 
+                    pin: inputPin, // ✅ PIN yang benar dikirim di sini
+                    bulan: bulanPilih, 
+                    tahun: tahunPilih, 
+                    bayar, 
+                    tagih 
+                } 
+            })
             .then(res => res.data)
             .then(data => {
                 if(data.sukses) {
@@ -499,33 +499,35 @@
                     document.getElementById('pembayaran').value = 55000;
                     document.getElementById('tagihan').value = 52447;
                     modalSimpan.style.display = 'none';
-                } else alert("Gagal simpan: " + data.pesan);
+                    alert("✅ DATA BERHASIL DISIMPAN!");
+                } else {
+                    alert("❌ Gagal simpan: " + data.pesan);
+                }
             })
-            .catch(err => alert("Error: " + err));
+            .catch(err => alert("⚠️ Kesalahan: " + err));
         }
 
         function ambilDataDariSheet() {
             axios.get(URL_APP, { params: { action: 'ambil' } })
             .then(res => res.data)
             .then(res => {
-                if(res.error) { alert("Error: " + res.error); return; }
+                if(res.error) { alert("❌ Error: " + res.error); return; }
 
                 dataPerBulan = {};
                 res.data.forEach(item => {
                     const namaBulan = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-                    if(!dataPerBulan[namaBulan]) dataPerBulan[namaBulan] = { bayar:0, tagih:0, saldo:0, jumlahData:0, rincian:[] };
+                    if(!dataPerBulan[namaBulan]) dataPerBulan[namaBulan] = { bayar:0, tagih:0, saldo:0, rincian:[] };
                     dataPerBulan[namaBulan].rincian.push(item);
                     dataPerBulan[namaBulan].bayar += item.pembayaran;
                     dataPerBulan[namaBulan].tagih += item.tagihan;
                     dataPerBulan[namaBulan].saldo += item.selisih;
-                    dataPerBulan[namaBulan].jumlahData += 1;
                 });
 
                 saldoAkumulasiAkhir = res.saldoAkhir;
                 tampilkanUlangSemuaData();
                 perbaruiTampilanTotal();
             })
-            .catch(err => alert("Gagal ambil data: " + err));
+            .catch(err => alert("❌ Gagal ambil data: " + err));
         }
 
         function tampilkanUlangSemuaData() {
