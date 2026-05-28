@@ -97,126 +97,174 @@
             </div>
             <div class="form-group"><label>PEMBAYARAN (Rp)</label><input type="number" id="pembayaran" value="55000"></div>
             <div class="form-group"><label>TAGIHAN (Rp)</label><input type="number" id="tagihan" value="52447"></div>
-            <button class="btn-simpan-data" onclick="simpanData()">SIMPAN</button>
+            <button class="btn-simpan-data" id="tombolSimpan">SIMPAN</button>
         </div>
     </div>
 
     <script>
-        // ✅ PIN TERSEMBUNYI DI SINI, TIDAK MUNCUL DI HTML
-        const PIN_TETAP = "999";
-        const URL_APP = "https://script.google.com/macros/s/AKfycbxsHJuEvV6JrrA7yMpRaRz0x035LVzrEGOGeFQUbtzM8nIjJOmTpBhNJyC10jX3klqM-A/exec";
-        const modalSimpan = document.getElementById('modalSimpan');
+        // 🔒 SEMUA KUNCI & KONFIGURASI RAHASIA DI SINI - TIDAK ADA DI HTML
+        const KUNCI_PIN_TETAP = "999";
+        const ALAMAT_API = "https://script.google.com/macros/s/AKfycbxsHJuEvV6JrrA7yMpRaRz0x035LVzrEGOGeFQUbtzM8nIjJOmTpBhNJyC10jX3klqM-A/exec";
+        const MODAL = document.getElementById('modalSimpan');
 
-        const urutanBulan = {
+        // Urutan pengurutan nama bulan
+        const URUTAN_BULAN = {
             'JANUARI 2026':1,'FEBRUARI 2026':2,'MARET 2026':3,'APRIL 2026':4,'MEI 2026':5,'JUNI 2026':6,'JULI 2026':7,'AGUSTUS 2026':8,'SEPTEMBER 2026':9,'OKTOBER 2026':10,'NOVEMBER 2026':11,'DESEMBER 2026':12,
             'JANUARI 2025':13,'FEBRUARI 2025':14,'MARET 2025':15,'APRIL 2025':16,'MEI 2025':17,'JUNI 2025':18,'JULI 2025':19,'AGUSTUS 2025':20,'SEPTEMBER 2025':21,'OKTOBER 2025':22,'NOVEMBER 2025':23,'DESEMBER 2025':24,
             'JANUARI 2024':25,'FEBRUARI 2024':26,'MARET 2024':27,'APRIL 2024':28,'MEI 2024':29,'JUNI 2024':30,'JULI 2024':31,'AGUSTUS 2024':32,'SEPTEMBER 2024':33,'OKTOBER 2024':34,'NOVEMBER 2024':35,'DESEMBER 2024':36
         };
 
+        // Inisialisasi Halaman
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('btnBuka').addEventListener('click', () => {
-                modalSimpan.style.display = 'flex';
+                MODAL.style.display = 'flex';
                 document.getElementById('bulan').value = '05';
                 document.getElementById('tahun').value = '2026';
                 document.getElementById('pembayaran').value = '55000';
                 document.getElementById('tagihan').value = '52447';
             });
-            ambilDataDariSheet();
+
+            // Event tombol simpan dihubungkan DI SINI, bukan di HTML
+            document.getElementById('tombolSimpan').addEventListener('click', prosesSimpanData);
+
+            ambilDanTampilkanData();
         });
 
-        async function ambilDataDariSheet() {
+        // Ambil data dari Server
+        async function ambilDanTampilkanData() {
             try {
-                const res = await axios.get(URL_APP, { params: { action: 'ambil' } });
+                const res = await axios.get(ALAMAT_API, { params: { action: 'ambil' } });
                 const data = res.data;
-                if(data.error) return alert("❌ Error: " + data.error);
+                if(data.error) return alert("❌ Kesalahan: " + data.error);
 
-                const dataPerBulan = {};
+                const daftarPerBulan = {};
                 data.data.forEach(item => {
-                    const blnPanjang = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-                    if(!dataPerBulan[blnPanjang]) dataPerBulan[blnPanjang] = { bayar:0, tagih:0, saldo:0, rincian:[] };
-                    dataPerBulan[blnPanjang].rincian.push(item);
-                    dataPerBulan[blnPanjang].bayar += item.pembayaran;
-                    dataPerBulan[blnPanjang].tagih += item.tagihan;
-                    dataPerBulan[blnPanjang].saldo += item.selisih;
+                    const namaBulan = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
+                    if(!daftarPerBulan[namaBulan]) daftarPerBulan[namaBulan] = { bayar:0, tagih:0, saldo:0, rincian:[] };
+                    daftarPerBulan[namaBulan].rincian.push(item);
+                    daftarPerBulan[namaBulan].bayar += item.pembayaran;
+                    daftarPerBulan[namaBulan].tagih += item.tagihan;
+                    daftarPerBulan[namaBulan].saldo += item.selisih;
                 });
 
                 document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
-                tampilkanUlang(dataPerBulan);
-                perbaruiTotal(dataPerBulan);
-            } catch(e) { alert("❌ Gagal ambil data: " + e); }
+                tampilkanKeTabel(daftarPerBulan);
+                hitungTotal(daftarPerBulan);
+            } catch(e) { alert("❌ Gagal memuat data: " + e); }
         }
 
-        function tampilkanUlang(dataPerBulan) {
+        // Tampilkan data ke tabel
+        function tampilkanKeTabel(daftarPerBulan) {
             const wadah = document.getElementById('isiTabel');
             wadah.innerHTML = '';
-            Object.keys(dataPerBulan).sort((a,b) => (urutanBulan[a]||999)-(urutanBulan[b]||999)).forEach(bln => {
-                wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan" colspan="6">${bln}</div></div>`;
-                let akhiran = 0;
-                dataPerBulan[bln].rincian.sort((a,b) => a.waktu-b.waktu).forEach(item => {
-                    akhiran = item.akumulasi;
+
+            Object.keys(daftarPerBulan).sort((a,b) => (URUTAN_BULAN[a]||999)-(URUTAN_BULAN[b]||999)).forEach(bln => {
+                wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan">${bln}</div></div>`;
+                let saldoAkhirBulan = 0;
+
+                daftarPerBulan[bln].rincian.sort((a,b) => a.waktu-b.waktu).forEach(baris => {
+                    saldoAkhirBulan = baris.akumulasi;
                     wadah.innerHTML += `
-                        <div class="table-row" data-bulan="${item.bulan}" data-tahun="${item.tahun}" data-bayar="${item.pembayaran}" data-tagih="${item.tagihan}" data-waktu="${item.waktu}">
+                        <div class="table-row">
                             <div class="table-cell"></div>
-                            <div class="table-cell nilai-bayar">${item.pembayaran.toLocaleString('id-ID')}</div>
-                            <div class="table-cell nilai-tagih">${item.tagihan.toLocaleString('id-ID')}</div>
-                            <div class="table-cell nilai-saldo">${item.selisih.toLocaleString('id-ID')}</div>
-                            <div class="table-cell"><span class="icon-hapus" onclick="hapusBaris(this.parentElement.parentElement)">🗑</span></div>
-                            <div class="table-cell nilai-akm">${item.akumulasi.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-bayar">${baris.pembayaran.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-tagih">${baris.tagihan.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-saldo">${baris.selisih.toLocaleString('id-ID')}</div>
+                            <div class="table-cell"><span class="icon-hapus" data-hapus-bln="${baris.bulan}" data-hapus-thn="${baris.tahun}" data-hapus-byr="${baris.pembayaran}" data-hapus-tgh="${baris.tagihan}" data-hapus-wkt="${baris.waktu}">🗑</span></div>
+                            <div class="table-cell nilai-akm">${baris.akumulasi.toLocaleString('id-ID')}</div>
                         </div>`;
                 });
+
                 wadah.innerHTML += `
-                    <div class="table-total" data-bulan="${bln}">
+                    <div class="table-total">
                         <div class="table-cell">TOTAL</div>
-                        <div class="table-cell">${dataPerBulan[bln].bayar.toLocaleString('id-ID')}</div>
-                        <div class="table-cell">${dataPerBulan[bln].tagih.toLocaleString('id-ID')}</div>
-                        <div class="table-cell">${dataPerBulan[bln].saldo.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${daftarPerBulan[bln].bayar.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${daftarPerBulan[bln].tagih.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${daftarPerBulan[bln].saldo.toLocaleString('id-ID')}</div>
                         <div class="table-cell"></div>
-                        <div class="table-cell">${akhiran.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${saldoAkhirBulan.toLocaleString('id-ID')}</div>
                     </div>`;
+            });
+
+            // Event Hapus dipasang DI SINI setelah tabel jadi, aman & rapi
+            document.querySelectorAll('.icon-hapus').forEach(el => {
+                el.addEventListener('click', () => {
+                    const dataHapus = {
+                        bulan: el.getAttribute('data-hapus-bln'),
+                        tahun: el.getAttribute('data-hapus-thn'),
+                        bayar: parseInt(el.getAttribute('data-hapus-byr')),
+                        tagih: parseInt(el.getAttribute('data-hapus-tgh')),
+                        waktu: parseInt(el.getAttribute('data-hapus-wkt'))
+                    };
+                    konfirmasiDanHapus(dataHapus);
+                });
             });
         }
 
-        function perbaruiTotal(dataPerBulan) {
-            let tBayar = 0, tTagih = 0;
-            Object.values(dataPerBulan).forEach(v => { tBayar += v.bayar; tTagih += v.tagih; });
-            document.getElementById('totalBayar').textContent = `Rp ${tBayar.toLocaleString('id-ID')}`;
-            document.getElementById('totalTagihan').textContent = `Rp ${tTagih.toLocaleString('id-ID')}`;
+        function hitungTotal(daftarPerBulan) {
+            let totalBayar = 0, totalTagihan = 0;
+            Object.values(daftarPerBulan).forEach(v => { totalBayar += v.bayar; totalTagihan += v.tagih; });
+            document.getElementById('totalBayar').textContent = `Rp ${totalBayar.toLocaleString('id-ID')}`;
+            document.getElementById('totalTagihan').textContent = `Rp ${totalTagihan.toLocaleString('id-ID')}`;
         }
 
-        async function simpanData() {
+        // 🛡 FUNGSI SIMPAN - Kirim PIN Otomatis
+        async function prosesSimpanData() {
             const bulan = document.getElementById('bulan').value;
             const tahun = document.getElementById('tahun').value;
             const bayar = parseInt(document.getElementById('pembayaran').value) || 0;
             const tagih = parseInt(document.getElementById('tagihan').value) || 0;
-            if(!bulan || !tahun) return alert("⚠️ Pilih Bulan & Tahun!");
+
+            if(!bulan || !tahun) return alert("⚠️ Silakan pilih Bulan & Tahun dengan benar!");
+
             try {
-                const res = await axios.get(URL_APP, { params: { action:'simpan', pin:PIN_TETAP, bulan, tahun, bayar, tagih } });
+                const res = await axios.get(ALAMAT_API, { 
+                    params: { 
+                        action: 'simpan', 
+                        pin: KUNCI_PIN_TETAP, 
+                        bulan, 
+                        tahun, 
+                        bayar, 
+                        tagih 
+                    } 
+                });
                 if(res.data.sukses) {
-                    modalSimpan.style.display = 'none';
-                    await ambilDataDariSheet();
-                    alert("✅ DATA DISIMPAN");
-                } else alert("❌ " + res.data.pesan);
-            } catch(e) { alert("❌ Gagal simpan: " + e); }
+                    MODAL.style.display = 'none';
+                    await ambilDanTampilkanData();
+                    alert("✅ DATA BERHASIL DISIMPAN DENGAN AMAN!");
+                } else {
+                    alert("❌ " + res.data.pesan);
+                }
+            } catch(e) { alert("❌ Gagal menyimpan: " + e); }
         }
 
-        async function hapusBaris(el) {
-            const bulan = el.dataset.bulan;
-            const tahun = el.dataset.tahun;
-            const bayar = parseInt(el.dataset.bayar);
-            const tagih = parseInt(el.dataset.tagih);
-            const waktu = parseInt(el.dataset.waktu);
-            if(!bulan || !tahun || !waktu) return alert("❌ Data tidak lengkap");
-            if(!confirm("YAKIN INGIN HAPUS DATA INI?")) return;
+        // 🛡 FUNGSI HAPUS - Kirim PIN Otomatis
+        async function konfirmasiDanHapus(data) {
+            if(!confirm("⚠️ YAKIN INGIN MENGHAPUS DATA INI TANPA BISA DIKEMBALIKAN?")) return;
+
             try {
-                const res = await axios.get(URL_APP, { params: { action:'hapus', pin:PIN_TETAP, bulan, tahun, bayar, tagih, waktu } });
+                const res = await axios.get(ALAMAT_API, { 
+                    params: { 
+                        action: 'hapus', 
+                        pin: KUNCI_PIN_TETAP, 
+                        bulan: data.bulan, 
+                        tahun: data.tahun, 
+                        bayar: data.bayar, 
+                        tagih: data.tagih, 
+                        waktu: data.waktu 
+                    } 
+                });
                 if(res.data.sukses) {
-                    await ambilDataDariSheet();
-                    alert("✅ DATA DIHAPUS");
-                } else alert("❌ " + res.data.pesan);
-            } catch(e) { alert("❌ Gagal hapus: " + e); }
+                    await ambilDanTampilkanData();
+                    alert("✅ DATA BERHASIL DIHAPUS SECARA AMAN!");
+                } else {
+                    alert("❌ " + res.data.pesan);
+                }
+            } catch(e) { alert("❌ Gagal menghapus: " + e); }
         }
 
-        window.onclick = e => { if(e.target === modalSimpan) modalSimpan.style.display = 'none'; };
+        // Tutup modal jika klik luar
+        window.onclick = e => { if(e.target === MODAL) MODAL.style.display = 'none'; };
     </script>
 </body>
 </html>
