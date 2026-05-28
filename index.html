@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- ✅ PENTING: Tampilan penuh & skala terkunci -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LAPORAN PEMBAYARAN WIFI</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
@@ -10,18 +11,40 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             font-weight: bold;
             white-space: nowrap;
             text-transform: uppercase;
+            /* ✅ Hilangkan celah bawaan browser */
+            margin-block-start: 0;
+            margin-block-end: 0;
+            margin-inline-start: 0;
+            margin-inline-end: 0;
+            padding-inline-start: 0;
+            padding-inline-end: 0;
         }
-        body { background-color: #ffffff; padding: 8px; overflow-x: hidden; }
-        .container { max-width: 1080px; margin: 0 auto; }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            /* ✅ TANPA CELAH KANAN KIRI */
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden;
+            background-color: #ffffff;
+        }
+
+        /* ✅ CONTAINER LEBAR PENUH 100% TANPA BATAS */
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 8px 0; /* Hanya atas bawah, kanan kiri = 0 */
+        }
 
         .header-bar {
             background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
             color: white; text-align: center; padding: 12px 0; border-radius: 10px;
-            font-weight: 900; font-size: clamp(14px, 3.2vw, 22px); letter-spacing: 0.5px; margin-bottom: 8px;
+            font-weight: 900; font-size: clamp(14px, 3.2vw, 22px); letter-spacing: 0.5px; margin: 0 8px 8px 8px;
             animation: terbang 2s ease-in-out infinite alternate;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
@@ -29,7 +52,7 @@
 
         .saldo-card {
             background: linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
-            border-radius: 10px; padding: 15px 8px; text-align: center; color: white; margin-bottom: 8px;
+            border-radius: 10px; padding: 15px 8px; text-align: center; color: white; margin: 0 8px 8px 8px;
         }
         .system-online {
             display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -64,11 +87,11 @@
             text-shadow: 0 4px 6px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08);
             transform: translateY(-3px); position: relative; z-index: 2; text-transform: none;
         }
-        .total-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+        .total-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 8px 8px 8px; width: calc(100% - 16px); }
         .total-box {
             background-color: #ffffff; border-radius: 10px; padding: 12px 4px 6px 4px;
             text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            position: relative; overflow: hidden;
+            width: 100%;
         }
         .total-label { font-size: clamp(9px, 2.2vw, 14px); color: #6b7280; margin-bottom: 3px; }
         .total-bayar {
@@ -81,25 +104,36 @@
             border-bottom: 3px solid #dc2626; border-radius: 0 0 6px 6px; box-shadow: 0 2px 0 0 #ffffff;
             text-transform: none;
         }
+        /* ✅ TOMBOL PENUH & PASTI KLIKABLE */
         .input-bar {
             background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            color: white; text-align: center; padding: 8px 0; border-radius: 10px;
-            font-size: clamp(12px, 3vw, 16px); margin-bottom: 8px; cursor: pointer; transition: opacity 0.2s;
+            color: white; text-align: center; padding: 10px 0; border-radius: 10px;
+            font-size: clamp(12px, 3vw, 16px); margin: 0 8px 8px 8px;
+            cursor: pointer; transition: opacity 0.2s;
+            width: calc(100% - 16px);
+            /* ✅ PENTING: Pastikan bisa diklik */
+            pointer-events: auto !important;
+            z-index: 10;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
-        .input-bar:hover { opacity: 0.9; }
+        .input-bar:active { opacity: 0.8; transform: scale(0.99); }
+
         .table-container {
             border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
-            width: 100%; margin-bottom: 4px;
+            width: calc(100% - 16px); margin: 0 8px 4px 8px;
         }
         .table-header, .table-row, .table-total {
             display: grid; grid-template-columns: 2.2fr 1.3fr 1.3fr 1.3fr 0.8fr 1.6fr;
             width: 100%; gap: 0;
         }
         .table-header { background-color: #eff6ff; padding: 4px 0; }
-        .table-row { background-color: #ffffff; padding: 1px 0; border-bottom: 1px solid #f3f4f6; }
+        .table-row { background-color: #ffffff; padding: 1px 0; border-bottom: 1px solid #f3f4f6; width: 100%; }
         .table-cell {
             text-align: center; padding: 1px 2px; font-size: clamp(9px, 2.2vw, 13px);
             display: flex; align-items: center; justify-content: center; line-height: 1.1;
+            width: 100%;
         }
         .nama-bulan {
             color: #2563eb; justify-content: flex-start; padding-left: 8px;
@@ -112,7 +146,7 @@
         .nilai-akm { color: #2563eb; text-transform: none; }
         .table-total {
             background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            color: white; padding: 2px 0; font-weight: 900;
+            color: white; padding: 2px 0; font-weight: 900; width: 100%;
         }
         .table-total .table-cell:first-child {
             font-size: clamp(12px, 3vw, 18px); font-weight: 900; letter-spacing: 0.5px;
@@ -121,6 +155,7 @@
         .icon-hapus {
             font-size: 7px; cursor: pointer; color: #ff0000; transition: 0.2s;
             text-shadow: 0 0 2px rgba(255, 0, 0, 0.6);
+            pointer-events: auto;
         }
         .icon-hapus:hover { transform: scale(1.5); }
 
@@ -131,7 +166,7 @@
         }
         .modal-content {
             background-color: #ffffff; border-radius: 16px; padding: 20px;
-            width: 100%; max-width: 340px; text-align: center;
+            width: calc(100% - 16px); max-width: 340px; text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .icon-kunci {
@@ -157,27 +192,30 @@
             width: 8px; height: 8px; background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
             border-radius: 50%; margin: 0 4px;
         }
-        .tombol-aksi { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tombol-aksi { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
         .btn-batal {
             flex: 1; padding: 10px 0; border: none; border-radius: 8px;
             background-color: #e2e8f0; color: #334155; font-weight: bold;
             font-size: clamp(13px, 3vw, 16px); cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         .btn-verifikasi {
             flex: 1; padding: 10px 0; border: none; border-radius: 8px;
             background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
             color: white; font-weight: bold; font-size: clamp(13px, 3vw, 16px); cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         .keypad {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
             background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            padding: 12px; border-radius: 12px;
+            padding: 12px; border-radius: 12px; width: 100%;
         }
         .key {
             padding: 14px 5px; font-size: clamp(16px, 4vw, 20px); border: none; border-radius: 8px;
             background-color: #ffffff; color: #1e293b; cursor: pointer; transition: 0.2s; font-weight: bold;
+            -webkit-tap-highlight-color: transparent;
         }
-        .key:hover { background-color: #f1f5f9; }
+        .key:active { background-color: #e2e8f0; transform: scale(0.95); }
         .key-hapus { background-color: #ffffff; color: #dc2626; font-size: 18px; }
         .key-ok { background-color: #1d4ed8; color: white; font-size: 18px; }
 
@@ -188,6 +226,7 @@
         }
         .form-group {
             display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; text-align: left;
+            width: 100%;
         }
         .form-group label { font-size: clamp(11px, 2.8vw, 14px); color: #334155; }
         .form-group input, .form-group select {
@@ -199,11 +238,13 @@
             background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
             color: white; border: none; padding: 10px 0; border-radius: 8px;
             font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%;
+            -webkit-tap-highlight-color: transparent;
         }
-        .btn-simpan-data:hover { opacity: 0.9; }
+        .btn-simpan-data:active { opacity: 0.9; transform: scale(0.98); }
         .footer-text {
             text-align: center; font-size: clamp(9px, 2vw, 13px); color: #94a3b8;
-            margin-top: 10px; letter-spacing: 0.5px;
+            margin-top: 10px; margin-bottom: 15px; letter-spacing: 0.5px;
+            width: 100%;
         }
     </style>
 </head>
@@ -236,6 +277,7 @@
             </div>
         </div>
 
+        <!-- ✅ TOMBOL DENGAN ID YANG PASTI DIBACA & BERFUNGSI -->
         <div class="input-bar" id="btnBukaPin">INPUT DATA BARU</div>
 
         <div class="table-container">
@@ -293,7 +335,7 @@
                         <option value="02">Februari</option>
                         <option value="03">Maret</option>
                         <option value="04">April</option>
-                        <option value="05">Mei</option>
+                        <option value="05" selected>Mei</option>
                         <option value="06">Juni</option>
                         <option value="07">Juli</option>
                         <option value="08">Agustus</option>
@@ -355,13 +397,24 @@
             document.getElementById('tagihan').value = 52447;
         }
 
-        document.getElementById('btnBukaPin').addEventListener('click', function() {
+        // ✅ EVENT KLIK DIPERKUAT AGAR PASTI BERHASIL
+        document.addEventListener('DOMContentLoaded', function() {
+            const tombol = document.getElementById('btnBukaPin');
+            if(tombol) {
+                tombol.addEventListener('click', fungsiBukaModal, { passive: true });
+                tombol.addEventListener('touchend', fungsiBukaModal, { passive: true });
+            }
+            ambilDataDariSheet();
+        });
+
+        function fungsiBukaModal(e) {
+            if(e) e.preventDefault();
             modalPin.style.display = 'flex';
             modalSimpan.style.display = 'none';
             inputPin = '';
             perbaruiTampilanPin();
             barisAkanDihapus = null;
-        });
+        }
 
         function hapusBaris(elemenBaris) {
             barisAkanDihapus = elemenBaris;
@@ -424,7 +477,7 @@
                     setTanggalTerakhir();
                 }
             })
-            .catch(err => alert("Terjadi kesalahan koneksi"));
+            .catch(err => alert("Terjadi kesalahan koneksi: " + err));
         }
 
         function simpanData() {
@@ -482,13 +535,13 @@
             urutanKunci.forEach(kunciBulan => {
                 const barisNama = document.createElement('div');
                 barisNama.className = 'table-row';
-                barisNama.innerHTML = `<div class="table-cell nama-bulan" data-bulan="${kunciBulan}" colspan="6">${kunciBulan}</div>`;
+                barisNama.innerHTML = `<div class="table-cell nama-bulan" colspan="6">${kunciBulan}</div>`;
                 document.getElementById('isiTabel').appendChild(barisNama);
 
                 let akhiranBulan = 0;
                 const rincianUrut = dataPerBulan[kunciBulan].rincian.sort((a,b) => a.waktu - b.waktu);
 
-                rincianUrut.forEach((item, idx) => {
+                rincianUrut.forEach((item) => {
                     akhiranBulan = item.akumulasi;
 
                     const barisData = document.createElement('div');
@@ -545,8 +598,6 @@
             if (event.target === modalPin) tutupModal();
             if (event.target === modalSimpan) modalSimpan.style.display = 'none';
         }
-
-        ambilDataDariSheet();
     </script>
 </body>
 </html>
