@@ -6,600 +6,217 @@
     <title>LAPORAN PEMBAYARAN WIFI</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            font-weight: bold;
-            white-space: nowrap;
-            text-transform: uppercase;
-            margin: 0;
-            padding: 0;
-        }
-
-        html, body {
-            width: 100%;
-            min-height: 100%;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow-x: hidden;
-            background-color: #ffffff;
-        }
-
-        .container {
-            width: 100%;
-            margin: 0 auto;
-            padding: 8px 0;
-        }
-
-        .header-bar {
-            background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
+        * { margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif; font-weight: bold;
+            white-space: nowrap; text-transform: uppercase; }
+        html, body { width: 100%; min-height: 100%; margin: 0 !important; padding: 0 !important;
+            overflow-x: hidden; background-color: #ffffff; }
+        .container { width: 100%; margin: 0 auto; padding: 8px 0; }
+        .header-bar { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
             color: white; text-align: center; padding: 12px 0; border-radius: 10px;
-            font-weight: 900; font-size: clamp(14px, 3.2vw, 22px); letter-spacing: 0.5px; margin: 0 8px 8px 8px;
-            animation: terbang 2s ease-in-out infinite alternate;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        @keyframes terbang { 0% { transform: translateY(0px); } 100% { transform: translateY(-4px); } }
-
-        .saldo-card {
-            background: linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
-            border-radius: 10px; padding: 15px 8px; text-align: center; color: white; margin: 0 8px 8px 8px;
-        }
-        .system-online {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            font-size: clamp(11px, 2.8vw, 16px); margin-bottom: 4px; width: 100%;
-        }
-        .system-online span {
-            color: #39FF14; text-shadow: 0 0 8px rgba(57, 255, 20, 0.8);
-            line-height: 1; display: flex; align-items: center; height: 24px;
-        }
-        .radar-wrapper {
-            position: relative; width: 24px; height: 24px;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .radar-dot {
-            width: 6px; height: 6px; background-color: #00FF00; border-radius: 50%;
-            position: relative; z-index: 2; box-shadow: 0 0 6px #00FF00;
-        }
-        .radar-wave {
-            position: absolute; border: 1px solid rgba(0, 255, 0, 0.8); border-radius: 50%;
-            animation: radarKedip 2s infinite ease-out; z-index: 1;
-        }
-        .radar-wave:nth-child(2) { animation-delay: 0s; }
-        .radar-wave:nth-child(3) { animation-delay: 0.6s; }
-        .radar-wave:nth-child(4) { animation-delay: 1.2s; }
-        @keyframes radarKedip {
-            0% { width: 0px; height: 0px; opacity: 1; border-width: 2px; box-shadow: 0 0 8px rgba(255,255,255,0.6); }
-            100% { width: 30px; height: 30px; opacity: 0; border-width: 1px; box-shadow: 0 0 2px rgba(255,255,255,0.2); }
-        }
+            font-weight: 900; font-size: clamp(14px, 3.2vw, 22px); margin: 0 8px 8px;
+            animation: terbang 2s ease-in-out infinite alternate; }
+        @keyframes terbang { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+        .saldo-card { background: linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
+            border-radius: 10px; padding: 15px 8px; text-align: center; color: white; margin: 0 8px 8px; }
+        .system-online { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: clamp(11px, 2.8vw, 16px); margin-bottom: 4px; }
+        .system-online span { color: #39FF14; text-shadow: 0 0 8px #39FF14; }
+        .radar-wrapper { position: relative; width: 24px; height: 24px; }
+        .radar-dot { width: 6px; height: 6px; background: #0F0; border-radius: 50%; box-shadow: 0 0 6px #0F0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .radar-wave { position: absolute; border: 1px solid #0F0; border-radius: 50%; animation: radar 2s infinite ease-out; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .radar-wave:nth-child(2) { animation-delay: 0.6s; }
+        .radar-wave:nth-child(3) { animation-delay: 1.2s; }
+        @keyframes radar { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 30px; height: 30px; opacity: 0; } }
         .saldo-label { font-size: clamp(10px, 2.5vw, 15px); opacity: 0.9; margin-bottom: 3px; }
-        .saldo-value {
-            font-size: clamp(32px, 10vw, 60px); font-weight: 900; color: #ffffff;
-            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08);
-            transform: translateY(-3px); position: relative; z-index: 2; text-transform: none;
-        }
-        .total-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 8px 8px 8px; width: calc(100% - 16px); }
-        .total-box {
-            background-color: #ffffff; border-radius: 10px; padding: 12px 4px 6px 4px;
-            text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            width: 100%;
-        }
+        .saldo-value { font-size: clamp(32px, 10vw, 60px); font-weight: 900; text-transform: none; text-shadow: 0 4px 6px #0002; }
+        .total-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 8px 8px; }
+        .total-box { background: #fff; border-radius: 10px; padding: 12px 4px 6px; text-align: center; box-shadow: 0 1px 3px #0000001a; }
         .total-label { font-size: clamp(9px, 2.2vw, 14px); color: #6b7280; margin-bottom: 3px; }
-        .total-bayar {
-            font-size: clamp(16px, 4vw, 24px); font-weight: 900; color: #16a34a; padding-bottom: 4px;
-            border-bottom: 3px solid #16a34a; border-radius: 0 0 6px 6px; box-shadow: 0 2px 0 0 #ffffff;
-            text-transform: none;
-        }
-        .total-tagihan {
-            font-size: clamp(16px, 4vw, 24px); font-weight: 900; color: #dc2626; padding-bottom: 4px;
-            border-bottom: 3px solid #dc2626; border-radius: 0 0 6px 6px; box-shadow: 0 2px 0 0 #ffffff;
-            text-transform: none;
-        }
-        .input-bar {
-            background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
+        .total-bayar { font-size: clamp(16px, 4vw, 24px); font-weight: 900; color: #16a34a; border-bottom: 3px solid #16a34a; padding-bottom: 4px; border-radius: 0 0 6px 6px; text-transform: none; }
+        .total-tagihan { font-size: clamp(16px, 4vw, 24px); font-weight: 900; color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 4px; border-radius: 0 0 6px 6px; text-transform: none; }
+        .input-bar { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
             color: white; text-align: center; padding: 10px 0; border-radius: 10px;
-            font-size: clamp(12px, 3vw, 16px); margin: 0 8px 8px 8px;
-            cursor: pointer; transition: opacity 0.2s;
-            width: calc(100% - 16px);
-            pointer-events: auto !important;
-            z-index: 10;
-            position: relative;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
+            font-size: clamp(12px, 3vw, 16px); margin: 0 8px 8px; cursor: pointer;
+            touch-action: manipulation; z-index: 10; position: relative; }
         .input-bar:active { opacity: 0.8; transform: scale(0.99); }
-
-        .table-container {
-            border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
-            width: calc(100% - 16px); margin: 0 8px 4px 8px;
-        }
-        .table-header, .table-row, .table-total {
-            display: grid; grid-template-columns: 2.2fr 1.3fr 1.3fr 1.3fr 0.8fr 1.6fr;
-            width: 100%; gap: 0;
-        }
-        .table-header { background-color: #eff6ff; padding: 4px 0; }
-        .table-row { background-color: #ffffff; padding: 1px 0; border-bottom: 1px solid #f3f4f6; width: 100%; }
-        .table-cell {
-            text-align: center; padding: 1px 2px; font-size: clamp(9px, 2.2vw, 13px);
-            display: flex; align-items: center; justify-content: center; line-height: 1.1;
-            width: 100%;
-        }
-        .nama-bulan {
-            color: #2563eb; justify-content: flex-start; padding-left: 8px;
-            font-size: clamp(11px, 2.5vw, 15px); padding-top: 3px; padding-bottom: 3px;
-            background-color: #dbeafe; font-weight: 900;
-        }
+        .table-container { border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; margin: 0 8px 4px; }
+        .table-header, .table-row, .table-total { display: grid; grid-template-columns: 2.2fr 1.3fr 1.3fr 1.3fr 0.8fr 1.6fr; }
+        .table-header { background: #eff6ff; padding: 4px 0; }
+        .table-row { background: #fff; padding: 1px 0; border-bottom: 1px solid #f3f4f6; }
+        .table-cell { text-align: center; padding: 1px 2px; font-size: clamp(9px, 2.2vw, 13px); display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+        .nama-bulan { background: #dbeafe; color: #2563eb; justify-content: flex-start; padding-left: 8px; font-size: clamp(11px, 2.5vw, 15px); font-weight: 900; padding: 3px 8px; }
         .nilai-bayar { color: #16a34a; text-transform: none; }
         .nilai-tagih { color: #dc2626; text-transform: none; }
         .nilai-saldo { color: #16a34a; text-transform: none; }
         .nilai-akm { color: #2563eb; text-transform: none; }
-        .table-total {
-            background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            color: white; padding: 2px 0; font-weight: 900; width: 100%;
-        }
-        .table-total .table-cell:first-child {
-            font-size: clamp(12px, 3vw, 18px); font-weight: 900; letter-spacing: 0.5px;
-        }
-        .table-total .table-cell { font-size: clamp(10px, 2.5vw, 15px); font-weight: bold; }
-        .icon-hapus {
-            font-size: 7px; cursor: pointer; color: #ff0000; transition: 0.2s;
-            text-shadow: 0 0 2px rgba(255, 0, 0, 0.6);
-            pointer-events: auto;
-        }
+        .table-total { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; padding: 2px 0; font-weight: 900; }
+        .icon-hapus { font-size: 10px; cursor: pointer; color: #ff0000; transition: 0.2s; text-shadow: 0 0 2px #ff000099; pointer-events: auto; }
         .icon-hapus:hover { transform: scale(1.5); }
-
-        .modal-pin {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6); z-index: 999; align-items: center;
-            justify-content: center; padding: 8px; overflow-y: auto;
-        }
-        .modal-content {
-            background-color: #ffffff; border-radius: 16px; padding: 20px;
-            width: calc(100% - 16px); max-width: 340px; text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .icon-kunci {
-            width: 50px; height: 50px; background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 12px auto; color: #ffffff; font-size: 24px;
-        }
-        .modal-content h3 {
-            margin-bottom: 6px; color: #2563eb;
-            font-size: clamp(16px, 4vw, 20px); font-weight: bold;
-        }
-        .modal-subtitle {
-            font-size: clamp(12px, 3vw, 14px); color: #6b7280;
-            margin-bottom: 20px; text-transform: none;
-        }
-        .pin-display {
-            font-size: clamp(18px, 6vw, 24px); letter-spacing: 4px; padding: 12px 10px;
-            border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px;
-            background-color: #ffffff; color: #1e293b; min-height: 48px;
-            display: flex; align-items: center; justify-content: center; position: relative;
-        }
-        .pin-display span {
-            width: 8px; height: 8px; background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            border-radius: 50%; margin: 0 4px;
-        }
-        .tombol-aksi { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
-        .btn-batal {
-            flex: 1; padding: 10px 0; border: none; border-radius: 8px;
-            background-color: #e2e8f0; color: #334155; font-weight: bold;
-            font-size: clamp(13px, 3vw, 16px); cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .btn-verifikasi {
-            flex: 1; padding: 10px 0; border: none; border-radius: 8px;
-            background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            color: white; font-weight: bold; font-size: clamp(13px, 3vw, 16px); cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .keypad {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-            background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            padding: 12px; border-radius: 12px; width: 100%;
-        }
-        .key {
-            padding: 14px 5px; font-size: clamp(16px, 4vw, 20px); border: none; border-radius: 8px;
-            background-color: #ffffff; color: #1e293b; cursor: pointer; transition: 0.2s; font-weight: bold;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .key:active { background-color: #e2e8f0; transform: scale(0.95); }
-        .key-hapus { background-color: #ffffff; color: #dc2626; font-size: 18px; }
-        .key-ok { background-color: #1d4ed8; color: white; font-size: 18px; }
-
-        .modal-simpan {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6); z-index: 1000; align-items: center;
-            justify-content: center; padding: 8px; overflow-y: auto;
-        }
-        .form-group {
-            display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; text-align: left;
-            width: 100%;
-        }
+        .modal-simpan { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #00000099; z-index: 1000; align-items: center; justify-content: center; padding: 8px; overflow-y: auto; }
+        .modal-content { background: #fff; border-radius: 16px; padding: 20px; width: calc(100% - 16px); max-width: 340px; text-align: center; box-shadow: 0 4px 12px #00000026; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; text-align: left; width: 100%; }
         .form-group label { font-size: clamp(11px, 2.8vw, 14px); color: #334155; }
-        .form-group input, .form-group select {
-            padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px;
-            font-size: clamp(11px, 2.8vw, 14px); outline: none; font-weight: bold;
-            width: 100%; text-transform: none;
-        }
-        .btn-simpan-data {
-            background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
-            color: white; border: none; padding: 10px 0; border-radius: 8px;
-            font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .form-group input, .form-group select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: clamp(11px, 2.8vw, 14px); outline: none; font-weight: bold; width: 100%; text-transform: none; }
+        .btn-simpan-data { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; }
         .btn-simpan-data:active { opacity: 0.9; transform: scale(0.98); }
-        .footer-text {
-            text-align: center; font-size: clamp(9px, 2vw, 13px); color: #94a3b8;
-            margin-top: 10px; margin-bottom: 15px; letter-spacing: 0.5px;
-            width: 100%;
-        }
+        .footer-text { text-align: center; font-size: clamp(9px, 2vw, 13px); color: #94a3b8; margin-top: 10px; margin-bottom: 15px; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header-bar">LAPORAN PEMBAYARAN WIFI</div>
-
         <div class="saldo-card">
-            <div class="system-online">
-                <div class="radar-wrapper">
-                    <div class="radar-wave"></div>
-                    <div class="radar-wave"></div>
-                    <div class="radar-wave"></div>
-                    <div class="radar-dot"></div>
-                </div>
-                <span>SYSTEM ONLINE</span>
-            </div>
+            <div class="system-online"><div class="radar-wrapper"><div class="radar-wave"></div><div class="radar-wave"></div><div class="radar-wave"></div><div class="radar-dot"></div></div><span>SYSTEM ONLINE</span></div>
             <div class="saldo-label">SALDO AKUMULASI SAAT INI</div>
             <div class="saldo-value" id="saldoAkumulasi">Rp 0</div>
         </div>
-
         <div class="total-row">
-            <div class="total-box">
-                <div class="total-label">TOTAL BAYAR</div>
-                <div class="total-bayar" id="totalBayar">Rp 0</div>
-            </div>
-            <div class="total-box">
-                <div class="total-label">TOTAL TAGIHAN</div>
-                <div class="total-tagihan" id="totalTagihan">Rp 0</div>
-            </div>
+            <div class="total-box"><div class="total-label">TOTAL BAYAR</div><div class="total-bayar" id="totalBayar">Rp 0</div></div>
+            <div class="total-box"><div class="total-label">TOTAL TAGIHAN</div><div class="total-tagihan" id="totalTagihan">Rp 0</div></div>
         </div>
-
-        <div class="input-bar" id="btnBukaPin">INPUT DATA BARU</div>
-
+        <div class="input-bar" id="btnBuka">INPUT DATA BARU</div>
         <div class="table-container">
             <div class="table-header">
-                <div class="table-cell">BULAN</div>
-                <div class="table-cell">PEMBAYARAN</div>
-                <div class="table-cell">TAGIHAN</div>
-                <div class="table-cell">SALDO</div>
-                <div class="table-cell">OPSI</div>
-                <div class="table-cell">AKM. SALDO</div>
+                <div class="table-cell">BULAN</div><div class="table-cell">PEMBAYARAN</div><div class="table-cell">TAGIHAN</div><div class="table-cell">SALDO</div><div class="table-cell">OPSI</div><div class="table-cell">AKM. SALDO</div>
             </div>
             <div id="isiTabel"></div>
         </div>
-
         <div class="footer-text">POWERED BY: MBS ID</div>
-    </div>
-
-    <div class="modal-pin" id="modalPin">
-        <div class="modal-content">
-            <div class="icon-kunci">🔒</div>
-            <h3>PIN OTORISASI SISTEM</h3>
-            <div class="modal-subtitle">MASUKKAN PIN KEAMANAN SISTEM</div>
-            <div class="pin-display" id="pinDisplay">
-                <span></span><span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <div class="tombol-aksi">
-                <button class="btn-batal" onclick="tutupModal()">BATAL</button>
-                <button class="btn-verifikasi" onclick="cekPin()">VERIFIKASI</button>
-            </div>
-            <div class="keypad">
-                <button class="key" onclick="tekanAngka(1)">1</button>
-                <button class="key" onclick="tekanAngka(2)">2</button>
-                <button class="key" onclick="tekanAngka(3)">3</button>
-                <button class="key" onclick="tekanAngka(4)">4</button>
-                <button class="key" onclick="tekanAngka(5)">5</button>
-                <button class="key" onclick="tekanAngka(6)">6</button>
-                <button class="key" onclick="tekanAngka(7)">7</button>
-                <button class="key" onclick="tekanAngka(8)">8</button>
-                <button class="key" onclick="tekanAngka(9)">9</button>
-                <button class="key key-hapus" onclick="hapusAngka()">⌫</button>
-                <button class="key" onclick="tekanAngka(0)">0</button>
-                <button class="key key-ok" onclick="cekPin()">➔</button>
-            </div>
-        </div>
     </div>
 
     <div class="modal-simpan" id="modalSimpan">
         <div class="modal-content">
             <h3>SIMPAN DATA</h3>
             <div class="form-group">
-                <label for="bulan">BULAN & TAHUN</label>
+                <label>BULAN & TAHUN</label>
                 <div style="display:flex; gap:6px;">
-                    <select id="bulan" name="bulan" style="flex:1;">
-                        <option value="01">Januari</option>
-                        <option value="02">Februari</option>
-                        <option value="03">Maret</option>
-                        <option value="04">April</option>
-                        <option value="05" selected>Mei</option>
-                        <option value="06">Juni</option>
-                        <option value="07">Juli</option>
-                        <option value="08">Agustus</option>
-                        <option value="09">September</option>
-                        <option value="10">Oktober</option>
-                        <option value="11">November</option>
-                        <option value="12">Desember</option>
-                    </select>
-                    <select id="tahun" name="tahun" style="flex:1;">
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026" selected>2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                    </select>
+                    <select id="bulan"><option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05" selected>Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select>
+                    <select id="tahun"><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option></select>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="pembayaran">PEMBAYARAN (Rp)</label>
-                <input type="number" id="pembayaran" name="pembayaran" value="55000">
-            </div>
-            <div class="form-group">
-                <label for="tagihan">TAGIHAN (Rp)</label>
-                <input type="number" id="tagihan" name="tagihan" value="52447">
-            </div>
+            <div class="form-group"><label>PEMBAYARAN (Rp)</label><input type="number" id="pembayaran" value="55000"></div>
+            <div class="form-group"><label>TAGIHAN (Rp)</label><input type="number" id="tagihan" value="52447"></div>
             <button class="btn-simpan-data" onclick="simpanData()">SIMPAN</button>
         </div>
     </div>
 
     <script>
+        // ✅ PIN TERSEMBUNYI DI SINI, TIDAK MUNCUL DI HTML
+        const PIN_TETAP = "999";
         const URL_APP = "https://script.google.com/macros/s/AKfycbxsHJuEvV6JrrA7yMpRaRz0x035LVzrEGOGeFQUbtzM8nIjJOmTpBhNJyC10jX3klqM-A/exec";
-        
-        const modalPin = document.getElementById('modalPin');
         const modalSimpan = document.getElementById('modalSimpan');
-        const pinDisplay = document.getElementById('pinDisplay');
-        let inputPin = ''; // ✅ PIN DISIMPAN DI SINI SAAT DIVERIFIKASI
-
-        let bulanTerakhir = '05';
-        let tahunTerakhir = '2026';
-        let totalBayar = 0;
-        let totalTagihan = 0;
-        let saldoAkumulasiAkhir = 78860;
-        let dataPerBulan = {};
 
         const urutanBulan = {
-            'JANUARI 2026': 1, 'FEBRUARI 2026': 2, 'MARET 2026': 3, 'APRIL 2026': 4, 'MEI 2026': 5, 'JUNI 2026': 6,
-            'JULI 2026': 7, 'AGUSTUS 2026': 8, 'SEPTEMBER 2026': 9, 'OKTOBER 2026': 10, 'NOVEMBER 2026': 11, 'DESEMBER 2026': 12,
-            'JANUARI 2025': 13, 'FEBRUARI 2025': 14, 'MARET 2025': 15, 'APRIL 2025': 16, 'MEI 2025': 17, 'JUNI 2025': 18,
-            'JULI 2025': 19, 'AGUSTUS 2025': 20, 'SEPTEMBER 2025': 21, 'OKTOBER 2025': 22, 'NOVEMBER 2025': 23, 'DESEMBER 2025': 24,
-            'JANUARI 2024': 25, 'FEBRUARI 2024': 26, 'MARET 2024': 27, 'APRIL 2024': 28, 'MEI 2024': 29, 'JUNI 2024': 30,
-            'JULI 2024': 31, 'AGUSTUS 2024': 32, 'SEPTEMBER 2024': 33, 'OKTOBER 2024': 34, 'NOVEMBER 2024': 35, 'DESEMBER 2024': 36
+            'JANUARI 2026':1,'FEBRUARI 2026':2,'MARET 2026':3,'APRIL 2026':4,'MEI 2026':5,'JUNI 2026':6,'JULI 2026':7,'AGUSTUS 2026':8,'SEPTEMBER 2026':9,'OKTOBER 2026':10,'NOVEMBER 2026':11,'DESEMBER 2026':12,
+            'JANUARI 2025':13,'FEBRUARI 2025':14,'MARET 2025':15,'APRIL 2025':16,'MEI 2025':17,'JUNI 2025':18,'JULI 2025':19,'AGUSTUS 2025':20,'SEPTEMBER 2025':21,'OKTOBER 2025':22,'NOVEMBER 2025':23,'DESEMBER 2025':24,
+            'JANUARI 2024':25,'FEBRUARI 2024':26,'MARET 2024':27,'APRIL 2024':28,'MEI 2024':29,'JUNI 2024':30,'JULI 2024':31,'AGUSTUS 2024':32,'SEPTEMBER 2024':33,'OKTOBER 2024':34,'NOVEMBER 2024':35,'DESEMBER 2024':36
         };
 
-        function setTanggalTerakhir() {
-            document.getElementById('bulan').value = bulanTerakhir;
-            document.getElementById('tahun').value = tahunTerakhir;
-            document.getElementById('pembayaran').value = 55000;
-            document.getElementById('tagihan').value = 52447;
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const tombol = document.getElementById('btnBukaPin');
-            if(tombol) {
-                tombol.addEventListener('click', fungsiBukaModal, { passive: true });
-                tombol.addEventListener('touchend', fungsiBukaModal, { passive: true });
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btnBuka').addEventListener('click', () => {
+                modalSimpan.style.display = 'flex';
+                document.getElementById('bulan').value = '05';
+                document.getElementById('tahun').value = '2026';
+                document.getElementById('pembayaran').value = '55000';
+                document.getElementById('tagihan').value = '52447';
+            });
             ambilDataDariSheet();
         });
 
-        function fungsiBukaModal(e) {
-            if(e) e.preventDefault();
-            modalPin.style.display = 'flex';
-            modalSimpan.style.display = 'none';
-            inputPin = '';
-            perbaruiTampilanPin();
+        async function ambilDataDariSheet() {
+            try {
+                const res = await axios.get(URL_APP, { params: { action: 'ambil' } });
+                const data = res.data;
+                if(data.error) return alert("❌ Error: " + data.error);
+
+                const dataPerBulan = {};
+                data.data.forEach(item => {
+                    const blnPanjang = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
+                    if(!dataPerBulan[blnPanjang]) dataPerBulan[blnPanjang] = { bayar:0, tagih:0, saldo:0, rincian:[] };
+                    dataPerBulan[blnPanjang].rincian.push(item);
+                    dataPerBulan[blnPanjang].bayar += item.pembayaran;
+                    dataPerBulan[blnPanjang].tagih += item.tagihan;
+                    dataPerBulan[blnPanjang].saldo += item.selisih;
+                });
+
+                document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
+                tampilkanUlang(dataPerBulan);
+                perbaruiTotal(dataPerBulan);
+            } catch(e) { alert("❌ Gagal ambil data: " + e); }
         }
 
-        function hapusBaris(elemenBaris) {
-            const bulan = elemenBaris.dataset.bulan;
-            const tahun = elemenBaris.dataset.tahun;
-            const bayar = parseInt(elemenBaris.dataset.bayar);
-            const tagih = parseInt(elemenBaris.dataset.tagih);
-            const waktu = parseInt(elemenBaris.dataset.waktu);
-
-            modalPin.style.display = 'flex';
-            modalSimpan.style.display = 'none';
-            inputPin = '';
-            perbaruiTampilanPin();
-
-            window._hapusData = { bulan, tahun, bayar, tagih, waktu };
-        }
-
-        function tutupModal() {
-            modalPin.style.display = 'none'; 
-            modalSimpan.style.display = 'none';
-            inputPin = ''; 
-            window._hapusData = null;
-        }
-
-        function tekanAngka(angka) {
-            if (inputPin.length < 6) {
-                inputPin += angka;
-                perbaruiTampilanPin();
-            }
-        }
-
-        function hapusAngka() {
-            inputPin = '';
-            perbaruiTampilanPin();
-        }
-
-        function perbaruiTampilanPin() {
-            const titik = pinDisplay.querySelectorAll('span');
-            titik.forEach((el, idx) => {
-                el.style.opacity = (idx < inputPin.length) ? '1' : '0.3';
+        function tampilkanUlang(dataPerBulan) {
+            const wadah = document.getElementById('isiTabel');
+            wadah.innerHTML = '';
+            Object.keys(dataPerBulan).sort((a,b) => (urutanBulan[a]||999)-(urutanBulan[b]||999)).forEach(bln => {
+                wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan" colspan="6">${bln}</div></div>`;
+                let akhiran = 0;
+                dataPerBulan[bln].rincian.sort((a,b) => a.waktu-b.waktu).forEach(item => {
+                    akhiran = item.akumulasi;
+                    wadah.innerHTML += `
+                        <div class="table-row" data-bulan="${item.bulan}" data-tahun="${item.tahun}" data-bayar="${item.pembayaran}" data-tagih="${item.tagihan}" data-waktu="${item.waktu}">
+                            <div class="table-cell"></div>
+                            <div class="table-cell nilai-bayar">${item.pembayaran.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-tagih">${item.tagihan.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-saldo">${item.selisih.toLocaleString('id-ID')}</div>
+                            <div class="table-cell"><span class="icon-hapus" onclick="hapusBaris(this.parentElement.parentElement)">🗑</span></div>
+                            <div class="table-cell nilai-akm">${item.akumulasi.toLocaleString('id-ID')}</div>
+                        </div>`;
+                });
+                wadah.innerHTML += `
+                    <div class="table-total" data-bulan="${bln}">
+                        <div class="table-cell">TOTAL</div>
+                        <div class="table-cell">${dataPerBulan[bln].bayar.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${dataPerBulan[bln].tagih.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${dataPerBulan[bln].saldo.toLocaleString('id-ID')}</div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell">${akhiran.toLocaleString('id-ID')}</div>
+                    </div>`;
             });
         }
 
-        function cekPin() {
-            const aksi = window._hapusData ? 'hapus' : 'cek';
-
-            axios.get(URL_APP, { params: { action: aksi, pin: inputPin } })
-            .then(res => res.data)
-            .then(data => {
-                if(data.sukses === false) { alert(data.pesan); hapusAngka(); return; }
-
-                modalPin.style.display = 'none';
-
-                if(window._hapusData) {
-                    const { bulan, tahun, bayar, tagih, waktu } = window._hapusData;
-                    axios.get(URL_APP, { params: { action: 'hapus', pin: inputPin, bulan, tahun, bayar, tagih, waktu } })
-                    .then(res => res.data)
-                    .then(hapusRes => {
-                        if(hapusRes.sukses) ambilDataDariSheet();
-                        else alert("❌ Gagal hapus: " + hapusRes.pesan);
-                    });
-                    window._hapusData = null;
-                } else {
-                    modalSimpan.style.display = 'flex';
-                    setTanggalTerakhir();
-                }
-            })
-            .catch(err => alert("⚠️ Kesalahan koneksi: " + err));
+        function perbaruiTotal(dataPerBulan) {
+            let tBayar = 0, tTagih = 0;
+            Object.values(dataPerBulan).forEach(v => { tBayar += v.bayar; tTagih += v.tagih; });
+            document.getElementById('totalBayar').textContent = `Rp ${tBayar.toLocaleString('id-ID')}`;
+            document.getElementById('totalTagihan').textContent = `Rp ${tTagih.toLocaleString('id-ID')}`;
         }
 
-        // ✅ PERBAIKAN UTAMA: PIN DIKIRIM ULANG SAAT SIMPAN
-        function simpanData() {
-            const bulanPilih = document.getElementById('bulan').value;
-            const tahunPilih = document.getElementById('tahun').value;
+        async function simpanData() {
+            const bulan = document.getElementById('bulan').value;
+            const tahun = document.getElementById('tahun').value;
             const bayar = parseInt(document.getElementById('pembayaran').value) || 0;
             const tagih = parseInt(document.getElementById('tagihan').value) || 0;
-
-            if (!bulanPilih || !tahunPilih) { alert('⚠️ BULAN & TAHUN WAJIB DIPILIH!'); return; }
-
-            bulanTerakhir = bulanPilih;
-            tahunTerakhir = tahunPilih;
-
-            axios.get(URL_APP, { 
-                params: { 
-                    action: 'simpan', 
-                    pin: inputPin, // ✅ PIN yang benar dikirim di sini
-                    bulan: bulanPilih, 
-                    tahun: tahunPilih, 
-                    bayar, 
-                    tagih 
-                } 
-            })
-            .then(res => res.data)
-            .then(data => {
-                if(data.sukses) {
-                    ambilDataDariSheet();
-                    document.getElementById('pembayaran').value = 55000;
-                    document.getElementById('tagihan').value = 52447;
+            if(!bulan || !tahun) return alert("⚠️ Pilih Bulan & Tahun!");
+            try {
+                const res = await axios.get(URL_APP, { params: { action:'simpan', pin:PIN_TETAP, bulan, tahun, bayar, tagih } });
+                if(res.data.sukses) {
                     modalSimpan.style.display = 'none';
-                    alert("✅ DATA BERHASIL DISIMPAN!");
-                } else {
-                    alert("❌ Gagal simpan: " + data.pesan);
-                }
-            })
-            .catch(err => alert("⚠️ Kesalahan: " + err));
+                    await ambilDataDariSheet();
+                    alert("✅ DATA DISIMPAN");
+                } else alert("❌ " + res.data.pesan);
+            } catch(e) { alert("❌ Gagal simpan: " + e); }
         }
 
-        function ambilDataDariSheet() {
-            axios.get(URL_APP, { params: { action: 'ambil' } })
-            .then(res => res.data)
-            .then(res => {
-                if(res.error) { alert("❌ Error: " + res.error); return; }
-
-                dataPerBulan = {};
-                res.data.forEach(item => {
-                    const namaBulan = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-                    if(!dataPerBulan[namaBulan]) dataPerBulan[namaBulan] = { bayar:0, tagih:0, saldo:0, rincian:[] };
-                    dataPerBulan[namaBulan].rincian.push(item);
-                    dataPerBulan[namaBulan].bayar += item.pembayaran;
-                    dataPerBulan[namaBulan].tagih += item.tagihan;
-                    dataPerBulan[namaBulan].saldo += item.selisih;
-                });
-
-                saldoAkumulasiAkhir = res.saldoAkhir;
-                tampilkanUlangSemuaData();
-                perbaruiTampilanTotal();
-            })
-            .catch(err => alert("❌ Gagal ambil data: " + err));
+        async function hapusBaris(el) {
+            const bulan = el.dataset.bulan;
+            const tahun = el.dataset.tahun;
+            const bayar = parseInt(el.dataset.bayar);
+            const tagih = parseInt(el.dataset.tagih);
+            const waktu = parseInt(el.dataset.waktu);
+            if(!bulan || !tahun || !waktu) return alert("❌ Data tidak lengkap");
+            if(!confirm("YAKIN INGIN HAPUS DATA INI?")) return;
+            try {
+                const res = await axios.get(URL_APP, { params: { action:'hapus', pin:PIN_TETAP, bulan, tahun, bayar, tagih, waktu } });
+                if(res.data.sukses) {
+                    await ambilDataDariSheet();
+                    alert("✅ DATA DIHAPUS");
+                } else alert("❌ " + res.data.pesan);
+            } catch(e) { alert("❌ Gagal hapus: " + e); }
         }
 
-        function tampilkanUlangSemuaData() {
-            document.getElementById('isiTabel').innerHTML = '';
-            const urutanKunci = Object.keys(dataPerBulan).sort((a, b) => (urutanBulan[a] || 999) - (urutanBulan[b] || 999));
-
-            urutanKunci.forEach(kunciBulan => {
-                const barisNama = document.createElement('div');
-                barisNama.className = 'table-row';
-                barisNama.innerHTML = `<div class="table-cell nama-bulan" colspan="6">${kunciBulan}</div>`;
-                document.getElementById('isiTabel').appendChild(barisNama);
-
-                let akhiranBulan = 0;
-                const rincianUrut = dataPerBulan[kunciBulan].rincian.sort((a,b) => a.waktu - b.waktu);
-
-                rincianUrut.forEach((item) => {
-                    akhiranBulan = item.akumulasi;
-
-                    const barisData = document.createElement('div');
-                    barisData.className = 'table-row';
-                    barisData.dataset.bulan = item.bulan;
-                    barisData.dataset.tahun = item.tahun;
-                    barisData.dataset.bayar = item.pembayaran;
-                    barisData.dataset.tagih = item.tagihan;
-                    barisData.dataset.waktu = item.waktu;
-                    barisData.innerHTML = `
-                        <div class="table-cell"></div>
-                        <div class="table-cell nilai-bayar">${item.pembayaran.toLocaleString('id-ID')}</div>
-                        <div class="table-cell nilai-tagih">${item.tagihan.toLocaleString('id-ID')}</div>
-                        <div class="table-cell nilai-saldo">${item.selisih.toLocaleString('id-ID')}</div>
-                        <div class="table-cell"><span class="icon-hapus" onclick="hapusBaris(this.parentElement.parentElement)">🗑</span></div>
-                        <div class="table-cell nilai-akm">${item.akumulasi.toLocaleString('id-ID')}</div>
-                    `;
-                    document.getElementById('isiTabel').appendChild(barisData);
-                });
-
-                buatUlangTotalBulan(kunciBulan, akhiranBulan);
-            });
-        }
-
-        function buatUlangTotalBulan(namaBulan, akhiranBulan) {
-            const semuaBaris = document.querySelectorAll('.table-total');
-            semuaBaris.forEach(el => { if(el.dataset.bulan === namaBulan) el.remove(); });
-
-            const total = dataPerBulan[namaBulan];
-            const barisTotal = document.createElement('div');
-            barisTotal.className = 'table-total';
-            barisTotal.dataset.bulan = namaBulan;
-            barisTotal.innerHTML = `
-                <div class="table-cell">TOTAL</div>
-                <div class="table-cell">${total.bayar.toLocaleString('id-ID')}</div>
-                <div class="table-cell">${total.tagih.toLocaleString('id-ID')}</div>
-                <div class="table-cell">${total.saldo.toLocaleString('id-ID')}</div>
-                <div class="table-cell"></div>
-                <div class="table-cell">${akhiranBulan.toLocaleString('id-ID')}</div>
-            `;
-            document.getElementById('isiTabel').appendChild(barisTotal);
-        }
-
-        function perbaruiTampilanTotal() {
-            totalBayar = Object.values(dataPerBulan).reduce((s, b) => s + b.bayar, 0);
-            totalTagihan = Object.values(dataPerBulan).reduce((s, b) => s + b.tagih, 0);
-
-            document.getElementById('totalBayar').textContent = `Rp ${totalBayar.toLocaleString('id-ID')}`;
-            document.getElementById('totalTagihan').textContent = `Rp ${totalTagihan.toLocaleString('id-ID')}`;
-            document.getElementById('saldoAkumulasi').textContent = `Rp ${saldoAkumulasiAkhir.toLocaleString('id-ID')}`;
-        }
-
-        window.onclick = function(event) {
-            if (event.target === modalPin) tutupModal();
-            if (event.target === modalSimpan) modalSimpan.style.display = 'none';
-        }
+        window.onclick = e => { if(e.target === modalSimpan) modalSimpan.style.display = 'none'; };
     </script>
 </body>
 </html>
