@@ -8,7 +8,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box;
             font-family: 'Segoe UI', Roboto, sans-serif; font-weight: bold;
-            white-space: nowrap; text-transform: uppercase; }
+            text-transform: uppercase; }
         html, body { width: 100%; min-height: 100%; margin: 0 !important; padding: 0 !important;
             overflow-x: hidden; background-color: #ffffff; }
         .container { width: 100%; margin: 0 auto; padding: 8px 0; }
@@ -28,9 +28,9 @@
         .radar-wave:nth-child(3) { animation-delay: 1.2s; }
         @keyframes radar { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 30px; height: 30px; opacity: 0; } }
         .saldo-label { font-size: clamp(10px, 2.5vw, 15px); opacity: 0.9; margin-bottom: 3px; }
-        .saldo-value { font-size: clamp(32px, 10vw, 60px); font-weight: 900; text-transform: none; text-shadow: 0 4px 6px #0002; }
+        .saldo-value { font-size: clamp(32px, 10vw, 60px); font-weight: 900; text-transform: none; text-shadow: 0 4px 6px rgba(0,0,0,0.08); }
         .total-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 8px 8px; }
-        .total-box { background: #fff; border-radius: 10px; padding: 12px 4px 6px; text-align: center; box-shadow: 0 1px 3px #0000001a; }
+        .total-box { background: #fff; border-radius: 10px; padding: 12px 4px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
         .total-label { font-size: clamp(9px, 2.2vw, 14px); color: #6b7280; margin-bottom: 3px; }
         .total-bayar { font-size: clamp(16px, 4vw, 24px); font-weight: 900; color: #16a34a; border-bottom: 3px solid #16a34a; padding-bottom: 4px; border-radius: 0 0 6px 6px; text-transform: none; }
         .total-tagihan { font-size: clamp(16px, 4vw, 24px); font-weight: 900; color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 4px; border-radius: 0 0 6px 6px; text-transform: none; }
@@ -43,38 +43,45 @@
         .table-header, .table-row, .table-total { display: grid; grid-template-columns: 2.2fr 1.3fr 1.3fr 1.3fr 0.8fr 1.6fr; }
         .table-header { background: #eff6ff; padding: 4px 0; }
         .table-row { background: #fff; padding: 1px 0; border-bottom: 1px solid #f3f4f6; }
-        .table-cell { text-align: center; padding: 1px 2px; font-size: clamp(9px, 2.2vw, 13px); display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+        .table-cell { text-align: center; padding: 1px 2px; font-size: clamp(9px, 2.2vw, 13px); display: flex; align-items: center; justify-content: center; line-height: 1.1; white-space: nowrap; }
         .nama-bulan { background: #dbeafe; color: #2563eb; justify-content: flex-start; padding-left: 8px; font-size: clamp(11px, 2.5vw, 15px); font-weight: 900; padding: 3px 8px; }
         .nilai-bayar { color: #16a34a; text-transform: none; }
         .nilai-tagih { color: #dc2626; text-transform: none; }
         .nilai-saldo { color: #16a34a; text-transform: none; }
         .nilai-akm { color: #2563eb; text-transform: none; }
         .table-total { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; padding: 2px 0; font-weight: 900; }
-        .icon-hapus { font-size: 10px; cursor: pointer; color: #ff0000; transition: 0.2s; text-shadow: 0 0 2px #ff000099; pointer-events: auto; }
+        .icon-hapus { font-size: 10px; cursor: pointer; color: #ff0000; transition: 0.2s; text-shadow: 0 0 2px rgba(255,0,0,0.6); pointer-events: auto; }
         .icon-hapus:hover { transform: scale(1.5); }
-
-        /* MODAL PIN 6 DIGIT + KEYPAD NUMERIK */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; align-items: center; justify-content: center; padding: 10px; }
-        .modal-box { background: #fff; border-radius: 16px; width: 100%; max-width: 320px; padding: 20px; text-align: center; box-shadow: 0 8px 24px #00000033; }
-        .modal-box h4 { color: #333; margin-bottom: 20px; font-size: 17px; }
-        .pin-display { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
-        .pin-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #2563eb; background: #fff; }
-        .pin-dot.filled { background: #2563eb; box-shadow: 0 0 6px #2563eb80; }
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .key { background: linear-gradient(140deg, #2563eb, #9333ea); color: white; border: none; border-radius: 12px; font-size: 22px; font-weight: bold; padding: 14px 0; cursor: pointer; }
-        .key:active { transform: scale(0.92); opacity: 0.9; }
-        .key-empty { background: transparent; border: none; cursor: default; }
-        .key-del { background: #ef4444; font-size: 20px; }
-
-        .modal-simpan { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #00000099; z-index: 1000; align-items: center; justify-content: center; padding: 8px; overflow-y: auto; }
-        .modal-content { background: #fff; border-radius: 16px; padding: 20px; width: calc(100% - 16px); max-width: 340px; text-align: center; box-shadow: 0 4px 12px #00000026; }
-        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; text-align: left; width: 100%; }
-        .form-group label { font-size: clamp(11px, 2.8vw, 14px); color: #334155; }
-        .form-group input, .form-group select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: clamp(11px, 2.8vw, 14px); outline: none; font-weight: bold; width: 100%; text-transform: none; }
-        .btn-simpan-data { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; }
-        .btn-simpan-data:active { opacity: 0.9; transform: scale(0.98); }
         .footer-text { text-align: center; font-size: clamp(9px, 2vw, 13px); color: #94a3b8; margin-top: 10px; margin-bottom: 15px; letter-spacing: 0.5px; }
+
+        /* ============= MODAL PIN PERSIS CONTOH ============= */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; align-items: center; justify-content: center; padding: 15px; }
+        .modal-box { background: #fff; border-radius: 20px; width: 100%; max-width: 340px; padding: 25px 20px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .modal-box h3 { color: #222; margin-bottom: 25px; font-size: 20px; letter-spacing: 0.5px; }
+
+        /* Lingkaran PIN */
+        .pin-circles { display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; }
+        .circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #3480eb; background: transparent; transition: all 0.2s; }
+        .circle.filled { background: #3480eb; box-shadow: 0 0 6px rgba(52, 128, 235, 0.6); }
+
+        /* Keypad */
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+        .key { background: linear-gradient(135deg, #3480eb 0%, #9040f8 100%); color: #fff; border: none; border-radius: 14px; font-size: 24px; font-weight: bold; padding: 16px 0; cursor: pointer; }
+        .key:active { transform: scale(0.94); opacity: 0.9; }
+        .key-hapus { background: #ff3b30; font-size: 22px; }
+        .key-kosong { background: transparent; cursor: default; visibility: hidden; }
+        .row-bawah { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 4px; }
+        .key-enter { background: #34c759; color: #fff; border: none; border-radius: 14px; font-size: 20px; font-weight: bold; padding: 16px 0; cursor: pointer; grid-column: span 2; margin-top:4px; }
+        .key-enter:active { transform: scale(0.94); opacity: 0.9; }
+
+        /* Modal Simpan */
+        .modal-simpan { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 8px; overflow-y: auto; }
+        .modal-content { background: #fff; border-radius: 16px; padding: 20px; width: calc(100% - 16px); max-width: 340px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; text-align: left; width: 100%; }
+        .form-group label { font-size: clamp(11px, 2.8vw, 14px); color: #333; text-transform: none; font-weight: 600; }
+        .form-group input, .form-group select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: clamp(11px, 2.8vw, 14px); outline: none; font-weight: bold; width: 100%; text-transform: none; }
+        .btn-simpan { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; font-weight: bold; }
+        .btn-simpan:active { opacity: 0.9; transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -99,13 +106,13 @@
         <div class="footer-text">POWERED BY: MBS ID</div>
     </div>
 
-    <!-- MODAL PIN: 6 Digit + Keypad Numerik -->
+    <!-- MODAL PIN: PERSIS CONTOH + HAPUS + ENTER -->
     <div id="popupPin" class="modal">
         <div class="modal-box">
-            <h4>MASUKKAN PIN KEAMANAN</h4>
-            <div class="pin-display">
-                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+            <h3>MASUKKAN PIN KEAMANAN</h3>
+            <div class="pin-circles">
+                <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+                <div class="circle"></div><div class="circle"></div><div class="circle"></div>
             </div>
             <div class="keypad">
                 <button class="key" data-angka="1">1</button>
@@ -117,194 +124,187 @@
                 <button class="key" data-angka="7">7</button>
                 <button class="key" data-angka="8">8</button>
                 <button class="key" data-angka="9">9</button>
-                <button class="key-empty"></button>
+                <button class="key key-kosong"></button>
                 <button class="key" data-angka="0">0</button>
-                <button class="key key-del" id="btnHapus">⌫</button>
+                <button class="key key-hapus" id="btnHapus">⌫</button>
             </div>
+            <button class="key-enter" id="btnEnter">ENTER</button>
         </div>
     </div>
 
     <!-- MODAL INPUT DATA -->
     <div class="modal-simpan" id="modalSimpan">
         <div class="modal-content">
-            <h3>SIMPAN DATA BARU</h3>
+            <h3 style="margin-bottom:15px; color:#333;">SIMPAN DATA BARU</h3>
             <div class="form-group">
                 <label>BULAN & TAHUN</label>
                 <div style="display:flex; gap:6px;">
-                    <select id="bulan"><option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05" selected>Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select>
-                    <select id="tahun"><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option></select>
+                    <select id="bulan">
+                        <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
+                        <option value="04">April</option><option value="05" selected>Mei</option><option value="06">Juni</option>
+                        <option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option>
+                        <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                    </select>
+                    <select id="tahun">
+                        <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
+                        <option value="2027">2027</option><option value="2028">2028</option>
+                    </select>
                 </div>
             </div>
-            <div class="form-group"><label>PEMBAYARAN (Rp)</label><input type="number" id="pembayaran" value="55000"></div>
-            <div class="form-group"><label>TAGIHAN (Rp)</label><input type="number" id="tagihan" value="52447"></div>
-            <button class="btn-simpan-data" id="tombolSimpan">SIMPAN</button>
+            <div class="form-group">
+                <label>PEMBAYARAN (Rp)</label>
+                <input type="number" id="pembayaran" value="55000">
+            </div>
+            <div class="form-group">
+                <label>TAGIHAN (Rp)</label>
+                <input type="number" id="tagihan" value="52447">
+            </div>
+            <button class="btn-simpan" id="tombolSimpan">SIMPAN</button>
         </div>
     </div>
 
     <script>
-        // 🔒 PIN ASLI 3 DIGIT TERKUNCI DI SINI - TIDAK ADA DI HTML
+        // KUNCI ASLI: 3 DIGIT, TAPI TAMPILAN 6 DIGIT
         const KUNCI_PIN = "999";
         const ALAMAT_API = "https://script.google.com/macros/s/AKfycbxsHJuEvV6JrrA7yMpRaRz0x035LVzrEGOGeFQUbtzM8nIjJOmTpBhNJyC10jX3klqM-A/exec";
-        
-        // ELEMEN
+
         const POPUP_PIN = document.getElementById('popupPin');
         const MODAL_SIMPAN = document.getElementById('modalSimpan');
-        const DOT_PIN = document.querySelectorAll('.pin-dot');
+        const LINGKARAN = document.querySelectorAll('.circle');
+        const BTN_ENTER = document.getElementById('btnEnter');
+        const BTN_HAPUS = document.getElementById('btnHapus');
         let nilaiPin = "";
         let aksiSetelahPin = null;
 
-        // URUTAN BULAN
+        // Urutan bulan
         const URUTAN_BULAN = {
-            'JANUARI 2026':1,'FEBRUARI 2026':2,'MARET 2026':3,'APRIL 2026':4,'MEI 2026':5,'JUNI 2026':6,'JULI 2026':7,'AGUSTUS 2026':8,'SEPTEMBER 2026':9,'OKTOBER 2026':10,'NOVEMBER 2026':11,'DESEMBER 2026':12,
-            'JANUARI 2025':13,'FEBRUARI 2025':14,'MARET 2025':15,'APRIL 2025':16,'MEI 2025':17,'JUNI 2025':18,'JULI 2025':19,'AGUSTUS 2025':20,'SEPTEMBER 2025':21,'OKTOBER 2025':22,'NOVEMBER 2025':23,'DESEMBER 2025':24,
-            'JANUARI 2024':25,'FEBRUARI 2024':26,'MARET 2024':27,'APRIL 2024':28,'MEI 2024':29,'JUNI 2024':30,'JULI 2024':31,'AGUSTUS 2024':32,'SEPTEMBER 2024':33,'OKTOBER 2024':34,'NOVEMBER 2024':35,'DESEMBER 2024':36
+            'JANUARI 2026':1,'FEBRUARI 2026':2,'MARET 2026':3,'APRIL 2026':4,'MEI 2026':5,'JUNI 2026':6,
+            'JULI 2026':7,'AGUSTUS 2026':8,'SEPTEMBER 2026':9,'OKTOBER 2026':10,'NOVEMBER 2026':11,'DESEMBER 2026':12,
+            'JANUARI 2025':13,'FEBRUARI 2025':14,'MARET 2025':15,'APRIL 2025':16,'MEI 2025':17,'JUNI 2025':18,
+            'JULI 2025':19,'AGUSTUS 2025':20,'SEPTEMBER 2025':21,'OKTOBER 2025':22,'NOVEMBER 2025':23,'DESEMBER 2025':24,
+            'JANUARI 2024':25,'FEBRUARI 2024':26,'MARET 2024':27,'APRIL 2024':28,'MEI 2024':29,'JUNI 2024':30
         };
 
-        // INISIALISASI
         document.addEventListener('DOMContentLoaded', () => {
-            // Tombol Input Baru
             document.getElementById('btnBuka').addEventListener('click', () => {
                 aksiSetelahPin = 'bukaForm';
-                tampilkanPopupPin();
+                tampilkanPin();
             });
 
-            // Keypad
             document.querySelectorAll('.key[data-angka]').forEach(k => {
                 k.addEventListener('click', () => tambahAngka(k.dataset.angka));
             });
-            document.getElementById('btnHapus').addEventListener('click', hapusAngka);
 
+            BTN_HAPUS.addEventListener('click', hapusAngka);
+            BTN_ENTER.addEventListener('click', cekPin);
             document.getElementById('tombolSimpan').addEventListener('click', simpanDataAman);
-            ambilDanTampilkanData();
+            ambilTampilData();
         });
 
-        function tampilkanPopupPin() {
+        function tampilkanPin() {
             nilaiPin = "";
-            perbaruiTampilanPin();
+            perbaruiLingkaran();
             POPUP_PIN.style.display = 'flex';
         }
 
         function tambahAngka(angka) {
             if(nilaiPin.length < 6) {
                 nilaiPin += angka;
-                perbaruiTampilanPin();
-                if(nilaiPin.length === 6) cekPin();
+                perbaruiLingkaran();
             }
         }
 
         function hapusAngka() {
             nilaiPin = nilaiPin.slice(0, -1);
-            perbaruiTampilanPin();
+            perbaruiLingkaran();
         }
 
-        function perbaruiTampilanPin() {
-            DOT_PIN.forEach((dot, i) => {
-                dot.classList.toggle('filled', i < nilaiPin.length);
-            });
+        function perbaruiLingkaran() {
+            LINGKARAN.forEach((dot, i) => dot.classList.toggle('filled', i < nilaiPin.length));
         }
 
         function cekPin() {
-            // CUKU AMBIL 3 DIGIT PERTAMA UNTUK DICOCOKKAN
             if(nilaiPin.substring(0, 3) === KUNCI_PIN) {
                 POPUP_PIN.style.display = 'none';
-                jalankanAksiSetelahPin();
+                jalankanAksi();
             } else {
                 alert("❌ PIN SALAH!");
-                tampilkanPopupPin();
+                tampilkanPin();
             }
         }
 
-        function jalankanAksiSetelahPin() {
+        function jalankanAksi() {
             if(aksiSetelahPin === 'bukaForm') {
                 MODAL_SIMPAN.style.display = 'flex';
-                document.getElementById('bulan').value = '05';
-                document.getElementById('tahun').value = '2026';
-                document.getElementById('pembayaran').value = '55000';
-                document.getElementById('tagihan').value = '52447';
-            } 
-            else if(aksiSetelahPin?.tipe === 'hapus') {
-                prosesHapusData(aksiSetelahPin.data);
+            } else if(aksiSetelahPin?.jenis === 'hapus') {
+                prosesHapus(aksiSetelahPin.data);
             }
             aksiSetelahPin = null;
         }
 
-        async function ambilDanTampilkanData() {
+        async function ambilTampilData() {
             try {
                 const res = await axios.get(ALAMAT_API, { params: { action: 'ambil' } });
                 const data = res.data;
-                if(data.error) return alert("❌ Kesalahan: " + data.error);
+                if(data.error) return alert("❌ Gagal: " + data.error);
 
-                const daftarPerBulan = {};
+                const perBulan = {};
                 data.data.forEach(item => {
-                    const namaBulan = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-                    if(!daftarPerBulan[namaBulan]) daftarPerBulan[namaBulan] = { bayar:0, tagih:0, saldo:0, rincian:[] };
-                    daftarPerBulan[namaBulan].rincian.push(item);
-                    daftarPerBulan[namaBulan].bayar += item.pembayaran;
-                    daftarPerBulan[namaBulan].tagih += item.tagihan;
-                    daftarPerBulan[namaBulan].saldo += item.selisih;
+                    const nama = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
+                    if(!perBulan[nama]) perBulan[nama] = { bayar:0, tagih:0, rinci:[] };
+                    perBulan[nama].rinci.push(item);
+                    perBulan[nama].bayar += item.pembayaran;
+                    perBulan[nama].tagih += item.tagihan;
                 });
 
                 document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
-                tampilkanKeTabel(daftarPerBulan);
-                hitungTotal(daftarPerBulan);
-            } catch(e) { alert("❌ Gagal memuat data: " + e); }
+                tampilkanTabel(perBulan);
+                hitungTotal(perBulan);
+            } catch(e) { alert("❌ Kesalahan: " + e.message); }
         }
 
-        function tampilkanKeTabel(daftarPerBulan) {
+        function tampilkanTabel(perBulan) {
             const wadah = document.getElementById('isiTabel');
             wadah.innerHTML = '';
-
-            Object.keys(daftarPerBulan).sort((a,b) => (URUTAN_BULAN[a]||999)-(URUTAN_BULAN[b]||999)).forEach(bln => {
+            Object.keys(perBulan).sort((a,b) => (URUTAN_BULAN[a]||999) - (URUTAN_BULAN[b]||999)).forEach(bln => {
                 wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan">${bln}</div></div>`;
-                let saldoAkhirBulan = 0;
-
-                daftarPerBulan[bln].rincian.sort((a,b) => a.waktu-b.waktu).forEach(baris => {
-                    saldoAkhirBulan = baris.akumulasi;
+                let akhir = 0;
+                perBulan[bln].rinci.sort((a,b) => a.waktu - b.waktu).forEach(row => {
+                    akhir = row.akumulasi;
                     wadah.innerHTML += `
                         <div class="table-row">
                             <div class="table-cell"></div>
-                            <div class="table-cell nilai-bayar">${baris.pembayaran.toLocaleString('id-ID')}</div>
-                            <div class="table-cell nilai-tagih">${baris.tagihan.toLocaleString('id-ID')}</div>
-                            <div class="table-cell nilai-saldo">${baris.selisih.toLocaleString('id-ID')}</div>
-                            <div class="table-cell"><span class="icon-hapus" data-bl="${baris.bulan}" data-th="${baris.tahun}" data-br="${baris.pembayaran}" data-tg="${baris.tagihan}" data-wk="${baris.waktu}">🗑</span></div>
-                            <div class="table-cell nilai-akm">${baris.akumulasi.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-bayar">${row.pembayaran.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-tagih">${row.tagihan.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-saldo">${row.selisih.toLocaleString('id-ID')}</div>
+                            <div class="table-cell"><span class="icon-hapus" data-bl="${row.bulan}" data-th="${row.tahun}" data-br="${row.pembayaran}" data-tg="${row.tagihan}" data-wk="${row.waktu}">🗑</span></div>
+                            <div class="table-cell nilai-akm">${row.akumulasi.toLocaleString('id-ID')}</div>
                         </div>`;
                 });
-
                 wadah.innerHTML += `
                     <div class="table-total">
                         <div class="table-cell">TOTAL</div>
-                        <div class="table-cell">${daftarPerBulan[bln].bayar.toLocaleString('id-ID')}</div>
-                        <div class="table-cell">${daftarPerBulan[bln].tagih.toLocaleString('id-ID')}</div>
-                        <div class="table-cell">${daftarPerBulan[bln].saldo.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${perBulan[bln].bayar.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${perBulan[bln].tagih.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${(perBulan[bln].bayar - perBulan[bln].tagih).toLocaleString('id-ID')}</div>
                         <div class="table-cell"></div>
-                        <div class="table-cell">${saldoAkhirBulan.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${akhir.toLocaleString('id-ID')}</div>
                     </div>`;
             });
 
-            // Hapus butuh PIN
             document.querySelectorAll('.icon-hapus').forEach(el => {
                 el.addEventListener('click', () => {
-                    aksiSetelahPin = {
-                        tipe: 'hapus',
-                        data: {
-                            bulan: el.dataset.bl,
-                            tahun: el.dataset.th,
-                            bayar: parseInt(el.dataset.br),
-                            tagih: parseInt(el.dataset.tg),
-                            waktu: parseInt(el.dataset.wk)
-                        }
-                    };
-                    tampilkanPopupPin();
+                    aksiSetelahPin = { jenis: 'hapus', data: { bulan: el.dataset.bl, tahun: el.dataset.th, bayar: parseInt(el.dataset.br), tagih: parseInt(el.dataset.tg), waktu: parseInt(el.dataset.wk) } };
+                    tampilkanPin();
                 });
             });
         }
 
-        function hitungTotal(daftarPerBulan) {
-            let totalBayar = 0, totalTagihan = 0;
-            Object.values(daftarPerBulan).forEach(v => { totalBayar += v.bayar; totalTagihan += v.tagih; });
+        function hitungTotal(perBulan) {
+            let totalBayar = 0, totalTagih = 0;
+            Object.values(perBulan).forEach(v => { totalBayar += v.bayar; totalTagih += v.tagih; });
             document.getElementById('totalBayar').textContent = `Rp ${totalBayar.toLocaleString('id-ID')}`;
-            document.getElementById('totalTagihan').textContent = `Rp ${totalTagihan.toLocaleString('id-ID')}`;
+            document.getElementById('totalTagihan').textContent = `Rp ${totalTagih.toLocaleString('id-ID')}`;
         }
 
         async function simpanDataAman() {
@@ -312,34 +312,29 @@
             const tahun = document.getElementById('tahun').value;
             const bayar = parseInt(document.getElementById('pembayaran').value) || 0;
             const tagih = parseInt(document.getElementById('tagihan').value) || 0;
-
             try {
-                const res = await axios.get(ALAMAT_API, { 
-                    params: { action: 'simpan', pin: nilaiPin, bulan, tahun, bayar, tagih } 
-                });
+                const res = await axios.get(ALAMAT_API, { params: { action: 'simpan', pin: nilaiPin, bulan, tahun, bayar, tagih } });
                 if(res.data.sukses) {
                     MODAL_SIMPAN.style.display = 'none';
-                    await ambilDanTampilkanData();
+                    await ambilTampilData();
                     alert("✅ DATA DISIMPAN");
                 } else {
                     alert("❌ " + res.data.pesan);
                 }
-            } catch(e) { alert("❌ Gagal simpan: " + e); }
+            } catch(e) { alert("❌ Gagal simpan: " + e.message); }
         }
 
-        async function prosesHapusData(dt) {
-            if(!confirm("⚠️ YAKIN HAPUS?")) return;
+        async function prosesHapus(dt) {
+            if(!confirm("⚠️ YAKIN HAPUS DATA?")) return;
             try {
-                const res = await axios.get(ALAMAT_API, { 
-                    params: { action: 'hapus', pin: nilaiPin, ...dt } 
-                });
+                const res = await axios.get(ALAMAT_API, { params: { action: 'hapus', pin: nilaiPin, ...dt } });
                 if(res.data.sukses) {
-                    await ambilDanTampilkanData();
+                    await ambilTampilData();
                     alert("✅ DATA DIHAPUS");
                 } else {
                     alert("❌ " + res.data.pesan);
                 }
-            } catch(e) { alert("❌ Gagal hapus: " + e); }
+            } catch(e) { alert("❌ Gagal hapus: " + e.message); }
         }
 
         window.onclick = e => {
