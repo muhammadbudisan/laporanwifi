@@ -53,13 +53,18 @@
         .icon-hapus { font-size: 10px; cursor: pointer; color: #ff0000; transition: 0.2s; text-shadow: 0 0 2px #ff000099; pointer-events: auto; }
         .icon-hapus:hover { transform: scale(1.5); }
 
-        /* STYLE POP-UP PIN SEPERTI YANG DULU */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; align-items: center; justify-content: center; }
-        .modal-box { background: #fff; padding: 25px; border-radius: 12px; width: 280px; text-align: center; box-shadow: 0 0 15px #00000033; }
-        .modal-box h4 { margin-bottom: 15px; color: #333; font-size: 16px; }
-        .modal-box input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; }
-        .modal-box button { width: 100%; padding: 10px; background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .modal-box button:active { transform: scale(0.98); }
+        /* MODAL PIN 6 DIGIT + KEYPAD NUMERIK */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; align-items: center; justify-content: center; padding: 10px; }
+        .modal-box { background: #fff; border-radius: 16px; width: 100%; max-width: 320px; padding: 20px; text-align: center; box-shadow: 0 8px 24px #00000033; }
+        .modal-box h4 { color: #333; margin-bottom: 20px; font-size: 17px; }
+        .pin-display { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .pin-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #2563eb; background: #fff; }
+        .pin-dot.filled { background: #2563eb; box-shadow: 0 0 6px #2563eb80; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .key { background: linear-gradient(140deg, #2563eb, #9333ea); color: white; border: none; border-radius: 12px; font-size: 22px; font-weight: bold; padding: 14px 0; cursor: pointer; }
+        .key:active { transform: scale(0.92); opacity: 0.9; }
+        .key-empty { background: transparent; border: none; cursor: default; }
+        .key-del { background: #ef4444; font-size: 20px; }
 
         .modal-simpan { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #00000099; z-index: 1000; align-items: center; justify-content: center; padding: 8px; overflow-y: auto; }
@@ -94,12 +99,28 @@
         <div class="footer-text">POWERED BY: MBS ID</div>
     </div>
 
-    <!-- POP UP PIN: TAMPILAN SEPERTI DULU -->
+    <!-- MODAL PIN: 6 Digit + Keypad Numerik -->
     <div id="popupPin" class="modal">
         <div class="modal-box">
             <h4>MASUKKAN PIN KEAMANAN</h4>
-            <input type="password" id="inputPin" maxlength="6" placeholder="PIN">
-            <button id="btnCekPin">KONFIRMASI</button>
+            <div class="pin-display">
+                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+            </div>
+            <div class="keypad">
+                <button class="key" data-angka="1">1</button>
+                <button class="key" data-angka="2">2</button>
+                <button class="key" data-angka="3">3</button>
+                <button class="key" data-angka="4">4</button>
+                <button class="key" data-angka="5">5</button>
+                <button class="key" data-angka="6">6</button>
+                <button class="key" data-angka="7">7</button>
+                <button class="key" data-angka="8">8</button>
+                <button class="key" data-angka="9">9</button>
+                <button class="key-empty"></button>
+                <button class="key" data-angka="0">0</button>
+                <button class="key key-del" id="btnHapus">⌫</button>
+            </div>
         </div>
     </div>
 
@@ -121,14 +142,16 @@
     </div>
 
     <script>
-        // 🔒 PIN TERKUNCI DI SINI - TIDAK ADA DI HTML
+        // 🔒 PIN ASLI 3 DIGIT TERKUNCI DI SINI - TIDAK ADA DI HTML
         const KUNCI_PIN = "999";
         const ALAMAT_API = "https://script.google.com/macros/s/AKfycbxsHJuEvV6JrrA7yMpRaRz0x035LVzrEGOGeFQUbtzM8nIjJOmTpBhNJyC10jX3klqM-A/exec";
         
-        // ELEMEN MODAL
+        // ELEMEN
         const POPUP_PIN = document.getElementById('popupPin');
         const MODAL_SIMPAN = document.getElementById('modalSimpan');
-        let aksiSetelahPin = null; // Menyimpan apa yang mau dilakukan setelah PIN benar
+        const DOT_PIN = document.querySelectorAll('.pin-dot');
+        let nilaiPin = "";
+        let aksiSetelahPin = null;
 
         // URUTAN BULAN
         const URUTAN_BULAN = {
@@ -139,41 +162,60 @@
 
         // INISIALISASI
         document.addEventListener('DOMContentLoaded', () => {
-            // KLIK INPUT BARU → MUNCULKAN POP UP PIN
+            // Tombol Input Baru
             document.getElementById('btnBuka').addEventListener('click', () => {
                 aksiSetelahPin = 'bukaForm';
                 tampilkanPopupPin();
             });
 
-            // CEK PIN SAAT KLIK KONFIRMASI
-            document.getElementById('btnCekPin').addEventListener('click', cekPin);
+            // Keypad
+            document.querySelectorAll('.key[data-angka]').forEach(k => {
+                k.addEventListener('click', () => tambahAngka(k.dataset.angka));
+            });
+            document.getElementById('btnHapus').addEventListener('click', hapusAngka);
 
-            // TOMBOL SIMPAN DATA
             document.getElementById('tombolSimpan').addEventListener('click', simpanDataAman);
-
             ambilDanTampilkanData();
         });
 
         function tampilkanPopupPin() {
+            nilaiPin = "";
+            perbaruiTampilanPin();
             POPUP_PIN.style.display = 'flex';
-            document.getElementById('inputPin').value = '';
-            document.getElementById('inputPin').focus();
+        }
+
+        function tambahAngka(angka) {
+            if(nilaiPin.length < 6) {
+                nilaiPin += angka;
+                perbaruiTampilanPin();
+                if(nilaiPin.length === 6) cekPin();
+            }
+        }
+
+        function hapusAngka() {
+            nilaiPin = nilaiPin.slice(0, -1);
+            perbaruiTampilanPin();
+        }
+
+        function perbaruiTampilanPin() {
+            DOT_PIN.forEach((dot, i) => {
+                dot.classList.toggle('filled', i < nilaiPin.length);
+            });
         }
 
         function cekPin() {
-            const inputUser = document.getElementById('inputPin').value.trim();
-            if(inputUser === KUNCI_PIN) {
+            // CUKU AMBIL 3 DIGIT PERTAMA UNTUK DICOCOKKAN
+            if(nilaiPin.substring(0, 3) === KUNCI_PIN) {
                 POPUP_PIN.style.display = 'none';
                 jalankanAksiSetelahPin();
             } else {
-                alert("❌ PIN SALAH! COBA LAGI.");
-                document.getElementById('inputPin').value = '';
+                alert("❌ PIN SALAH!");
+                tampilkanPopupPin();
             }
         }
 
         function jalankanAksiSetelahPin() {
             if(aksiSetelahPin === 'bukaForm') {
-                // BUKA FORM INPUT SEPERTI DULU
                 MODAL_SIMPAN.style.display = 'flex';
                 document.getElementById('bulan').value = '05';
                 document.getElementById('tahun').value = '2026';
@@ -181,10 +223,9 @@
                 document.getElementById('tagihan').value = '52447';
             } 
             else if(aksiSetelahPin?.tipe === 'hapus') {
-                // LANGSUNG HAPUS JIKA PIN BENAR
                 prosesHapusData(aksiSetelahPin.data);
             }
-            aksiSetelahPin = null; // RESET
+            aksiSetelahPin = null;
         }
 
         async function ambilDanTampilkanData() {
@@ -241,7 +282,7 @@
                     </div>`;
             });
 
-            // KLIK HAPUS → MUNCULKAN POP UP PIN DULU
+            // Hapus butuh PIN
             document.querySelectorAll('.icon-hapus').forEach(el => {
                 el.addEventListener('click', () => {
                     aksiSetelahPin = {
@@ -254,7 +295,7 @@
                             waktu: parseInt(el.dataset.wk)
                         }
                     };
-                    tampilkanPopupPin(); // PIN WAJIB SEBELUM HAPUS
+                    tampilkanPopupPin();
                 });
             });
         }
@@ -272,11 +313,9 @@
             const bayar = parseInt(document.getElementById('pembayaran').value) || 0;
             const tagih = parseInt(document.getElementById('tagihan').value) || 0;
 
-            if(!bulan || !tahun) return alert("⚠️ Pilih Bulan & Tahun!");
-
             try {
                 const res = await axios.get(ALAMAT_API, { 
-                    params: { action: 'simpan', pin: KUNCI_PIN, bulan, tahun, bayar, tagih } 
+                    params: { action: 'simpan', pin: nilaiPin, bulan, tahun, bayar, tagih } 
                 });
                 if(res.data.sukses) {
                     MODAL_SIMPAN.style.display = 'none';
@@ -289,10 +328,10 @@
         }
 
         async function prosesHapusData(dt) {
-            if(!confirm("⚠️ YAKIN INGIN HAPUS DATA INI?")) return;
+            if(!confirm("⚠️ YAKIN HAPUS?")) return;
             try {
                 const res = await axios.get(ALAMAT_API, { 
-                    params: { action: 'hapus', pin: KUNCI_PIN, ...dt } 
+                    params: { action: 'hapus', pin: nilaiPin, ...dt } 
                 });
                 if(res.data.sukses) {
                     await ambilDanTampilkanData();
@@ -303,7 +342,6 @@
             } catch(e) { alert("❌ Gagal hapus: " + e); }
         }
 
-        // TUTUP MODAL JIKA KLIK LUAR
         window.onclick = e => {
             if(e.target === POPUP_PIN) POPUP_PIN.style.display = 'none';
             if(e.target === MODAL_SIMPAN) MODAL_SIMPAN.style.display = 'none';
