@@ -54,7 +54,7 @@
         .icon-hapus:hover { transform: scale(1.5); }
         .footer-text { text-align: center; font-size: clamp(9px, 2vw, 13px); color: #94a3b8; margin-top: 10px; margin-bottom: 15px; letter-spacing: 0.5px; }
 
-        /* ============= MODAL PIN 100% SESUAI GAMBAR BARU ============= */
+        /* ============= MODAL PIN 100% SESUAI GAMBAR ============= */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; align-items: center; justify-content: center; padding: 15px; }
         .modal-box { background: #fff; border-radius: 20px; width: 100%; max-width: 340px; padding: 30px 20px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
         .modal-box h3 { color: #111; margin-bottom: 25px; font-size: 22px; letter-spacing: 0.5px; font-weight: 900; }
@@ -103,7 +103,7 @@
         <div class="footer-text">POWERED BY: MBS ID</div>
     </div>
 
-    <!-- MODAL PIN: 100% SAMA DENGAN GAMBAR BARU -->
+    <!-- MODAL PIN: 100% SAMA DENGAN GAMBAR -->
     <div id="popupPin" class="modal">
         <div class="modal-box">
             <h3>MASUKKAN PIN KEAMANAN</h3>
@@ -178,13 +178,17 @@
         let nilaiPin = "";
         let aksiSetelahPin = null;
 
-        // Urutan bulan
+        // ✅ URUTAN BULAN SESUAI KALENDER (TAHUN TERBARU DI ATAS, JAN → DES)
         const URUTAN_BULAN = {
-            'JANUARI 2026':1,'FEBRUARI 2026':2,'MARET 2026':3,'APRIL 2026':4,'MEI 2026':5,'JUNI 2026':6,
-            'JULI 2026':7,'AGUSTUS 2026':8,'SEPTEMBER 2026':9,'OKTOBER 2026':10,'NOVEMBER 2026':11,'DESEMBER 2026':12,
-            'JANUARI 2025':13,'FEBRUARI 2025':14,'MARET 2025':15,'APRIL 2025':16,'MEI 2025':17,'JUNI 2025':18,
-            'JULI 2025':19,'AGUSTUS 2025':20,'SEPTEMBER 2025':21,'OKTOBER 2025':22,'NOVEMBER 2025':23,'DESEMBER 2025':24,
-            'JANUARI 2024':25,'FEBRUARI 2024':26,'MARET 2024':27,'APRIL 2024':28,'MEI 2024':29,'JUNI 2024':30
+            // 2026
+            '01-2026':1, '02-2026':2, '03-2026':3, '04-2026':4, '05-2026':5, '06-2026':6,
+            '07-2026':7, '08-2026':8, '09-2026':9, '10-2026':10,'11-2026':11,'12-2026':12,
+            // 2025
+            '01-2025':13,'02-2025':14,'03-2025':15,'04-2025':16,'05-2025':17,'06-2025':18,
+            '07-2025':19,'08-2025':20,'09-2025':21,'10-2025':22,'11-2025':23,'12-2025':24,
+            // 2024
+            '01-2024':25,'02-2024':26,'03-2024':27,'04-2024':28,'05-2024':29,'06-2024':30,
+            '07-2024':31,'08-2024':32,'09-2024':33,'10-2024':34,'11-2024':35,'12-2024':36
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -252,11 +256,12 @@
 
                 const perBulan = {};
                 data.data.forEach(item => {
+                    const kunci = `${item.bulan}-${item.tahun}`;
                     const nama = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-                    if(!perBulan[nama]) perBulan[nama] = { bayar:0, tagih:0, rinci:[] };
-                    perBulan[nama].rinci.push(item);
-                    perBulan[nama].bayar += item.pembayaran;
-                    perBulan[nama].tagih += item.tagihan;
+                    if(!perBulan[kunci]) perBulan[kunci] = { nama, bayar:0, tagih:0, rinci:[] };
+                    perBulan[kunci].rinci.push(item);
+                    perBulan[kunci].bayar += item.pembayaran;
+                    perBulan[kunci].tagih += item.tagihan;
                 });
 
                 document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
@@ -268,11 +273,12 @@
         function tampilkanTabel(perBulan) {
             const wadah = document.getElementById('isiTabel');
             wadah.innerHTML = '';
-            Object.keys(perBulan).sort((a,b) => (URUTAN_BULAN[a]||999) - (URUTAN_BULAN[b]||999)).forEach(bln => {
-                wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan">${bln}</div></div>`;
-                let akhir = 0;
-                perBulan[bln].rinci.sort((a,b) => a.waktu - b.waktu).forEach(row => {
-                    akhir = row.akumulasi;
+            // ✅ URUT BERDASARKAN KALENDER, BUKAN INPUT
+            Object.keys(perBulan).sort((a,b) => (URUTAN_BULAN[a]||999) - (URUTAN_BULAN[b]||999)).forEach(kunci => {
+                const bln = perBulan[kunci];
+                wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan">${bln.nama}</div></div>`;
+                // Di dalam bulan: tetap urut waktu penambahan
+                bln.rinci.sort((a,b) => a.waktu - b.waktu).forEach(row => {
                     wadah.innerHTML += `
                         <div class="table-row">
                             <div class="table-cell"></div>
@@ -286,11 +292,11 @@
                 wadah.innerHTML += `
                     <div class="table-total">
                         <div class="table-cell">TOTAL</div>
-                        <div class="table-cell">${perBulan[bln].bayar.toLocaleString('id-ID')}</div>
-                        <div class="table-cell">${perBulan[bln].tagih.toLocaleString('id-ID')}</div>
-                        <div class="table-cell">${(perBulan[bln].bayar - perBulan[bln].tagih).toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${bln.bayar.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${bln.tagih.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${(bln.bayar - bln.tagih).toLocaleString('id-ID')}</div>
                         <div class="table-cell"></div>
-                        <div class="table-cell">${akhir.toLocaleString('id-ID')}</div>
+                        <div class="table-cell">${bln.rinci.length > 0 ? bln.rinci[bln.rinci.length - 1].akumulasi.toLocaleString('id-ID') : 0}</div>
                     </div>`;
             });
 
