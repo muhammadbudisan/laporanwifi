@@ -74,14 +74,14 @@
         .btn-simpan { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; font-weight: bold; }
         .btn-simpan:active { opacity: 0.9; transform: scale(0.98); }
 
-        /* KHUSUS DESKTOP (LAPTOP/PC): HANYA BERLAKU JIKA LEBAR LAYAR MINIMAL 1024PX ATAU SANGAT DEKAT */
+        /* KHUSUS DESKTOP (LAPTOP/PC): TOTAL LEBIH BESAR DARI KETERANGAN BARIS DATA */
         @media screen and (min-width: 900px) {
             .saldo-value { font-size: 78px !important; font-weight: 900 !important; }
             .total-bayar, .total-tagihan { font-size: 34px !important; font-weight: 900 !important; }
             .table-header .table-cell { font-size: 16px !important; font-weight: 900 !important; }
             .table-row .table-cell { font-size: 21px !important; font-weight: 800 !important; }
             .nama-bulan { font-size: 18px !important; font-weight: 900 !important; }
-            .table-total .table-cell { font-size: 28px !important; font-weight: 900 !important; }
+            .table-total .table-cell { font-size: 25px !important; font-weight: 900 !important; }
             .icon-hapus { font-size: 14px !important; }
         }
     </style>
@@ -258,6 +258,7 @@
                     perBulan[kunci].tagih += item.tagihan;
                 });
 
+                // PERBAIKAN: Menggunakan ID 'saldoAkumulasi' agar sesuai dengan elemen HTML
                 document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
                 tampilkanTabel(perBulan);
                 hitungTotal(perBulan);
