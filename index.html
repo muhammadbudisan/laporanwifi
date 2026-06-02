@@ -73,6 +73,18 @@
         .form-group input, .form-group select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: clamp(11px, 2.8vw, 14px); outline: none; font-weight: bold; width: 100%; text-transform: none; }
         .btn-simpan { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; font-weight: bold; }
         .btn-simpan:active { opacity: 0.9; transform: scale(0.98); }
+
+        /* KHUSUS DESKTOP: HANYA MEMPERBESAR DIGIT ANGKA, BARIS TOTAL LEBIH MENONJOL */
+        @media screen and (min-width: 1024px) {
+            .saldo-value { font-size: 78px !important; font-weight: 900 !important; }
+            .total-bayar, .total-tagihan { font-size: 34px !important; font-weight: 900 !important; }
+            .table-header .table-cell { font-size: 16px !important; font-weight: 900 !important; }
+            .table-row .table-cell { font-size: 21px !important; font-weight: 800 !important; }
+            .nama-bulan { font-size: 18px !important; font-weight: 900 !important; }
+            /* MEMBUAT BARIS TOTAL LEBIH MENONJOL */
+            .table-total .table-cell { font-size: 28px !important; font-weight: 900 !important; }
+            .icon-hapus { font-size: 14px !important; }
+        }
     </style>
 </head>
 <body>
