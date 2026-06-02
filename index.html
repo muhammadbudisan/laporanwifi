@@ -74,14 +74,13 @@
         .btn-simpan { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; font-weight: bold; }
         .btn-simpan:active { opacity: 0.9; transform: scale(0.98); }
 
-        /* KHUSUS DESKTOP: HANYA MEMPERBESAR DIGIT ANGKA, BARIS TOTAL LEBIH MENONJOL */
-        @media screen and (min-width: 1024px) {
+        /* KHUSUS DESKTOP (LAPTOP/PC): HANYA BERLAKU JIKA LEBAR LAYAR MINIMAL 1024PX ATAU SANGAT DEKAT */
+        @media screen and (min-width: 900px) {
             .saldo-value { font-size: 78px !important; font-weight: 900 !important; }
             .total-bayar, .total-tagihan { font-size: 34px !important; font-weight: 900 !important; }
             .table-header .table-cell { font-size: 16px !important; font-weight: 900 !important; }
             .table-row .table-cell { font-size: 21px !important; font-weight: 800 !important; }
             .nama-bulan { font-size: 18px !important; font-weight: 900 !important; }
-            /* MEMBUAT BARIS TOTAL LEBIH MENONJOL */
             .table-total .table-cell { font-size: 28px !important; font-weight: 900 !important; }
             .icon-hapus { font-size: 14px !important; }
         }
@@ -244,10 +243,9 @@
                 const data = res.data;
                 if(data.error) return alert("❌ Gagal: " + data.error);
 
-                // ✅ URUTAN TOTAL SESUAI KALENDER: PERBAIKAN UTAMA
                 const diurutkan = [...data.data].sort((a, b) => {
-                    if (a.tahun !== b.tahun) return b.tahun - a.tahun; // Tahun baru di atas
-                    return a.bulan - b.bulan; // Bulan: 1 → 2 → 3 dst
+                    if (a.tahun !== b.tahun) return b.tahun - a.tahun;
+                    return a.bulan - b.bulan;
                 });
 
                 const perBulan = {};
@@ -296,7 +294,7 @@
 
             document.querySelectorAll('.icon-hapus').forEach(el => {
                 el.addEventListener('click', () => {
-                    aksiSetelahPin = { jenis: 'hapus', data: { bulan: el.dataset.bl, tahun: el.dataset.th, bayar: parseInt(el.dataset.br), tagih: parseInt(el.dataset.tg), waktu: parseInt(el.dataset.wk) } };
+                    aksiSetelahPin = { jenis: 'hapus', data: { bulan: el.dataset.bl, tahun: el.dataset.th, bayar: parseInt(el.dataset.br), tagih: parseInt(el.dataset.tg), Osborn: parseInt(el.dataset.wk) } };
                     tampilkanPin();
                 });
             });
