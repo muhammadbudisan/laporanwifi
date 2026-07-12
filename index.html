@@ -243,16 +243,15 @@
                 const data = res.data;
                 if(data.error) return alert("❌ Gagal: " + data.error);
 
-                // FIX LOGIKA SORTING KRONOLOGIS DI SINI
-                // Diurutkan dari yang paling TUA/AWAL ke yang paling BARU agar alur tabel rapi dari atas ke bawah
+                // Pengurutan kronologis (Tahun -> Bulan -> Waktu Upload) agar baris data tersusun rapi dari terlama ke terbaru
                 const diurutkan = [...data.data].sort((a, b) => {
                     if (parseInt(a.tahun) !== parseInt(b.tahun)) {
-                        return parseInt(a.tahun) - parseInt(b.tahun); // Tahun terkecil di atas
+                        return parseInt(a.tahun) - parseInt(b.tahun);
                     }
                     if (parseInt(a.bulan) !== parseInt(b.bulan)) {
-                        return parseInt(a.bulan) - parseInt(b.bulan); // Bulan terkecil di atas
+                        return parseInt(a.bulan) - parseInt(b.bulan);
                     }
-                    return a.waktu - b.waktu; // Jika bulan/tahun sama, urutkan berdasarkan jam upload lama ke baru
+                    return a.waktu - b.waktu;
                 });
 
                 const perBulan = {};
@@ -265,7 +264,7 @@
                     perBulan[kunci].tagih += item.tagihan;
                 });
 
-                document.getElementById('saldoAccumulasi' ? 'saldoAccumulasi' : 'saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
+                document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
                 tampilkanTabel(perBulan);
                 hitungTotal(perBulan);
             } catch(e) { alert("❌ Kesalahan koneksi backend atau data kosong."); }
