@@ -74,7 +74,7 @@
         .btn-simpan { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; font-weight: bold; }
         .btn-simpan:active { opacity: 0.9; transform: scale(0.98); }
 
-        /* DEKSTOP RESPONSIVE */
+        /* DESKTOP RESPONSIVE */
         @media screen and (min-width: 900px) {
             .saldo-value { font-size: 78px !important; font-weight: 900 !important; }
             .total-bayar, .total-tagihan { font-size: 34px !important; font-weight: 900 !important; }
@@ -170,7 +170,6 @@
 
     <script>
         const KUNCI_PIN = "999";
-        // VARIABEL API TELAH DIPERBARUI BERDASARKAN URL TERBARU ANDA
         const ALAMAT_API = "https://script.google.com/macros/s/AKfycbz1ffomBZ32sTR1Iu-15ga11p8JI3gTIZNCY9ZIhJhmjE_RsS9QyMSXsQCZ5WowWyYD/exec";
 
         const POPUP_PIN = document.getElementById('popupPin');
@@ -244,9 +243,16 @@
                 const data = res.data;
                 if(data.error) return alert("❌ Gagal: " + data.error);
 
+                // FIX LOGIKA SORTING KRONOLOGIS DI SINI
+                // Diurutkan dari yang paling TUA/AWAL ke yang paling BARU agar alur tabel rapi dari atas ke bawah
                 const diurutkan = [...data.data].sort((a, b) => {
-                    if (a.tahun !== b.tahun) return b.tahun - a.tahun;
-                    return a.bulan - b.bulan;
+                    if (parseInt(a.tahun) !== parseInt(b.tahun)) {
+                        return parseInt(a.tahun) - parseInt(b.tahun); // Tahun terkecil di atas
+                    }
+                    if (parseInt(a.bulan) !== parseInt(b.bulan)) {
+                        return parseInt(a.bulan) - parseInt(b.bulan); // Bulan terkecil di atas
+                    }
+                    return a.waktu - b.waktu; // Jika bulan/tahun sama, urutkan berdasarkan jam upload lama ke baru
                 });
 
                 const perBulan = {};
@@ -259,7 +265,7 @@
                     perBulan[kunci].tagih += item.tagihan;
                 });
 
-                document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
+                document.getElementById('saldoAccumulasi' ? 'saldoAccumulasi' : 'saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
                 tampilkanTabel(perBulan);
                 hitungTotal(perBulan);
             } catch(e) { alert("❌ Kesalahan koneksi backend atau data kosong."); }
