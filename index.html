@@ -66,6 +66,7 @@
         .key:active { transform: scale(0.94); opacity: 0.9; }
         .key-del { background: #ff3b30; font-size: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.2; }
         .key-enter { background: #34c759; font-size: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.2; }
+        
         .modal-simpan { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 8px; overflow-y: auto; }
         .modal-content { background: #fff; border-radius: 16px; padding: 20px; width: calc(100% - 16px); max-width: 340px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; text-align: left; width: 100%; }
@@ -79,7 +80,7 @@
             .saldo-value { font-size: 78px !important; font-weight: 900 !important; }
             .total-bayar, .total-tagihan { font-size: 34px !important; font-weight: 900 !important; }
             .table-header .table-cell { font-size: 16px !important; font-weight: 900 !important; }
-            .table-row .table-cell { font-size: 21px !important; font-weight: 800 !important; }
+            .table-row .table-cell { font-size: 15px !important; font-weight: 800 !important; }
             .nama-bulan { font-size: 18px !important; font-weight: 900 !important; }
             .table-total .table-cell { font-size: 25px !important; font-weight: 900 !important; }
             .icon-hapus { font-size: 14px !important; }
@@ -92,7 +93,7 @@
         <div class="saldo-card">
             <div class="system-online"><div class="radar-wrapper"><div class="radar-wave"></div><div class="radar-wave"></div><div class="radar-wave"></div><div class="radar-dot"></div></div><span>SYSTEM ONLINE</span></div>
             <div class="saldo-label">SALDO AKUMULASI SAAT INI</div>
-            <div class="saldo-value" id="saldoAkumulasi">Rp 0</div>
+            <div class="saldo-value" id="saldoAccumulation">Rp 0</div>
         </div>
         <div class="total-row">
             <div class="total-box"><div class="total-label">TOTAL BAYAR</div><div class="total-bayar" id="totalBayar">Rp 0</div></div>
@@ -101,7 +102,7 @@
         <div class="input-bar" id="btnBuka">INPUT DATA BARU</div>
         <div class="table-container">
             <div class="table-header">
-                <div class="table-cell">BULAN</div><div class="table-cell">PEMBAYARAN</div><div class="table-cell">TAGIHAN</div><div class="table-cell">SALDO</div><div class="table-cell">OPSI</div><div class="table-cell">AKM. SALDO</div>
+                <div class="table-cell">BULAN / KET</div><div class="table-cell">PEMBAYARAN</div><div class="table-cell">TAGIHAN</div><div class="table-cell">SALDO</div><div class="table-cell">OPSI</div><div class="table-cell">AKM. SALDO</div>
             </div>
             <div id="isiTabel"></div>
         </div>
@@ -142,6 +143,13 @@
         <div class="modal-content">
             <h3 style="margin-bottom:15px; color:#333;">SIMPAN DATA BARU</h3>
             <div class="form-group">
+                <label>JENIS TRANSAKSI</label>
+                <select id="jenisTransaksi">
+                    <option value="iuran" selected>IURAN BULANAN (PEMASUKAN)</option>
+                    <option value="pengeluaran">PENGELUARAN (PENGURANG SALDO)</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>BULAN & TAHUN</label>
                 <div style="display:flex; gap:6px;">
                     <select id="bulan">
@@ -156,13 +164,17 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="groupPembayaran">
                 <label>PEMBAYARAN (Rp)</label>
                 <input type="number" id="pembayaran" value="55000">
             </div>
             <div class="form-group">
-                <label>TAGIHAN (Rp)</label>
+                <label id="labelTagihan">TAGIHAN (Rp)</label>
                 <input type="number" id="tagihan" value="52447">
+            </div>
+            <div class="form-group" id="groupKeterangan" style="display:none;">
+                <label>KETERANGAN PENGELUARAN</label>
+                <input type="text" id="keterangan" placeholder="CONTOH: BELI KABEL, TIPS TEKNISI">
             </div>
             <button class="btn-simpan" id="tombolSimpan">SIMPAN</button>
         </div>
@@ -177,6 +189,16 @@
         const LINGKARAN = document.querySelectorAll('.circle');
         const BTN_ENTER = document.getElementById('btnEnter');
         const BTN_HAPUS = document.getElementById('btnHapus');
+        
+        // Elemen Form Baru
+        const SELECT_JENIS = document.getElementById('jenisTransaksi');
+        const GROUP_PEMBAYARAN = document.getElementById('groupPembayaran');
+        const GROUP_KETERANGAN = document.getElementById('groupKeterangan');
+        const LABEL_TAGIHAN = document.getElementById('labelTagihan');
+        const INPUT_PEMBAYARAN = document.getElementById('pembayaran');
+        const INPUT_TAGIHAN = document.getElementById('tagihan');
+        const INPUT_KETERANGAN = document.getElementById('keterangan');
+
         let nilaiPin = "";
         let aksiSetelahPin = null;
 
@@ -193,8 +215,28 @@
             BTN_HAPUS.addEventListener('click', hapusAngka);
             BTN_ENTER.addEventListener('click', cekPin);
             document.getElementById('tombolSimpan').addEventListener('click', simpanDataAman);
+            
+            // Event listener ketika mengganti jenis transaksi iuran/pengeluaran
+            SELECT_JENIS.addEventListener('change', aturFormBerdasarkanJenis);
+
             ambilTampilData();
         });
+
+        function aturFormBerdasarkanJenis() {
+            if (SELECT_JENIS.value === 'pengeluaran') {
+                GROUP_PEMBAYARAN.style.display = 'none';
+                GROUP_KETERANGAN.style.display = 'flex';
+                LABEL_TAGIHAN.textContent = 'NOMINAL PENGELUARAN (Rp)';
+                INPUT_PEMBAYARAN.value = 0;
+                INPUT_TAGIHAN.value = "";
+            } else {
+                GROUP_PEMBAYARAN.style.display = 'flex';
+                GROUP_KETERANGAN.style.display = 'none';
+                LABEL_TAGIHAN.textContent = 'TAGIHAN (Rp)';
+                INPUT_PEMBAYARAN.value = 55000;
+                INPUT_TAGIHAN.value = 52447;
+            }
+        }
 
         function tampilkanPin() {
             nilaiPin = "";
@@ -237,13 +279,53 @@
             aksiSetelahPin = null;
         }
 
+        // --- SISTEM LOCALSTORAGE UNTUK MENYIMPAN KETERANGAN SECARA LOKAL ---
+        function simpanKeteranganSesaat(bulan, tahun, nominal, ket) {
+            let pending = JSON.parse(localStorage.getItem('wifi_pending_desc') || '[]');
+            pending.push({ bulan, tahun, nominal, ket, t: Date.now() });
+            localStorage.setItem('wifi_pending_desc', JSON.stringify(pending));
+        }
+
+        function sinkronisasiKeteranganLokal(rows) {
+            let pending = JSON.parse(localStorage.getItem('wifi_pending_desc') || '[]');
+            if (pending.length === 0) return;
+
+            let sisaPending = [...pending];
+            rows.forEach(row => {
+                if (row.pembayaran === 0) {
+                    const idx = sisaPending.findIndex(p => 
+                        p.bulan === row.bulan && 
+                        p.tahun === row.tahun && 
+                        p.nominal === row.tagihan
+                    );
+                    if (idx !== -1) {
+                        localStorage.setItem(`wifi_exp_desc_${row.waktu}`, sisaPending[idx].ket);
+                        sisaPending.splice(idx, 1);
+                    }
+                }
+            });
+            localStorage.setItem('wifi_pending_desc', JSON.stringify(sisaPending));
+        }
+
+        function dapatkanKeteranganBaris(row) {
+            if (row.pembayaran > 0) {
+                return "IURAN";
+            }
+            const localDesc = localStorage.getItem(`wifi_exp_desc_${row.waktu}`);
+            return localDesc ? localDesc : "PENGELUARAN";
+        }
+        // -------------------------------------------------------------
+
         async function ambilTampilData() {
             try {
                 const res = await axios.get(ALAMAT_API, { params: { action: 'ambil' } });
                 const data = res.data;
                 if(data.error) return alert("❌ Gagal: " + data.error);
 
-                // Pengurutan kronologis (Tahun -> Bulan -> Waktu Upload) agar baris data tersusun rapi dari terlama ke terbaru
+                // Sinkronkan deskripsi lokal dengan data timestamp (waktu) dari backend
+                sinkronisasiKeteranganLokal(data.data);
+
+                // Pengurutan kronologis (Tahun -> Bulan -> Waktu Upload)
                 const diurutkan = [...data.data].sort((a, b) => {
                     if (parseInt(a.tahun) !== parseInt(b.tahun)) {
                         return parseInt(a.tahun) - parseInt(b.tahun);
@@ -264,7 +346,7 @@
                     perBulan[kunci].tagih += item.tagihan;
                 });
 
-                document.getElementById('saldoAkumulasi').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
+                document.getElementById('saldoAccumulation').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
                 tampilkanTabel(perBulan);
                 hitungTotal(perBulan);
             } catch(e) { alert("❌ Kesalahan koneksi backend atau data kosong."); }
@@ -277,12 +359,15 @@
                 const bln = perBulan[kunci];
                 wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan">${bln.nama}</div></div>`;
                 bln.rinci.sort((a,b) => a.waktu - b.waktu).forEach(row => {
+                    const ketText = dapatkanKeteranganBaris(row);
+                    const isPengeluaran = row.pembayaran === 0;
+
                     wadah.innerHTML += `
-                        <div class="table-row">
-                            <div class="table-cell"></div>
+                        <div class="table-row" style="${isPengeluaran ? 'background: #fff5f5;' : ''}">
+                            <div class="table-cell" style="font-size: clamp(8px, 1.8vw, 11px); color: ${isPengeluaran ? '#dc2626' : '#4b5563'}; justify-content: flex-start; padding-left: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${ketText}</div>
                             <div class="table-cell nilai-bayar">${row.pembayaran.toLocaleString('id-ID')}</div>
                             <div class="table-cell nilai-tagih">${row.tagihan.toLocaleString('id-ID')}</div>
-                            <div class="table-cell nilai-saldo">${row.selisih.toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-saldo" style="color: ${row.selisih < 0 ? '#dc2626' : '#16a34a'}">${row.selisih.toLocaleString('id-ID')}</div>
                             <div class="table-cell"><span class="icon-hapus" data-bl="${row.bulan}" data-th="${row.tahun}" data-br="${row.pembayaran}" data-tg="${row.tagihan}" data-wk="${row.waktu}">🗑</span></div>
                             <div class="table-cell nilai-akm">${row.akumulasi.toLocaleString('id-ID')}</div>
                         </div>`;
@@ -292,7 +377,7 @@
                         <div class="table-cell">TOTAL</div>
                         <div class="table-cell">${bln.bayar.toLocaleString('id-ID')}</div>
                         <div class="table-cell">${bln.tagih.toLocaleString('id-ID')}</div>
-                        <div class="table-cell">${(bln.bayar - bln.tagih).toLocaleString('id-ID')}</div>
+                        <div class="table-cell" style="color: ${(bln.bayar - bln.tagih) < 0 ? '#ffb3b3' : '#white'}">${(bln.bayar - bln.tagih).toLocaleString('id-ID')}</div>
                         <div class="table-cell"></div>
                         <div class="table-cell">${bln.rinci[bln.rinci.length-1]?.akumulasi.toLocaleString('id-ID') || 0}</div>
                     </div>`;
@@ -314,14 +399,35 @@
         }
 
         async function simpanDataAman() {
+            const tipe = SELECT_JENIS.value;
             const bulan = document.getElementById('bulan').value;
             const tahun = document.getElementById('tahun').value;
-            const bayar = parseInt(document.getElementById('pembayaran').value) || 0;
-            const tagih = parseInt(document.getElementById('tagihan').value) || 0;
+            const bayar = tipe === 'pengeluaran' ? 0 : (parseInt(INPUT_PEMBAYARAN.value) || 0);
+            const tagih = parseInt(INPUT_TAGIHAN.value) || 0;
+            const ketValue = INPUT_KETERANGAN.value.trim().toUpperCase() || "PENGELUARAN";
+
+            if (tipe === 'pengeluaran') {
+                if (tagih <= 0) {
+                    alert("❌ NOMINAL PENGELUARAN HARUS LEBIH DARI 0!");
+                    return;
+                }
+                if (!INPUT_KETERANGAN.value.trim()) {
+                    alert("❌ KETERANGAN PENGELUARAN WAJIB DIISI!");
+                    return;
+                }
+                // Simpan keterangan ke buffer sementara sebelum API berhasil
+                simpanKeteranganSesaat(bulan, tahun, tagih, ketValue);
+            }
+
             try {
                 const res = await axios.get(ALAMAT_API, { params: { action: 'simpan', pin: nilaiPin, bulan, tahun, bayar, tagih } });
                 if(res.data.sukses) {
                     MODAL_SIMPAN.style.display = 'none';
+                    // Reset form ke semula
+                    SELECT_JENIS.value = 'iuran';
+                    aturFormBerdasarkanJenis();
+                    INPUT_KETERANGAN.value = "";
+                    
                     await ambilTampilData();
                     alert("✅ DATA DISIMPAN");
                 } else {
@@ -335,6 +441,10 @@
             try {
                 const res = await axios.get(ALAMAT_API, { params: { action: 'hapus', pin: nilaiPin, ...dt } });
                 if(res.data.sukses) {
+                    // Hapus keterangan di localStorage jika data dihapus
+                    if (dt.Osborn) {
+                        localStorage.removeItem(`wifi_exp_desc_${dt.Osborn}`);
+                    }
                     await ambilTampilData();
                     alert("✅ DATA DIHAPUS");
                 } else {
@@ -345,7 +455,12 @@
 
         window.onclick = e => {
             if(e.target === POPUP_PIN) POPUP_PIN.style.display = 'none';
-            if(e.target === MODAL_SIMPAN) MODAL_SIMPAN.style.display = 'none';
+            if(e.target === MODAL_SIMPAN) {
+                MODAL_SIMPAN.style.display = 'none';
+                SELECT_JENIS.value = 'iuran';
+                aturFormBerdasarkanJenis();
+                INPUT_KETERANGAN.value = "";
+            }
         };
     </script>
 </body>
