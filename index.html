@@ -54,8 +54,12 @@
         .icon-hapus:hover { transform: scale(1.5); }
         .footer-text { text-align: center; font-size: clamp(9px, 2vw, 13px); color: #94a3b8; margin-top: 10px; margin-bottom: 15px; letter-spacing: 0.5px; }
 
-        /* MODAL PIN */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; align-items: center; justify-content: center; padding: 15px; }
+        /* KETERANGAN INTERAKTIF */
+        .cell-keterangan { cursor: pointer; user-select: none; -webkit-touch-callout: none; }
+        .cell-keterangan:active { background: #e0f2fe; }
+
+        /* MODAL */
+        .modal, .modal-simpan, .modal-edit { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; align-items: center; justify-content: center; padding: 15px; }
         .modal-box { background: #fff; border-radius: 20px; width: 100%; max-width: 340px; padding: 30px 20px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
         .modal-box h3 { color: #111; margin-bottom: 25px; font-size: 22px; letter-spacing: 0.5px; font-weight: 900; }
         .pin-circles { display: flex; justify-content: center; gap: 12px; margin-bottom: 35px; }
@@ -67,13 +71,14 @@
         .key-del { background: #ff3b30; font-size: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.2; }
         .key-enter { background: #34c759; font-size: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.2; }
         
-        .modal-simpan { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 8px; overflow-y: auto; }
         .modal-content { background: #fff; border-radius: 16px; padding: 20px; width: calc(100% - 16px); max-width: 340px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; text-align: left; width: 100%; }
         .form-group label { font-size: clamp(11px, 2.8vw, 14px); color: #333; text-transform: none; font-weight: 600; }
         .form-group input, .form-group select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: clamp(11px, 2.8vw, 14px); outline: none; font-weight: bold; width: 100%; text-transform: none; }
         .btn-simpan { background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; font-weight: bold; }
         .btn-simpan:active { opacity: 0.9; transform: scale(0.98); }
+        .btn-hapus-modal { background: #ef4444; color: white; border: none; padding: 10px 0; border-radius: 8px; font-size: clamp(12px, 3vw, 15px); cursor: pointer; width: 100%; font-weight: bold; margin-top: 8px; }
+        .btn-hapus-modal:active { opacity: 0.9; }
 
         /* DESKTOP RESPONSIVE */
         @media screen and (min-width: 900px) {
@@ -109,6 +114,7 @@
         <div class="footer-text">POWERED BY: MBS ID</div>
     </div>
 
+    <!-- POPUP PIN -->
     <div id="popupPin" class="modal">
         <div class="modal-box">
             <h3>MASUKKAN PIN KEAMANAN</h3>
@@ -139,6 +145,7 @@
         </div>
     </div>
 
+    <!-- MODAL SIMPAN BARU -->
     <div class="modal-simpan" id="modalSimpan">
         <div class="modal-content">
             <h3 style="margin-bottom:15px; color:#333;">SIMPAN DATA BARU</h3>
@@ -180,12 +187,49 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT DATA -->
+    <div class="modal-edit" id="modalEdit">
+        <div class="modal-content">
+            <h3 style="margin-bottom:15px; color:#333;">EDIT DATA TRANSAKSI</h3>
+            <div class="form-group">
+                <label>BULAN & TAHUN</label>
+                <div style="display:flex; gap:6px;">
+                    <select id="editBulan">
+                        <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
+                        <option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option>
+                        <option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option>
+                        <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                    </select>
+                    <select id="editTahun">
+                        <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+                        <option value="2027">2027</option><option value="2028">2028</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>KETERANGAN / NAMA TRANSAKSI</label>
+                <input type="text" id="editKeterangan" placeholder="IURAN / MAKAN² BERSAMA / DLL">
+            </div>
+            <div class="form-group">
+                <label>PEMBAYARAN (Rp)</label>
+                <input type="number" id="editPembayaran">
+            </div>
+            <div class="form-group">
+                <label>TAGIHAN / NOMINAL (Rp)</label>
+                <input type="number" id="editTagihan">
+            </div>
+            <button class="btn-simpan" id="tombolSimpanEdit">SIMPAN PERUBAHAN</button>
+            <button class="btn-hapus-modal" id="tombolHapusEdit">HAPUS DATA INI</button>
+        </div>
+    </div>
+
     <script>
         const KUNCI_PIN = "999";
         const ALAMAT_API = "https://script.google.com/macros/s/AKfycbz1ffomBZ32sTR1Iu-15ga11p8JI3gTIZNCY9ZIhJhmjE_RsS9QyMSXsQCZ5WowWyYD/exec";
 
         const POPUP_PIN = document.getElementById('popupPin');
         const MODAL_SIMPAN = document.getElementById('modalSimpan');
+        const MODAL_EDIT = document.getElementById('modalEdit');
         const LINGKARAN = document.querySelectorAll('.circle');
         const BTN_ENTER = document.getElementById('btnEnter');
         const BTN_HAPUS = document.getElementById('btnHapus');
@@ -198,12 +242,35 @@
         const INPUT_TAGIHAN = document.getElementById('tagihan');
         const INPUT_KETERANGAN = document.getElementById('keterangan');
 
+        // Form Edit
+        const EDIT_BULAN = document.getElementById('editBulan');
+        const EDIT_TAHUN = document.getElementById('editTahun');
+        const EDIT_KETERANGAN = document.getElementById('editKeterangan');
+        const EDIT_PEMBAYARAN = document.getElementById('editPembayaran');
+        const EDIT_TAGIHAN = document.getElementById('editTagihan');
+
+        const NAMA_BULAN_MAP = {
+            "01": "JANUARI", "1": "JANUARI",
+            "02": "FEBRUARI", "2": "FEBRUARI",
+            "03": "MARET", "3": "MARET",
+            "04": "APRIL", "4": "APRIL",
+            "05": "MEI", "5": "MEI",
+            "06": "JUNI", "6": "JUNI",
+            "07": "JULI", "7": "JULI",
+            "08": "AGUSTUS", "8": "AGUSTUS",
+            "09": "SEPTEMBER", "9": "SEPTEMBER",
+            "10": "OKTOBER",
+            "11": "NOVEMBER",
+            "12": "DESEMBER"
+        };
+
         let nilaiPin = "";
         let aksiSetelahPin = null;
+        let dataYangSedangDiedit = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('btnBuka').addEventListener('click', () => {
-                aksiSetelahPin = 'bukaForm';
+                aksiSetelahPin = { jenis: 'bukaForm' };
                 tampilkanPin();
             });
 
@@ -214,6 +281,8 @@
             BTN_HAPUS.addEventListener('click', hapusAngka);
             BTN_ENTER.addEventListener('click', cekPin);
             document.getElementById('tombolSimpan').addEventListener('click', simpanDataAman);
+            document.getElementById('tombolSimpanEdit').addEventListener('click', simpanEditAman);
+            document.getElementById('tombolHapusEdit').addEventListener('click', hapusDariModalEdit);
             SELECT_JENIS.addEventListener('change', aturFormBerdasarkanJenis);
 
             ambilTampilData();
@@ -270,12 +339,24 @@
         }
 
         function jalankanAksi() {
-            if(aksiSetelahPin === 'bukaForm') {
+            if(aksiSetelahPin?.jenis === 'bukaForm') {
                 MODAL_SIMPAN.style.display = 'flex';
+            } else if(aksiSetelahPin?.jenis === 'bukaEdit') {
+                bukaModalEdit(aksiSetelahPin.data);
             } else if(aksiSetelahPin?.jenis === 'hapus') {
                 prosesHapus(aksiSetelahPin.data);
             }
             aksiSetelahPin = null;
+        }
+
+        function bukaModalEdit(row) {
+            dataYangSedangDiedit = row;
+            EDIT_BULAN.value = String(row.bulan).padStart(2, '0');
+            EDIT_TAHUN.value = String(row.tahun);
+            EDIT_KETERANGAN.value = row.keterangan || (Number(row.pembayaran) > 0 ? "IURAN" : "PENGELUARAN");
+            EDIT_PEMBAYARAN.value = row.pembayaran;
+            EDIT_TAGIHAN.value = row.tagihan;
+            MODAL_EDIT.style.display = 'flex';
         }
 
         async function ambilTampilData() {
@@ -285,11 +366,11 @@
                 if(data.error) return alert("❌ Gagal: " + data.error);
 
                 const diurutkan = [...data.data].sort((a, b) => {
-                    if (parseInt(a.tahun) !== parseInt(b.tahun)) {
-                        return parseInt(a.tahun) - parseInt(b.tahun);
+                    if (parseInt(a.tahun, 10) !== parseInt(b.tahun, 10)) {
+                        return parseInt(a.tahun, 10) - parseInt(b.tahun, 10);
                     }
-                    if (parseInt(a.bulan) !== parseInt(b.bulan)) {
-                        return parseInt(a.bulan) - parseInt(b.bulan);
+                    if (parseInt(a.bulan, 10) !== parseInt(b.bulan, 10)) {
+                        return parseInt(a.bulan, 10) - parseInt(b.bulan, 10);
                     }
                     return (Number(a.waktu) || 0) - (Number(b.waktu) || 0);
                 });
@@ -298,17 +379,47 @@
                 diurutkan.forEach(item => {
                     const blnAngka = String(item.bulan).padStart(2, '0');
                     const kunci = `${blnAngka}-${item.tahun}`;
-                    const nama = new Date(`${item.tahun}-${blnAngka}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
+                    const namaBulanTeks = NAMA_BULAN_MAP[blnAngka] || `BULAN ${blnAngka}`;
+                    const nama = `${namaBulanTeks} ${item.tahun}`;
+
                     if(!perBulan[kunci]) perBulan[kunci] = { nama, bayar:0, tagih:0, rinci:[] };
                     perBulan[kunci].rinci.push(item);
                     perBulan[kunci].bayar += Number(item.pembayaran);
                     perBulan[kunci].tagih += Number(item.tagihan);
                 });
 
-                document.getElementById('saldoAccumulation').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
+                document.getElementById('saldoAccumulation').textContent = `Rp ${Number(data.saldoAkhir).toLocaleString('id-ID')}`;
                 tampilkanTabel(perBulan);
                 hitungTotal(perBulan);
             } catch(e) { alert("❌ Kesalahan koneksi backend atau data kosong."); }
+        }
+
+        function pasangFiturTekanTahan(elemen, callback) {
+            let timer = null;
+            let sudahDipicu = false;
+
+            const mulai = () => {
+                sudahDipicu = false;
+                timer = setTimeout(() => {
+                    sudahDipicu = true;
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    callback();
+                }, 500);
+            };
+
+            const batalkan = () => {
+                if (timer) clearTimeout(timer);
+            };
+
+            elemen.addEventListener('touchstart', mulai, { passive: true });
+            elemen.addEventListener('touchend', (e) => {
+                batalkan();
+                if (sudahDipicu) e.preventDefault();
+            });
+            elemen.addEventListener('touchmove', batalkan);
+            elemen.addEventListener('mousedown', mulai);
+            elemen.addEventListener('mouseup', batalkan);
+            elemen.addEventListener('mouseleave', batalkan);
         }
 
         function tampilkanTabel(perBulan) {
@@ -320,10 +431,11 @@
                 bln.rinci.sort((a,b) => (Number(a.waktu) || 0) - (Number(b.waktu) || 0)).forEach(row => {
                     const isPengeluaran = Number(row.pembayaran) === 0;
                     const ketText = row.keterangan || (isPengeluaran ? "PENGELUARAN" : "IURAN");
+                    const dataJson = encodeURIComponent(JSON.stringify(row));
 
                     wadah.innerHTML += `
                         <div class="table-row" style="${isPengeluaran ? 'background: #fff5f5;' : ''}">
-                            <div class="table-cell" style="font-size: clamp(8px, 1.8vw, 11px); color: ${isPengeluaran ? '#dc2626' : '#4b5563'}; justify-content: flex-start; padding-left: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${ketText}</div>
+                            <div class="table-cell cell-keterangan" data-row="${dataJson}" title="Tahan untuk edit data" style="font-size: clamp(8px, 1.8vw, 11px); color: ${isPengeluaran ? '#dc2626' : '#4b5563'}; justify-content: flex-start; padding-left: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${ketText}</div>
                             <div class="table-cell nilai-bayar">${Number(row.pembayaran).toLocaleString('id-ID')}</div>
                             <div class="table-cell nilai-tagih">${Number(row.tagihan).toLocaleString('id-ID')}</div>
                             <div class="table-cell nilai-saldo" style="color: ${row.selisih < 0 ? '#dc2626' : '#16a34a'}">${row.selisih.toLocaleString('id-ID')}</div>
@@ -342,6 +454,16 @@
                     </div>`;
             });
 
+            // Pasang event long-press pada setiap teks keterangan
+            document.querySelectorAll('.cell-keterangan').forEach(el => {
+                pasangFiturTekanTahan(el, () => {
+                    const rowData = JSON.parse(decodeURIComponent(el.dataset.row));
+                    aksiSetelahPin = { jenis: 'bukaEdit', data: rowData };
+                    tampilkanPin();
+                });
+            });
+
+            // Tombol hapus ikon sampah
             document.querySelectorAll('.icon-hapus').forEach(el => {
                 el.addEventListener('click', () => {
                     const wk = el.dataset.wk ? Number(el.dataset.wk) : "";
@@ -413,8 +535,59 @@
             } catch(e) { alert("❌ Gagal simpan: " + e.message); }
         }
 
+        async function simpanEditAman() {
+            if (!dataYangSedangDiedit) return;
+
+            const bulan = EDIT_BULAN.value;
+            const tahun = EDIT_TAHUN.value;
+            const bayar = parseInt(EDIT_PEMBAYARAN.value, 10) || 0;
+            const tagih = parseInt(EDIT_TAGIHAN.value, 10) || 0;
+            const keterangan = EDIT_KETERANGAN.value.trim().toUpperCase() || (bayar > 0 ? 'IURAN' : 'PENGELUARAN');
+
+            try {
+                const res = await axios.get(ALAMAT_API, { 
+                    params: { 
+                        action: 'edit', 
+                        pin: nilaiPin, 
+                        waktu: dataYangSedangDiedit.waktu || "",
+                        blnLama: dataYangSedangDiedit.bulan,
+                        thnLama: dataYangSedangDiedit.tahun,
+                        bayarLama: dataYangSedangDiedit.pembayaran,
+                        tagihLama: dataYangSedangDiedit.tagihan,
+                        bulan,
+                        tahun,
+                        bayar,
+                        tagih,
+                        keterangan
+                    } 
+                });
+                
+                if(res.data.sukses) {
+                    MODAL_EDIT.style.display = 'none';
+                    dataYangSedangDiedit = null;
+                    await ambilTampilData();
+                    alert("✅ DATA BERHASIL DIPERBARUI");
+                } else {
+                    alert("❌ " + res.data.pesan);
+                }
+            } catch(e) { alert("❌ Gagal edit: " + e.message); }
+        }
+
+        async function hapusDariModalEdit() {
+            if (!dataYangSedangDiedit) return;
+            MODAL_EDIT.style.display = 'none';
+            await prosesHapus({
+                bulan: dataYangSedangDiedit.bulan,
+                tahun: dataYangSedangDiedit.tahun,
+                bayar: dataYangSedangDiedit.pembayaran,
+                tagih: dataYangSedangDiedit.tagihan,
+                waktu: dataYangSedangDiedit.waktu || ""
+            });
+            dataYangSedangDiedit = null;
+        }
+
         async function prosesHapus(dt) {
-            if(!confirm("⚠️ YAKIN HAPUS DATA?")) return;
+            if(!confirm("⚠️ YAKIN HAPUS DATA INI?")) return;
             try {
                 const res = await axios.get(ALAMAT_API, { 
                     params: { 
@@ -440,6 +613,10 @@
                 SELECT_JENIS.value = 'iuran';
                 aturFormBerdasarkanJenis();
                 INPUT_KETERANGAN.value = "";
+            }
+            if(e.target === MODAL_EDIT) {
+                MODAL_EDIT.style.display = 'none';
+                dataYangSedangDiedit = null;
             }
         };
     </script>
