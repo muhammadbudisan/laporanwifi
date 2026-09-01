@@ -53,6 +53,8 @@
         .icon-hapus { font-size: 10px; cursor: pointer; color: #ff0000; transition: 0.2s; text-shadow: 0 0 2px rgba(255,0,0,0.6); pointer-events: auto; }
         .icon-hapus:hover { transform: scale(1.5); }
         .footer-text { text-align: center; font-size: clamp(9px, 2vw, 13px); color: #94a3b8; margin-top: 10px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        .cell-keterangan { cursor: pointer; user-select: none; }
+        .cell-keterangan:hover { text-decoration: underline; opacity: 0.85; }
 
         /* MODAL PIN */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; align-items: center; justify-content: center; padding: 15px; }
@@ -154,8 +156,8 @@
                 <div style="display:flex; gap:6px;">
                     <select id="bulan">
                         <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
-                        <option value="04">April</option><option value="05" selected>Mei</option><option value="06">Juni</option>
-                        <option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option>
+                        <option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option>
+                        <option value="07" selected>Juli</option><option value="08">Agustus</option><option value="09">September</option>
                         <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
                     </select>
                     <select id="tahun">
@@ -166,15 +168,15 @@
             </div>
             <div class="form-group" id="groupPembayaran">
                 <label>PEMBAYARAN (Rp)</label>
-                <input type="number" id="pembayaran" value="55000">
+                <input type="number" id="pembayaran" value="60000">
             </div>
             <div class="form-group">
                 <label id="labelTagihan">TAGIHAN (Rp)</label>
-                <input type="number" id="tagihan" value="52447">
+                <input type="number" id="tagihan" value="56610">
             </div>
             <div class="form-group" id="groupKeterangan" style="display:none;">
-                <label>KETERANGAN PENGELUARAN</label>
-                <input type="text" id="keterangan" placeholder="CONTOH: BELI KABEL, TIPS TEKNISI">
+                <label>KETERANGAN</label>
+                <input type="text" id="keterangan" placeholder="CONTOH: MAKAN² BERSAMA, BELI KABEL">
             </div>
             <button class="btn-simpan" id="tombolSimpan">SIMPAN</button>
         </div>
@@ -190,7 +192,6 @@
         const BTN_ENTER = document.getElementById('btnEnter');
         const BTN_HAPUS = document.getElementById('btnHapus');
         
-        // Elemen Form Baru
         const SELECT_JENIS = document.getElementById('jenisTransaksi');
         const GROUP_PEMBAYARAN = document.getElementById('groupPembayaran');
         const GROUP_KETERANGAN = document.getElementById('groupKeterangan');
@@ -215,8 +216,6 @@
             BTN_HAPUS.addEventListener('click', hapusAngka);
             BTN_ENTER.addEventListener('click', cekPin);
             document.getElementById('tombolSimpan').addEventListener('click', simpanDataAman);
-            
-            // Event listener ketika mengganti jenis transaksi iuran/pengeluaran
             SELECT_JENIS.addEventListener('change', aturFormBerdasarkanJenis);
 
             ambilTampilData();
@@ -229,12 +228,14 @@
                 LABEL_TAGIHAN.textContent = 'NOMINAL PENGELUARAN (Rp)';
                 INPUT_PEMBAYARAN.value = 0;
                 INPUT_TAGIHAN.value = "";
+                INPUT_KETERANGAN.value = "";
+                setTimeout(() => INPUT_KETERANGAN.focus(), 100);
             } else {
                 GROUP_PEMBAYARAN.style.display = 'flex';
                 GROUP_KETERANGAN.style.display = 'none';
                 LABEL_TAGIHAN.textContent = 'TAGIHAN (Rp)';
-                INPUT_PEMBAYARAN.value = 55000;
-                INPUT_TAGIHAN.value = 52447;
+                INPUT_PEMBAYARAN.value = 60000;
+                INPUT_TAGIHAN.value = 56610;
             }
         }
 
@@ -279,42 +280,97 @@
             aksiSetelahPin = null;
         }
 
-        // --- SISTEM LOCALSTORAGE UNTUK MENYIMPAN KETERANGAN SECARA LOKAL ---
-        function simpanKeteranganSesaat(bulan, tahun, nominal, ket) {
+        // --- SISTEM LOCALSTORAGE UNTUK KETERANGAN ---
+        function getDbKeterangan() {
+            try {
+                return JSON.parse(localStorage.getItem('wifi_keterangan_db') || '{}');
+            } catch(e) { return {}; }
+        }
+
+        function simpanDbKeterangan(db) {
+            localStorage.setItem('wifi_keterangan_db', JSON.stringify(db));
+        }
+
+        function buatKunciWaktu(row) {
+            return row.waktu ? `w_${row.waktu}` : null;
+        }
+
+        function buatKunciKomposit(row) {
+            return `exp_${parseInt(row.tahun, 10)}_${parseInt(row.bulan, 10)}_${Number(row.tagihan || row.tagih || 0)}`;
+        }
+
+        function simpanKeteranganBaru(bulan, tahun, nominal, teksKet) {
+            let db = getDbKeterangan();
+            const bInt = parseInt(bulan, 10);
+            const tInt = parseInt(tahun, 10);
+            const nom = Number(nominal);
+
+            const kunciKomposit = `exp_${tInt}_${bInt}_${nom}`;
+            db[kunciKomposit] = teksKet;
+            db[`last_exp_${tInt}_${bInt}`] = teksKet;
+
             let pending = JSON.parse(localStorage.getItem('wifi_pending_desc') || '[]');
-            pending.push({ bulan, tahun, nominal, ket, t: Date.now() });
+            pending.push({ bulan: bInt, tahun: tInt, nominal: nom, ket: teksKet, t: Date.now() });
             localStorage.setItem('wifi_pending_desc', JSON.stringify(pending));
+
+            simpanDbKeterangan(db);
         }
 
         function sinkronisasiKeteranganLokal(rows) {
             let pending = JSON.parse(localStorage.getItem('wifi_pending_desc') || '[]');
-            if (pending.length === 0) return;
+            let db = getDbKeterangan();
 
-            let sisaPending = [...pending];
-            rows.forEach(row => {
-                if (row.pembayaran === 0) {
-                    const idx = sisaPending.findIndex(p => 
-                        p.bulan === row.bulan && 
-                        p.tahun === row.tahun && 
-                        p.nominal === row.tagihan
-                    );
-                    if (idx !== -1) {
-                        localStorage.setItem(`wifi_exp_desc_${row.waktu}`, sisaPending[idx].ket);
-                        sisaPending.splice(idx, 1);
+            if (pending.length > 0) {
+                let sisaPending = [...pending];
+                rows.forEach(row => {
+                    if (Number(row.pembayaran) === 0) {
+                        const idx = sisaPending.findIndex(p => 
+                            p.bulan === parseInt(row.bulan, 10) && 
+                            p.tahun === parseInt(row.tahun, 10) && 
+                            p.nominal === Number(row.tagihan)
+                        );
+                        if (idx !== -1) {
+                            if (row.waktu) db[`w_${row.waktu}`] = sisaPending[idx].ket;
+                            db[buatKunciKomposit(row)] = sisaPending[idx].ket;
+                            sisaPending.splice(idx, 1);
+                        }
                     }
-                }
-            });
-            localStorage.setItem('wifi_pending_desc', JSON.stringify(sisaPending));
+                });
+                localStorage.setItem('wifi_pending_desc', JSON.stringify(sisaPending));
+            }
+            simpanDbKeterangan(db);
         }
 
         function dapatkanKeteranganBaris(row) {
-            if (row.pembayaran > 0) {
-                return "IURAN";
-            }
-            const localDesc = localStorage.getItem(`wifi_exp_desc_${row.waktu}`);
-            return localDesc ? localDesc : "PENGELUARAN";
+            const isPengeluaran = Number(row.pembayaran) === 0;
+            if (!isPengeluaran) return "IURAN";
+
+            const db = getDbKeterangan();
+            const kunciWaktu = buatKunciWaktu(row);
+            const kunciKomposit = buatKunciKomposit(row);
+            const kunciBulan = `last_exp_${parseInt(row.tahun, 10)}_${parseInt(row.bulan, 10)}`;
+
+            if (kunciWaktu && db[kunciWaktu]) return db[kunciWaktu];
+            if (db[kunciKomposit]) return db[kunciKomposit];
+            if (row.waktu && localStorage.getItem(`wifi_exp_desc_${row.waktu}`)) return localStorage.getItem(`wifi_exp_desc_${row.waktu}`);
+            if (db[kunciBulan]) return db[kunciBulan];
+
+            return "KLIK UNTUK TULIS KET";
         }
-        // -------------------------------------------------------------
+
+        function ubahKeteranganManual(kunciWaktu, kunciKomposit, teksLama) {
+            const defaultPrompt = teksLama === "KLIK UNTUK TULIS KET" ? "" : teksLama;
+            const teksBaru = prompt("MASUKKAN KETERANGAN PENGELUARAN:", defaultPrompt);
+            if (teksBaru !== null && teksBaru.trim() !== "") {
+                const db = getDbKeterangan();
+                const hasil = teksBaru.trim().toUpperCase();
+                if (kunciWaktu) db[kunciWaktu] = hasil;
+                if (kunciKomposit) db[kunciKomposit] = hasil;
+                simpanDbKeterangan(db);
+                ambilTampilData();
+            }
+        }
+        // ----------------------------------------------
 
         async function ambilTampilData() {
             try {
@@ -322,10 +378,8 @@
                 const data = res.data;
                 if(data.error) return alert("❌ Gagal: " + data.error);
 
-                // Sinkronkan deskripsi lokal dengan data timestamp (waktu) dari backend
                 sinkronisasiKeteranganLokal(data.data);
 
-                // Pengurutan kronologis (Tahun -> Bulan -> Waktu Upload)
                 const diurutkan = [...data.data].sort((a, b) => {
                     if (parseInt(a.tahun) !== parseInt(b.tahun)) {
                         return parseInt(a.tahun) - parseInt(b.tahun);
@@ -333,17 +387,18 @@
                     if (parseInt(a.bulan) !== parseInt(b.bulan)) {
                         return parseInt(a.bulan) - parseInt(b.bulan);
                     }
-                    return a.waktu - b.waktu;
+                    return (a.waktu || 0) - (b.waktu || 0);
                 });
 
                 const perBulan = {};
                 diurutkan.forEach(item => {
-                    const kunci = `${item.bulan}-${item.tahun}`;
-                    const nama = new Date(`${item.tahun}-${item.bulan}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
+                    const blnAngka = String(item.bulan).padStart(2, '0');
+                    const kunci = `${blnAngka}-${item.tahun}`;
+                    const nama = new Date(`${item.tahun}-${blnAngka}-01`).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
                     if(!perBulan[kunci]) perBulan[kunci] = { nama, bayar:0, tagih:0, rinci:[] };
                     perBulan[kunci].rinci.push(item);
-                    perBulan[kunci].bayar += item.pembayaran;
-                    perBulan[kunci].tagih += item.tagihan;
+                    perBulan[kunci].bayar += Number(item.pembayaran);
+                    perBulan[kunci].tagih += Number(item.tagihan);
                 });
 
                 document.getElementById('saldoAccumulation').textContent = `Rp ${data.saldoAkhir.toLocaleString('id-ID')}`;
@@ -358,18 +413,20 @@
             Object.keys(perBulan).forEach(kunci => {
                 const bln = perBulan[kunci];
                 wadah.innerHTML += `<div class="table-row"><div class="table-cell nama-bulan">${bln.nama}</div></div>`;
-                bln.rinci.sort((a,b) => a.waktu - b.waktu).forEach(row => {
+                bln.rinci.sort((a,b) => (a.waktu || 0) - (b.waktu || 0)).forEach(row => {
                     const ketText = dapatkanKeteranganBaris(row);
-                    const isPengeluaran = row.pembayaran === 0;
+                    const isPengeluaran = Number(row.pembayaran) === 0;
+                    const kunciWaktu = buatKunciWaktu(row) || '';
+                    const kunciKomposit = buatKunciKomposit(row);
 
                     wadah.innerHTML += `
                         <div class="table-row" style="${isPengeluaran ? 'background: #fff5f5;' : ''}">
-                            <div class="table-cell" style="font-size: clamp(8px, 1.8vw, 11px); color: ${isPengeluaran ? '#dc2626' : '#4b5563'}; justify-content: flex-start; padding-left: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${ketText}</div>
-                            <div class="table-cell nilai-bayar">${row.pembayaran.toLocaleString('id-ID')}</div>
-                            <div class="table-cell nilai-tagih">${row.tagihan.toLocaleString('id-ID')}</div>
+                            <div class="table-cell cell-keterangan" data-waktu="${kunciWaktu}" data-komposit="${kunciKomposit}" data-teks="${ketText}" title="Klik untuk ubah keterangan" style="font-size: clamp(8px, 1.8vw, 11px); color: ${isPengeluaran ? '#dc2626' : '#4b5563'}; justify-content: flex-start; padding-left: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${ketText}</div>
+                            <div class="table-cell nilai-bayar">${Number(row.pembayaran).toLocaleString('id-ID')}</div>
+                            <div class="table-cell nilai-tagih">${Number(row.tagihan).toLocaleString('id-ID')}</div>
                             <div class="table-cell nilai-saldo" style="color: ${row.selisih < 0 ? '#dc2626' : '#16a34a'}">${row.selisih.toLocaleString('id-ID')}</div>
-                            <div class="table-cell"><span class="icon-hapus" data-bl="${row.bulan}" data-th="${row.tahun}" data-br="${row.pembayaran}" data-tg="${row.tagihan}" data-wk="${row.waktu}">🗑</span></div>
-                            <div class="table-cell nilai-akm">${row.akumulasi.toLocaleString('id-ID')}</div>
+                            <div class="table-cell"><span class="icon-hapus" data-bl="${row.bulan}" data-th="${row.tahun}" data-br="${row.pembayaran}" data-tg="${row.tagihan}" data-wk="${row.waktu || ''}">🗑</span></div>
+                            <div class="table-cell nilai-akm">${Number(row.akumulasi).toLocaleString('id-ID')}</div>
                         </div>`;
                 });
                 wadah.innerHTML += `
@@ -383,10 +440,31 @@
                     </div>`;
             });
 
+            // Listener tombol hapus
             document.querySelectorAll('.icon-hapus').forEach(el => {
                 el.addEventListener('click', () => {
-                    aksiSetelahPin = { jenis: 'hapus', data: { bulan: el.dataset.bl, tahun: el.dataset.th, bayar: parseInt(el.dataset.br), tagih: parseInt(el.dataset.tg), Osborn: parseInt(el.dataset.wk) } };
+                    const rawWk = el.dataset.wk;
+                    const parsedWk = rawWk ? (parseInt(rawWk, 10) || rawWk) : "";
+                    
+                    aksiSetelahPin = { 
+                        jenis: 'hapus', 
+                        data: { 
+                            bulan: el.dataset.bl, 
+                            tahun: el.dataset.th, 
+                            bayar: parseInt(el.dataset.br, 10) || 0, 
+                            tagih: parseInt(el.dataset.tg, 10) || 0, 
+                            waktu: parsedWk,
+                            Osborn: parsedWk 
+                        } 
+                    };
                     tampilkanPin();
+                });
+            });
+
+            // Listener klik pada teks keterangan untuk edit manual
+            document.querySelectorAll('.cell-keterangan').forEach(el => {
+                el.addEventListener('click', () => {
+                    ubahKeteranganManual(el.dataset.waktu, el.dataset.komposit, el.dataset.teks);
                 });
             });
         }
@@ -402,8 +480,8 @@
             const tipe = SELECT_JENIS.value;
             const bulan = document.getElementById('bulan').value;
             const tahun = document.getElementById('tahun').value;
-            const bayar = tipe === 'pengeluaran' ? 0 : (parseInt(INPUT_PEMBAYARAN.value) || 0);
-            const tagih = parseInt(INPUT_TAGIHAN.value) || 0;
+            const bayar = tipe === 'pengeluaran' ? 0 : (parseInt(INPUT_PEMBAYARAN.value, 10) || 0);
+            const tagih = parseInt(INPUT_TAGIHAN.value, 10) || 0;
             const ketValue = INPUT_KETERANGAN.value.trim().toUpperCase() || "PENGELUARAN";
 
             if (tipe === 'pengeluaran') {
@@ -415,21 +493,19 @@
                     alert("❌ KETERANGAN PENGELUARAN WAJIB DIISI!");
                     return;
                 }
-                // Simpan keterangan ke buffer sementara sebelum API berhasil
-                simpanKeteranganSesaat(bulan, tahun, tagih, ketValue);
+                simpanKeteranganBaru(bulan, tahun, tagih, ketValue);
             }
 
             try {
                 const res = await axios.get(ALAMAT_API, { params: { action: 'simpan', pin: nilaiPin, bulan, tahun, bayar, tagih } });
                 if(res.data.sukses) {
                     MODAL_SIMPAN.style.display = 'none';
-                    // Reset form ke semula
                     SELECT_JENIS.value = 'iuran';
                     aturFormBerdasarkanJenis();
                     INPUT_KETERANGAN.value = "";
                     
                     await ambilTampilData();
-                    alert("✅ DATA DISIMPAN");
+                    alert("✅ DATA BERHASIL DISIMPAN");
                 } else {
                     alert("❌ " + res.data.pesan);
                 }
@@ -439,16 +515,28 @@
         async function prosesHapus(dt) {
             if(!confirm("⚠️ YAKIN HAPUS DATA?")) return;
             try {
-                const res = await axios.get(ALAMAT_API, { params: { action: 'hapus', pin: nilaiPin, ...dt } });
-                if(res.data.sukses) {
-                    // Hapus keterangan di localStorage jika data dihapus
-                    if (dt.Osborn) {
-                        localStorage.removeItem(`wifi_exp_desc_${dt.Osborn}`);
+                const res = await axios.get(ALAMAT_API, { 
+                    params: { 
+                        action: 'hapus', 
+                        pin: nilaiPin, 
+                        ...dt 
+                    } 
+                });
+                
+                if(res.data && res.data.sukses) {
+                    const db = getDbKeterangan();
+                    delete db[buatKunciKomposit(dt)];
+                    if (dt.waktu || dt.Osborn) {
+                        const wk = dt.waktu || dt.Osborn;
+                        delete db[`w_${wk}`];
+                        localStorage.removeItem(`wifi_exp_desc_${wk}`);
                     }
+                    simpanDbKeterangan(db);
+                    
                     await ambilTampilData();
-                    alert("✅ DATA DIHAPUS");
+                    alert("✅ DATA BERHASIL DIHAPUS");
                 } else {
-                    alert("❌ " + res.data.pesan);
+                    alert("❌ " + (res.data ? res.data.pesan : "Gagal menghapus data."));
                 }
             } catch(e) { alert("❌ Gagal hapus: " + e.message); }
         }
